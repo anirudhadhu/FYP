@@ -5,10 +5,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserModel = require("./Models/User.js");
 const Place = require("./Models/Place.js");
+const Booking = require("./Models/Booking.js");
 const cookieParser = require("cookie-parser");
 const imageDownloader = require("image-downloader");
 const multer = require("multer");
 const fs = require("fs");
+const { differenceInCalendarDays } = require("date-fns");
 require("dotenv").config();
 
 const app = express();
@@ -45,6 +47,16 @@ mongoose
 app.get("/test", (req, res) => {
   res.json("test ok");
 });
+
+//function
+function getUserDataFromReq(req) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(req.cookies.token, jwtSecret, {}, async (err, user) => {
+      if (err) throw err;
+      resolve(user);
+    });
+  });
+}
 
 // ---------------------------for signup------------------
 
@@ -184,51 +196,46 @@ app.post("/places", (req, res) => {
     const placeDoc = await Place.create({
       owner: user.id,
       title,
-    address,
-    photos:addedPhotos,
-    description,
-    perks,
-    extraInfo,
-    checkIn,
-    checkOut,
-    maxGuests,
-    price,
+      address,
+      photos: addedPhotos,
+      description,
+      perks,
+      extraInfo,
+      checkIn,
+      checkOut,
+      maxGuests,
+      price,
     });
 
     res.json(placeDoc);
   });
 });
 
-
-
-
 // ======================= for adding destination to front =======================
 
 app.get("/user-places", (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, jwtSecret, {}, async (err, user) => {
-    const {id} = user;
-    res.json( await Place.find({owner: id}));
+    const { id } = user;
+    res.json(await Place.find({ owner: id }));
   });
-
 });
 
-
- app.get('/places/:id', async (req, res) => {
+app.get("/places/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const place = await Place.findById(id);
     if (!place) {
-      return res.status(404).json({ error: 'Place not found' });
+      return res.status(404).json({ error: "Place not found" });
     }
     res.json(place);
   } catch (error) {
-    console.error('Error fetching place data:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching place data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-app.put('/places', async (req, res) => {
+app.put("/places", async (req, res) => {
   const { token } = req.cookies;
   const {
     id,
@@ -248,34 +255,70 @@ app.put('/places', async (req, res) => {
     const placeDoc = await Place.findById(id);
     if (user.id === placeDoc.owner.toString()) {
       placeDoc.set({
-      title,
-    address,
-    photos:addedPhotos,
-    description,
-    perks,
-    extraInfo,
-    checkIn,
-    checkOut,
-    maxGuests,
-    price,
-
+        title,
+        address,
+        photos: addedPhotos,
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+        price,
       });
-     await placeDoc.save();
-     res.json('saved');
+      await placeDoc.save();
+      res.json("saved");
     }
   });
-
 });
-
 
 // -----------------adding destination to homepage------------
 
+app.get("/places", async (req, res) => {
+  res.json(await Place.find({}));
+});
 
-app.get('/places', async (req, res) => {
-  res.json(await Place.find({}))
-})
+
+// -----------------for booking----------------
+
+app.post("/bookings", async (req, res) => {
+  const user = await getUserDataFromReq(req);
+  const { place, checkIn, checkOut, name, number, numberOfGuests, price } =
+    req.body;
+
+  const numberOfDays = differenceInCalendarDays(
+    new Date(checkOut),
+    new Date(checkIn)
+  );
+  const totalPrice = numberOfDays * price * numberOfGuests;
+
+  Booking.create({
+    place,
+    checkIn,
+    checkOut,
+    name,
+    number,
+    numberOfGuests,
+    price,
+    totalPrice, 
+    numberOfDays, 
+    user: user.id,
+  })
+    .then((doc) => {
+      res.json(doc);
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
 
 
+// -----------------for getting bookings----------------
+
+app.get("/bookings", async (req, res) => {
+  const user = await getUserDataFromReq(req);
+  res.json(await Booking.find({ user: user._id }));
+});
 
 // Start server
 app.listen(PORT, () => {
