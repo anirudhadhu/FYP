@@ -97,7 +97,8 @@ const PlacePageHome = () => {
           <div>
             {place.photos?.[0] && (
               <div>
-                <img onClick={() => setShowAllPhotos(true)}
+                <img
+                  onClick={() => setShowAllPhotos(true)}
                   className="aspect-square object-cover cursor-pointer"
                   src={"http://localhost:4000/uploads/" + place.photos[0]}
                   alt=""
@@ -108,7 +109,8 @@ const PlacePageHome = () => {
 
           <div>
             {place.photos?.[1] && (
-              <img onClick={() => setShowAllPhotos(true)}
+              <img
+                onClick={() => setShowAllPhotos(true)}
                 className="aspect-square object-cover cursor-pointer"
                 src={"http://localhost:4000/uploads/" + place.photos[1]}
                 alt=""
@@ -118,7 +120,8 @@ const PlacePageHome = () => {
 
           <div>
             {place.photos?.[2] && (
-              <img onClick={() => setShowAllPhotos(true)}
+              <img
+                onClick={() => setShowAllPhotos(true)}
                 className="aspect-square object-cover cursor-pointer"
                 src={"http://localhost:4000/uploads/" + place.photos[2]}
                 alt=""
@@ -158,29 +161,23 @@ const PlacePageHome = () => {
           {place.checkIn} <br />
           <b className="p-2">Check-out: </b>
           {place.checkOut} <br />
-          <b className="p-2">Max number of guest: </b>
+          <b className="p-2">Max number of Days: </b>
           {place.maxGuests} <br />
-          <div className="mt-6 border border-primary py-9">
-            <p className=" text-center font-bold">Calculation:</p>
-            Calculation part goes here
+          <div className="bg-white -mx-8 px-8 py-8">
+            <div>
+              <h2 className="font-semibold underline text-2xl">
+                Extra Information:
+              </h2>
+              <div className="mt-2 mb-4 text-m text-gray-700 leading-4">
+                {place.extraInfo}
+              </div>
+            </div>
           </div>
         </div>
+
         <div>
           <BookingWidget place={place} />
         </div>
-      </div>
-      <div className="bg-white -mx-8 px-8 py-8">
-        <div>
-          <h2 className="font-semibold underline text-2xl">
-            Extra Information:
-          </h2>
-        </div>
-        <div className="mt-2 mb-4 text-m text-gray-700 leading-4">
-          {place.extraInfo}
-        </div>
-        {/* <div className="mt-2 mb-4 text-m text-gray-700 leading-4">
-          {place.perks}
-        </div> */}
       </div>
     </div>
   );
