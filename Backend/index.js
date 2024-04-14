@@ -283,13 +283,13 @@ app.get("/places", async (req, res) => {
 
 app.post("/bookings", async (req, res) => {
   const user = await getUserDataFromReq(req);
-  const { place, checkIn, checkOut, name, number, numberOfGuests, price } =
-    req.body;
 
-  const numberOfDays = differenceInCalendarDays(
-    new Date(checkOut),
-    new Date(checkIn)
-  );
+  const { place, checkIn, checkOut, name, number, numberOfGuests, price } = req.body;
+  if (!place || !checkIn || !checkOut || !name || !number || !numberOfGuests || !price) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  const numberOfDays = differenceInCalendarDays(new Date(checkOut), new Date(checkIn));
   const totalPrice = numberOfDays * price * numberOfGuests;
 
   Booking.create({
@@ -300,24 +300,26 @@ app.post("/bookings", async (req, res) => {
     number,
     numberOfGuests,
     price,
-    totalPrice, 
-    numberOfDays, 
+    totalPrice,
+    numberOfDays,
     user: user.id,
   })
     .then((doc) => {
       res.json(doc);
     })
     .catch((err) => {
-      throw err;
+      console.error("Error creating booking:", err);
+      res.status(500).json({ error: "Internal Server Error" });
     });
 });
 
 
+
 // -----------------for getting bookings----------------
 
-app.get("/bookings", async (req, res) => {
+app.get('/bookings', async (req, res) => {
   const user = await getUserDataFromReq(req);
-  res.json(await Booking.find({ user: user._id }));
+  res.json(await Booking.find({ user: user._id }).populate("place"));
 });
 
 // Start server
