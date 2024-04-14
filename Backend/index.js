@@ -319,8 +319,10 @@ app.post("/bookings", async (req, res) => {
 
 app.get('/bookings', async (req, res) => {
   const user = await getUserDataFromReq(req);
-  res.json(await Booking.find({ user: user._id }).populate("place"));
+  const bookings = await Booking.find({ user: user._id }).populate("place");
+  res.json(bookings);
 });
+
 
 // Start server
 app.listen(PORT, () => {
