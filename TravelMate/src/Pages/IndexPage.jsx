@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Home from "../Pages/Home";
 import Scroll from "../Pages/Scroll";
+import VideoBar from "../Pages/VideoBar";
 
 const IndexPage = () => {
   const [places, setPlaces] = useState([]);
@@ -36,6 +37,7 @@ const IndexPage = () => {
     <>
       <Home />
       <Scroll/>
+      
       <div className="mt-24 p-8 grid gap-x-8 gap-y-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {places.length > 0 &&
           places.map((place) => (
@@ -102,6 +104,7 @@ const IndexPage = () => {
             </div>
           ))}
       </div>
+      <VideoBar />
     </>
   );
 };
