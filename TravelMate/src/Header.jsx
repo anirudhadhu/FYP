@@ -1,9 +1,18 @@
-import React, { useContext } from "react";
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from "react";
+import { Link } from "react-router-dom";
 import { UserContext } from "./UserContext";
 
 const Header = () => {
   const { user } = useContext(UserContext);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleFavoriteClick = () => {
+    console.log("Favorites clicked");
+  };
 
   return (
     <header className="flex justify-between">
@@ -62,35 +71,64 @@ const Header = () => {
       {/* --------------------for user ----------------- */}
       <div className="flex items-center gap-2 border border-gray-300 rounded-full py-2 px-4">
         {/* -----------------hamburger------------- */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-          />
-        </svg>
+        <div className="relative inline-block text-left">
+          <button
+            className="bg-white focus:outline-none"
+            onClick={toggleDropdown}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 12h18M3 6h18M3 18h18"
+              />
+            </svg>
+          </button>
+          {isOpen && (
+            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg border border-primary bg-white ring-1 ring-black ring-opacity-5 focus:outline-none ">
+              <div className="py-1">
+                <Link
+                  to={"/favorites"}
+                  onClick={handleFavoriteClick}
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-primary hover:text-white rounded-2xl"
+                >
+                  Favorites
+                </Link>
+              </div>
+              
+              <div className="py-1">
+                <Link
+                  to={"/contact"}
+                  onClick={handleFavoriteClick}
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-primary hover:text-white rounded-2xl"
+                >
+                  Contact
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/*------------ user icon ----------*/}
 
         <Link
-          to={user?'/Account': "/login"}
+          to={user ? "/Account" : "/login"}
           className="bg-gray-500 text-white rounded-full border-primary-500 overflow-hidden"
         >
-          <svg 
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
             className="bg-primary w-9 h-6"
-  
           >
             <path
               strokeLinecap="round"
@@ -98,23 +136,10 @@ const Header = () => {
               d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
             />
           </svg>
-          {/* <div className="text-sm font-medium truncate w-18">
-            {!!user && (
-              <div>
-                {user.name}
-              </div>
-            )}
-          </div> */}
-
         </Link>
         <div className="text-sm font-medium truncate w-18">
-            {!!user && (
-              <p>
-                {user.name}
-              </p>
-            )}
-          </div>
-
+          {!!user && <p>{user.name}</p>}
+        </div>
       </div>
     </header>
   );
