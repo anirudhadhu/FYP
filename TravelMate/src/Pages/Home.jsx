@@ -4,6 +4,7 @@ import "aos/dist/aos.css";
 import "../Styles/Home.css";
 import Header from "../Header";
 
+
 const Home = () => {
   useEffect(() => {
     Aos.init({ duration: 2000 });

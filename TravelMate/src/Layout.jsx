@@ -1,6 +1,8 @@
 import React from 'react'
 import Header from './Header'
 import { Outlet } from 'react-router-dom'
+import Footer from "./Pages/Footer";
+
 
 const Layout = () => {
   return (
@@ -8,7 +10,7 @@ const Layout = () => {
     <div > 
       <Header/>
       <Outlet/>
-      
+      <Footer/>
     </div>
   )
 }
