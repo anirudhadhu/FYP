@@ -9,25 +9,30 @@
    transition: .3s ease;
   
   }
-
-:root{
-    --primaryColor:rgb(130, 0, 237);
-    --HoverColor:  rgb(110, 24, 180);
-    --whiteColor: hsl(0, 0%, 100%);
-    --blackColor: hsl(0, 0%, 18%);
-    --textColor: hsl(240, 4%, 36%);
-    --whiteColorDeam: hsl (0, 0%, 93%);
-    --greyBg: hsl(0, 0%, 96);
-    --greyText: rgb(190, 190, 190);
-    --inputColor: hsl(330, 12%, 97%)
-    /* box-shadow: 0 2px 8px 2px rgba(178, 178, 178, 0.334); */
-    
-    
+  
+  /* Default styling */
+  
+  
+  img, video{
+    width: 100%;
+    height: auto;
   }
+  
+  .btn{
+    padding: .4rem 1.5rem;
+    background: var(--primaryColor);
+    color: var(--whiteColor);
+    border-radius: 3rem;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  
 
 
-
-
+  
+  /* page design */
+  
   ::selection{
     background: var(--primaryColor);
     color: var(--whiteColor);

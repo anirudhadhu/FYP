@@ -1,0 +1,265 @@
+:root {
+    --primaryColor: rgb(130, 0, 237);
+    --HoverColor: rgb(110, 24, 180);
+    --whiteColor: hsl(0, 0%, 100%);
+    --blackColor: hsl(0, 0%, 18%);
+    --textColor: hsl(240, 4%, 36%);
+    --whiteColorDeam: hsl (0, 0%, 93%);
+    --greyBg: hsl(0, 0%, 96);
+    --greyText: rgb(190, 190, 190);
+    --inputColor: hsl(330, 12%, 97%)
+  }
+  
+  .home {
+    height: 80vh;
+    background: linear-gradient(rgba(33, 33, 33, 0.522), rgba(33, 33, 33, 0.522)), url(../assets/CoverPage1.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    position: relative;
+  
+  
+    .secContainer {
+      .homeText {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 2.5rem;
+  
+  
+        .title {
+          color: rgb(232, 244, 239);
+        }
+  
+  
+        .subtitle {
+          color: var(--whiteColor);
+          opacity: 0.9;
+          font-size: 13px;
+          font-weight: 300;
+          padding: 1rem 0;
+          max-width: 70%;
+          text-align: center;
+          margin: auto;
+        }
+  
+        .btn {
+          padding: .6rem 1.5rem;
+  
+        }
+  
+  
+      }
+  
+      .homeCard {
+        width: 80%;
+        border-radius: 1rem;
+        padding: 2rem;
+        background: var(--whiteColor);
+        position: absolute;
+        gap: 1rem;
+        justify-content: center;
+        bottom: -50%;
+        transform: translate(-50%);
+        left: 50%;
+        box-shadow: 0 2px 8px 4px rgba(178, 178, 178, 0.45);
+  
+  
+        .locationDiv,
+        .distDiv,
+        .priceDiv {
+          width: 100%;
+  
+          label {
+            display: block;
+            color: var(--textColor);
+            font-weight: 500;
+            font-size: 13px;
+            padding-bottom: .4rem;
+            color: var(--primaryColor);
+          }
+  
+          input {
+            width: 100%;
+            background: rgb(236, 235, 235);
+            border-radius: 10px;
+            border: none;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 500;
+  
+  
+            &::placeholder {
+              font-size: 13px;
+              opacity: .5;
+              font-weight: 400;
+  
+            }
+  
+          }
+        }
+  
+  
+        .btn {
+          
+          
+          font-weight: 600;
+  
+  
+        }
+  
+  
+  
+  
+      }
+  
+  
+  
+    }
+  
+  
+  }
+  
+  @media screen and (min-width: 465px) {
+    .home {
+      .secContainer {
+        .homeCard {
+          bottom: -170px;
+          width: 90%;
+          grid-template-columns: repeat(2, 1fr);
+  
+          .btn {
+            transform: translateY(15px);
+          }
+        }
+      }
+    }
+  
+  }
+  
+  @media screen and (min-width: 556px) {
+    .home {
+      .secContainer {
+        .homeText {
+          .title {
+            font-size: 2.5rem;
+            
+          }
+  
+          .subTitle {
+            font-size: 18px;
+          }
+        }
+      }
+    }
+  
+  }
+  
+  @media screen and (min-width: 720px) {
+    .home {
+      .secContainer {
+        .homeCard{
+          bottom: -15%;
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+    }
+  
+  }
+  
+  
+  
+  @media screen and (min-width: 1024px) {
+    .home {
+      .secContainer {
+        .homeText{
+          .subtitle{
+            font-size: 15px;
+  
+          }
+          
+        }
+  
+        .homeCard{
+          width: 75%;
+        }
+      }
+    }
+    
+  }
+
+  .btn {
+    padding: 0.1rem 1rem;
+    background: var(--primaryColor);
+    color: var(--whiteColor);
+    border-radius: 3rem;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  .btn a {
+    color: var(--whiteColor);
+    font-weight: 500;
+  }
+  
+  .btn:hover {
+    background: var(--HoverColor);
+  }
+  
+  .btn:hover a {
+    background: var(--HoverColor);
+  }
+  
+
+
+
+  
+  
+  
+  /* @media screen and (min-width: 720px) {
+    .home {
+      .secContainer {
+        .homeText{
+          padding: 1rem ;
+  
+          .title{
+            font-size: 3.5rem;
+            margin: auto;
+            line-height: 4rem;
+          }
+  
+          .subTitle{
+            width: 70% ;
+          }
+  
+        }
+      }
+    }
+  
+  } */
+  
+  /* @media screen and (min-width: 300px) {
+    .home {
+      .secContainer {
+        .homeText {
+          .title {
+            font-size: 1rem;
+            
+          }
+  
+          .subtitle {
+            font-size: 5.5px;
+            padding: 0;
+            font-weight: 2000;
+            
+          }
+        }
+      }
+    }
+  
+  } */

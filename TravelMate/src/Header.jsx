@@ -15,7 +15,7 @@ const Header = () => {
   };
 
   return (
-    <header className="flex justify-between">
+    <header className="p-6 flex justify-between">
       {/* --------------------for logo ----------------- */}
       <Link to={"/"} className="flex items-center gap-1">
         <svg
