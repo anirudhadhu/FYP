@@ -2,7 +2,6 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../UserContext";
 
-
 const Header = () => {
   const { user } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
@@ -14,12 +13,12 @@ const Header = () => {
 
   const handleFavoriteClick = () => {
     console.log("Favorites clicked");
-    setIsOpen(false); // Close the dropdown after clicking the link
+    setIsOpen(false);
   };
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsOpen(false); // Close the dropdown if clicked outside of it
+      setIsOpen(false);
     }
   };
 
@@ -56,34 +55,8 @@ const Header = () => {
           <span className="font-bold text-xl">TravelMate</span>
         </Link>
       </div>
-
-      <div className="flex gap-2 border border-gray-300 rounded-full py-2 px-4 shadow-md shadow-gray-300">
-        <div className="search-filter">Anywhere</div>
-        <div className="border-l border-gray-300"></div>
-        <div className="search-filter">Any week</div>
-        <div className="border-l border-gray-300"></div>
-        <div className="search-filter">Add guests</div>
-
-        <button className="bg-primary text-white p-1 rounded-full">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-4 h-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-            />
-          </svg>
-        </button>
-      </div>
-
-      <div className="flex items-center gap-2 border border-gray-300 rounded-full py-2 px-4">
-        <div className="relative inline-block text-left" ref={dropdownRef}>
+      <div className="flex items-center gap-2 py-2 px-4">
+        <div className="flex rounded-full py-2 px-8 lg:hidden">
           <button
             className="bg-primary text-white p-1 rounded-full focus:outline-none "
             onClick={toggleDropdown}
@@ -103,8 +76,44 @@ const Header = () => {
               />
             </svg>
           </button>
+        </div>
+        <div className="hidden lg:flex rounded-full py-2 px-8">
+          <ul className="flex space-x-16">
+            <li>
+              {" "}
+              <Link to={"/"}>Home</Link>{" "}
+            </li>
+            <li>
+              <Link to={"/AboutUs"}>About Us</Link>
+            </li>
+            <li>
+              {" "}
+              <Link to={"/favorites"}>Favorites</Link>
+            </li>
+            <li>
+              <Link to={"/Contact"}>Contact</Link>
+            </li>
+          </ul>
+        </div>
+        <div className="relative inline-block text-left" ref={dropdownRef}>
           {isOpen && (
             <div className="z-10 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg border border-primary bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1">
+                <Link
+                  to={"/"}
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-primary hover:text-white rounded-2xl"
+                >
+                  Home
+                </Link>
+              </div>
+              <div className="py-1">
+                <Link
+                  to={"/AboutUs"}
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-primary hover:text-white rounded-2xl"
+                >
+                  About Us
+                </Link>
+              </div>
               <div className="py-1">
                 <Link
                   to={"/favorites"}
@@ -126,7 +135,6 @@ const Header = () => {
             </div>
           )}
         </div>
-
         <Link
           to={user ? "/Account" : "/login"}
           className="bg-gray-500 text-white rounded-full border-primary-500 overflow-hidden"
