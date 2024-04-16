@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { FaArrowUp } from "react-icons/fa6";
+import { FaArrowUp } from "react-icons/fa";
 import "../Styles/Scroll.css";
 
 const Scroll = () => {
   const [showButton, setShowButton] = useState(false);
 
   const handleScroll = () => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollTop =
+      window.pageYOffset || document.documentElement.scrollTop;
     setShowButton(scrollTop > 0);
   };
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    if (showButton) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   };
 
   useEffect(() => {
@@ -25,9 +28,9 @@ const Scroll = () => {
   }, []);
 
   return (
-    <FaArrowUp 
+    <FaArrowUp
       onClick={scrollToTop}
-      className={showButton ? "FaArrowUp show" : "FaArrowUp"}
+      className={showButton ? "FaArrowUp show" : "FaArrowUp hide"}
     />
   );
 };

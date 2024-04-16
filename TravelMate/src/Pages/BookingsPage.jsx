@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import AccountNav from "../AccountNav";
+import AccountNav from "../Components/AccountNav";
 import axios from "axios";
-import PlaceImg from "../PlaceImg";
+import PlaceImg from "../Components/PlaceImg";
 import { Link } from "react-router-dom";
-import BookingDates from "../BookingDates";
+import BookingDates from "../Components/BookingDates";
 
 const BookingsPage = () => {
   const [bookings, setBookings] = useState([]);

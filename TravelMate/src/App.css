@@ -13,20 +13,7 @@
   /* Default styling */
   
   
-  img, video{
-    width: 100%;
-    height: auto;
-  }
-  
-  .btn{
-    padding: .4rem 1.5rem;
-    background: var(--primaryColor);
-    color: var(--whiteColor);
-    border-radius: 3rem;
-    border: none;
-    outline: none;
-    cursor: pointer;
-  }
+
   
 
 

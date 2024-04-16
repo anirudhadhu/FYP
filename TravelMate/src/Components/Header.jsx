@@ -1,10 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../UserContext";
+
 
 const Header = () => {
   const { user } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -12,36 +14,49 @@ const Header = () => {
 
   const handleFavoriteClick = () => {
     console.log("Favorites clicked");
+    setIsOpen(false); // Close the dropdown after clicking the link
   };
 
-  return (
-    <header className="p-6 flex justify-between">
-      {/* --------------------for logo ----------------- */}
-      <Link to={"/"} className="flex items-center gap-1">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-8 h-8"
-          // color="rgb(130, 0, 237)"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-          />
-        </svg>
-        <span className="font-bold  text-xl">TravelMate</span>
-      </Link>
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsOpen(false); // Close the dropdown if clicked outside of it
+    }
+  };
 
-      {/* --------------------for search bar ----------------- */}
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <header className="p-8 flex justify-between bg-primary text-white sticky top-0 z-50">
+      <div className="flex items-center gap-1">
+        <Link to={"/"} className="flex items-center gap-1">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-8 h-8"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+            />
+          </svg>
+          <span className="font-bold text-xl">TravelMate</span>
+        </Link>
+      </div>
+
       <div className="flex gap-2 border border-gray-300 rounded-full py-2 px-4 shadow-md shadow-gray-300">
         <div className="search-filter">Anywhere</div>
         <div className="border-l border-gray-300"></div>
@@ -49,7 +64,6 @@ const Header = () => {
         <div className="border-l border-gray-300"></div>
         <div className="search-filter">Add guests</div>
 
-        {/* ---------------------for button --------------------*/}
         <button className="bg-primary text-white p-1 rounded-full">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -68,12 +82,10 @@ const Header = () => {
         </button>
       </div>
 
-      {/* --------------------for user ----------------- */}
       <div className="flex items-center gap-2 border border-gray-300 rounded-full py-2 px-4">
-        {/* -----------------hamburger------------- */}
-        <div className="relative inline-block text-left">
+        <div className="relative inline-block text-left" ref={dropdownRef}>
           <button
-            className="bg-white focus:outline-none"
+            className="bg-primary text-white p-1 rounded-full focus:outline-none "
             onClick={toggleDropdown}
           >
             <svg
@@ -92,7 +104,7 @@ const Header = () => {
             </svg>
           </button>
           {isOpen && (
-            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg border border-primary bg-white ring-1 ring-black ring-opacity-5 focus:outline-none ">
+            <div className="z-10 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg border border-primary bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
               <div className="py-1">
                 <Link
                   to={"/favorites"}
@@ -102,7 +114,6 @@ const Header = () => {
                   Favorites
                 </Link>
               </div>
-              
               <div className="py-1">
                 <Link
                   to={"/contact"}
@@ -115,8 +126,6 @@ const Header = () => {
             </div>
           )}
         </div>
-
-        {/*------------ user icon ----------*/}
 
         <Link
           to={user ? "/Account" : "/login"}

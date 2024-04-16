@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import Home from "../Pages/Home";
 import Scroll from "../Pages/Scroll";
 import VideoBar from "../Pages/VideoBar";
-import Footer from "./Footer";
 
 const IndexPage = () => {
   const [places, setPlaces] = useState([]);

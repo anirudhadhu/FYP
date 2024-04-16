@@ -1,8 +1,5 @@
 import React from "react";
 import "../Styles/VideoBar.css";
-import Hiking from "../assets/Hiking.jpg";
-import Customer from "../assets/Customer.jpg";
-import Mountains from "../assets/Mountains.png";
 import Mountain from "../assets/clips/Mountain.mp4";
 import { useEffect } from "react";
 import Aos from "aos";

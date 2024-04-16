@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { differenceInCalendarDays } from "date-fns";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../UserContext";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 

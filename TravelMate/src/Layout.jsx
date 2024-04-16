@@ -1,18 +1,17 @@
-import React from 'react'
-import Header from './Header'
-import { Outlet } from 'react-router-dom'
-import Footer from "./Pages/Footer";
-
+import React from "react";
+import Header from "./Components/Header";
+import { Outlet } from "react-router-dom";
+import Footer from "./Components/Footer";
 
 const Layout = () => {
   return (
     // className="py-4 px-8 flex flex-col min-h-screen"
-    <div > 
-      <Header/>
-      <Outlet/>
-      <Footer/>
-    </div>
-  )
-}
+    <div>
+      <Header />
+        <Outlet />
+        <Footer />
+      </div>
+  );
+};
 
-export default Layout
+export default Layout;
