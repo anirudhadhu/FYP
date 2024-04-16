@@ -4,6 +4,7 @@ import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 import { useEffect } from "react";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import { Link, Navigate } from "react-router-dom";
 
 const Footer = () => {
   useEffect(() => {
@@ -16,57 +17,65 @@ const Footer = () => {
         <div className="logoDiv">
           <div className="footerLogo">
             <a href="" className="logo flex">
-              <h1 className="flex">
-                TravelMate
-              </h1>
+              <h1 className="flex">TravelMate</h1>
               <span></span>
             </a>
           </div>
 
           <div className="socials flex">
-            <FaFacebookF className="icon" />
-            <FaTwitter className="icon" />
-            <FaInstagram className="icon" />
+            <a
+              href="https://www.facebook.com/profile.php?id=100015630391721"
+              target="_blank"
+            >
+              <FaFacebookF className="icon" />
+            </a>
+            <a href="https://twitter.com/anirudha_dh" target="_blank">
+              <FaTwitter className="icon" />
+            </a>
+            <a href="https://www.instagram.com/anirudha.dh/" target="_blank">
+              <FaInstagram className="icon" />
+            </a>
           </div>
+
           <div className="dhungana">&#169; All rights reserved 2024</div>
         </div>
 
         <div className="footerLinks">
           <span className="linkTitle">Information</span>
           <li>
-            <a href="#">Home</a>
+            <Link to={"/"} href="/terms">
+              Home{" "}
+            </Link>
           </li>
+
           <li>
-            <a href="#">Support</a>
+            <Link to={"/contact"} href="/terms">
+              Contact Us{" "}
+            </Link>
           </li>
+
           <li>
-            <a href="#">Travel </a>
-          </li>
-          <li>
-            <a href="#">Blog</a>
-          </li>
-        </div>
-        <div className="footerLinks">
-          <span className="linkTitle">Helpful Links</span>
-          <li>
-            <a href="#">Destination</a>
-          </li>
-          <li>
-            <a href="#">Support</a>
-          </li>
-          <li>
-            <a href="#">Travel and Condition </a>
-          </li>
-          <li>
-            <a href="#">Privacy</a>
+            <Link to={"/terms"} href="/terms">
+              Terms and Condition{" "}
+            </Link>
           </li>
         </div>
 
         <div className="footerLinks">
+          <span className="linkTitle">Utilities</span>
+          <li>
+            <Link to={"/CurrencyConvert"} href="/terms">
+              Currency Conversion{" "}
+            </Link>
+          </li>
+         
+        </div>
+
+        {/* <div className="footerLinks">
           <span className="linkTitle">Contact Us</span>
           <span className="phone">+91 1234567890</span>
           <span className="email">hbj@example.com</span>
-        </div>
+        </div> */}
       </div>
     </div>
   );
