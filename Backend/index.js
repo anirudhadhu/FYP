@@ -12,6 +12,7 @@ const multer = require("multer");
 const fs = require("fs");
 const { differenceInCalendarDays } = require("date-fns");
 require("dotenv").config();
+const axios = require('axios');
 
 const app = express();
 const PORT = 4000;
@@ -26,9 +27,12 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
+
+
 
 // Database connection
 mongoose
@@ -322,6 +326,25 @@ app.get('/bookings', async (req, res) => {
   const bookings = await Booking.find({ user: user.id }).populate("place");
   res.json(bookings);
 });
+
+
+//to display weather
+
+app.get('/weather', async (req, res) => {
+  const { location } = req.query;
+  const API_KEY = "da58343d1e62ee8244d7503a04206d7c";
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${API_KEY}`;
+  
+  try {
+    const response = await axios.get(url);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching weather data:', error);
+    res.status(500).json({ error: 'Failed to fetch weather data' });
+  }
+});
+
+
 
 
 // Start server

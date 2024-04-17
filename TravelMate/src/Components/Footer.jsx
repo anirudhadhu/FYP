@@ -1,18 +1,12 @@
 import "../Styles/Footer.css";
 import React from "react";
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
-import { useEffect } from "react";
-import Aos from "aos";
-import "aos/dist/aos.css";
 import { Link, Navigate } from "react-router-dom";
 
 const Footer = () => {
-  useEffect(() => {
-    Aos.init({ duration: 15000 });
-  }, []);
-
+  
   return (
-    <div data-aos="fade-up" className="footer">
+    <div  className="footer">
       <div className="secContainer container grid">
         <div className="logoDiv">
           <div className="footerLogo">
@@ -66,6 +60,11 @@ const Footer = () => {
           <li>
             <Link to={"/CurrencyConvert"} href="/terms">
               Currency Conversion{" "}
+            </Link>
+          </li>
+          <li>
+            <Link to={"/weather"} href="/terms">
+              Weather{" "}
             </Link>
           </li>
          
