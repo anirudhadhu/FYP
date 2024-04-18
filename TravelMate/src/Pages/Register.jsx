@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 
 const Register = () => {
@@ -8,10 +8,18 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [redirect, setRedirect] = useState(false);
 
+  // Regular expression pattern for number validation (10 digits)
+  const numberRegex = /^\d{10}$/;
 
   async function registerUser(ev) {
     ev.preventDefault();
+    // Validate number against regex pattern
+    if (!numberRegex.test(number)) {
+      alert("Please enter a valid 10-digit number");
+      return;
+    }
     try {
       await axios.post("/register", { 
         name, 
@@ -20,12 +28,15 @@ const Register = () => {
         password });
 
       alert("Registration successful. Now you can login !");
-     
+      setRedirect(true);
     } catch (e) {
-      alert("The Email adress is already used.");
+      alert("The Email address is already used.");
     }
   }
 
+  if (redirect) {
+    return <Navigate to="/login" />;
+  }
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);

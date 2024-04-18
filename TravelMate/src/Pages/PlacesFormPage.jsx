@@ -97,7 +97,7 @@ const PlacesFormPage = () => {
   return (
     <div>
       <AccountNav />
-      <form onSubmit={savePlace}>
+      <form className="p-9" onSubmit={savePlace}>
         {preInput("Title", "Title for your place")}
         <input
           type="text"

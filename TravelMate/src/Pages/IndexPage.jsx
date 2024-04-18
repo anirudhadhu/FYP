@@ -38,7 +38,7 @@ const IndexPage = () => {
       <Home />
       <Scroll/>
       
-      <div className="mt-24 p-8 grid gap-x-8 gap-y-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-32 p-8 grid gap-x-8 gap-y-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {places.length > 0 &&
           places.map((place) => (
             <div key={place._id} className="place-card">

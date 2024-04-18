@@ -36,12 +36,12 @@ const BookingsPage = () => {
   return (
     <div>
       <AccountNav />
-      <div>
+      <div className="p-9">
         {bookings.length > 0 ? (
           bookings.map((booking) => (
             <Link
               to={`/account/bookings/${booking._id}`}
-              className="flex gap-4 bg-gray-200 rounded-2xl overflow-hidden"
+              className="flex gap-5 mb-6 bg-gray-200 rounded-2xl overflow-hidden"
               key={booking._id}
             >
               <div className="w-48">

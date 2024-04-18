@@ -29,7 +29,7 @@ const BookingPage = () => {
     //   booking id: {id}
 
     // </div>
-    <div className="my-8">
+    <div className="p-16 ">
       <h1 className="text-2xl "> {booking.place.title} </h1>
       <AddressLink className="my-2 block">
         {" "}

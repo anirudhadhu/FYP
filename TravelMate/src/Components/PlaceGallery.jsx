@@ -5,7 +5,7 @@ const PlaceGallery = (place) => {
 
   if (showAllPhotos) {
     return (
-      <div className="absolute inset-0  text-white min-h-screen">
+      <div className="absolute mt-16 p-6 inset-0  text-white min-h-screen">
         <div>
           {place?.photos?.length > 0 &&
             place.photos.map((photo, index) => (
@@ -14,12 +14,12 @@ const PlaceGallery = (place) => {
                 className="bg-white p-6 h-screen w-full flex items-center justify-center"
               >
                 <div className="max-w-2xl mx-auto">
-                  <h2 className=" text-3xl font-semibold underline mb-4 text-center text-black">
-                    Photos of {place.title}
-                  </h2>
+                  {/* <h2 className=" text-3xl font-semibold underline mb-4 text-center text-black">
+                
+                  </h2> */}
                   <button
                     onClick={() => setShowAllPhotos(false)}
-                    className=" fixed right-8 top-8 flex items-center gap-1 py-2 px-4 rounded-lg bg-primary text-white focus:outline-none hover:bg-primary-dark"
+                    className=" fixed right-8 top-48 flex items-center gap-1 py-2 px-4 rounded-lg bg-primary text-white focus:outline-none hover:bg-primary-dark"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

@@ -24,7 +24,7 @@ const PlacePageHome = () => {
   }
 
   return (
-    <div className="mt-4 bg-gray-50 px-8 py-8 border sm:mx-4 md:mx-8 lg:mx-16 xl:mx-24 rounded-2xl">
+    <div className="mt-12 bg-gray-50 px-8 py-8 border sm:mx-4 md:mx-8 lg:mx-16 xl:mx-24 rounded-2xl">
       <h1 className="text-2xl">{place.title}</h1>
 
       <AddressLink> {place.address} </AddressLink>
