@@ -12,6 +12,8 @@ const multer = require("multer");
 const fs = require("fs");
 const { differenceInCalendarDays } = require("date-fns");
 require("dotenv").config();
+const axios = require('axios');
+
 
 const app = express();
 const PORT = 4000;
@@ -29,7 +31,6 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
 
@@ -328,13 +329,14 @@ app.get('/bookings', async (req, res) => {
 });
 
 
+
 //to display weather
 
 app.get('/weather', async (req, res) => {
   const { location } = req.query;
   const API_KEY = "da58343d1e62ee8244d7503a04206d7c";
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${API_KEY}`;
-  
+
   try {
     const response = await axios.get(url);
     res.json(response.data);
