@@ -12,7 +12,6 @@ const multer = require("multer");
 const fs = require("fs");
 const { differenceInCalendarDays } = require("date-fns");
 require("dotenv").config();
-const axios = require('axios');
 
 const app = express();
 const PORT = 4000;
@@ -30,6 +29,7 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
 
