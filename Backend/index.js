@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserModel = require("./Models/User.js");
+const DocumentModel = require('./Models/Document');
 const Place = require("./Models/Place.js");
 const Booking = require("./Models/Booking.js");
 const cookieParser = require("cookie-parser");
@@ -32,21 +33,20 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
+// app.use("/documents", express.static(__dirname + "/documents"));
 
 
 
 // Database connection
 mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URL)
   .then(() => {
     console.log("MongoDB connected successfully");
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err);
   });
+
 
 // Routes
 app.get("/test", (req, res) => {
@@ -347,6 +347,74 @@ app.get('/weather', async (req, res) => {
 });
 
 
+//-------------------to upload documents---------------------
+
+const documentMiddleware = multer({ dest: "documents" });
+
+app.post("/documents", documentMiddleware.array("photos", 100), async (req, res) => {
+  try {
+    // Get user's ID from JWT token
+    const user = await getUserDataFromReq(req);
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    
+    console.log("User:", user);
+
+    const uploadedFiles = [];
+    for (let i = 0; i < req.files.length; i++) {
+      const file = req.files[i];
+      if (!file.originalname) {
+        console.log("Original name missing for file:", file);
+        continue;
+      }
+
+      const parts = file.originalname.split(".");
+      if (parts.length < 2) {
+        console.log("Invalid file name format:", file.originalname);
+        continue;
+      }
+
+      const ext = parts.pop();
+      const newPath = file.path + "." + ext;
+      fs.renameSync(file.path, newPath);
+      uploadedFiles.push(newPath.replace("documents", ""));
+    }
+    
+    console.log("Uploaded files:", uploadedFiles);
+
+    // Save document paths and associate with the user
+    const documents = await DocumentModel.create({
+      user: user.id,
+      documents: uploadedFiles
+    });
+
+    console.log("Documents saved:", documents);
+    res.json(documents);
+  } catch (error) {
+    console.error("Error uploading documents:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//to get documents-----------------------------
+app.get('/documents', async (req, res) => {
+  try {
+    // Get user's ID from JWT token
+    const user = await getUserDataFromReq(req);
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // Find documents associated with the user
+    const documents = await DocumentModel.find({ user: user.id });
+
+    res.json(documents);
+  } catch (error) {
+    console.error("Error fetching documents:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 
 // Start server

@@ -1,7 +1,7 @@
 import "../Styles/Footer.css";
 import React from "react";
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   

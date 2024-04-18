@@ -69,11 +69,11 @@ const Weather = () => {
                     <img
                       src={`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png `}
                       alt=""
-                      className="w-[120px]"
+                      className="w-[100px] border border-primary bg-gray-300 rounded-3xl"
                     />
                   </div>
                   {data.name !== undefined ? (
-                    <div className="flex flex-col justify-evenly gap-y-2 my-6 mx-auto text-sm">
+                    <div className="flex flex-col justify-evenly gap-y-2  my-8 mx-auto text-sm">
                       <div className="flex justify-between gap-x-8">
                         <p>Feels Like:</p>
                         <p className="font-bold w-20">

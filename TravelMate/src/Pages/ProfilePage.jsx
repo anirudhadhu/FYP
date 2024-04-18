@@ -4,10 +4,12 @@ import { Navigate, useParams } from "react-router-dom";
 import axios from "axios";
 import PlacesPage from "./PlacesPage";
 import AccountNav from "../Components/AccountNav";
+import UploadDocument from "../Components/UploadDocument";
 
 const ProfilePage = () => {
   const { ready, user, setUser } = useContext(UserContext);
   const [redirect, setRedirect] = useState(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
   let { subpage } = useParams();
   if (subpage === undefined) {
@@ -37,31 +39,36 @@ const ProfilePage = () => {
   }
 
   return (
-    <div >
+    <div>
       <AccountNav />
+      <div className="grid gap-20 ml-9  grid-cols-1 md:grid-cols-[1fr_2fr]">
+        {subpage === "profile" && (
+          <>
+            <UploadDocument/>
 
-      {subpage === "profile" && (
-        <div className="text-center max-w-lg mx-auto mt-8">
-          <h2 className="text-xl font-semibold mb-4">Profile Information</h2>
-          <div className=" bg-white shadow-md rounded-lg p-6 mx-auto max-w-md">
-            <p className="flex text-gray-700">
-              Logged in as: <strong>{user.name}</strong>
-            </p>
-            <p className="flex text-gray-700">
-              Contact Number: <strong>{user.number}</strong>
-            </p>
-            <p className="flex text-gray-700">
-              Email Address: <strong>{user.email}</strong>
-            </p>
-            <button 
-              onClick={logout}
-              className=" primary mt-4 px-4 py-2 rounded-lg text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
-            >
-              Log out
-            </button>
-          </div>
-        </div>
-      )}
+            <div className="text-center max-w-lg mx-auto mt-8 border border-l-primary p-6 ">
+              <h2 className="text-xl font-semibold mb-4">Profile Information</h2>
+              <div className=" bg-white shadow-md rounded-lg p-6 mx-auto max-w-md">
+                <p className="flex text-gray-700 gap-2 ">
+                  Logged in as: <strong>{user.name}</strong>
+                </p>
+                <p className="flex text-gray-700 gap-2 mt-4">
+                  Contact Number: <strong>{user.number}</strong>
+                </p>
+                <p className="flex text-gray-700 mt-4 gap-2">
+                  Email Address: <strong>{user.email}</strong>
+                </p>
+                <button
+                  onClick={logout}
+                  className=" primary mt-4 px-4 py-2 rounded-lg text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+                >
+                  Log out
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
 
       {subpage === "places" && (
         <div className="mt-8">
