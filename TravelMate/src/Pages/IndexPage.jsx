@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState , useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Home from "../Pages/Home";
 import Scroll from "../Pages/Scroll";
 import VideoBar from "../Pages/VideoBar";
 import Favorites from "./Favorites";
+import {UserContext} from "../UserContext";
 
 const IndexPage = () => {
   const [places, setPlaces] = useState([]);
   const [savedPlaces, setSavedPlaces] = useState([]);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     axios
@@ -32,22 +34,28 @@ const IndexPage = () => {
       });
   }, []);
 
-const handleSave = async (e, id) => {
-  e.stopPropagation();
-  if (isPlaceSaved(id)) {
-    handleRemove(e, id);
-  } else {
-    try {
-      await axios.post("/favorites", { place: id });
-      setSavedPlaces([...savedPlaces, id]);
-      // Handle success
-    } catch (error) {
-      console.error("Error adding place to favorites:", error);
-      // Handle error
+  const handleSave = async (e, id) => {
+    e.stopPropagation();
+    
+    if (user) {
+      if (isPlaceSaved(id)) {
+        handleRemove(e, id);
+      } else {
+        try {
+          await axios.post("/favorites", { place: id });
+          setSavedPlaces([...savedPlaces, id]);
+          // Handle success
+        } catch (error) {
+          console.error("Error adding place to favorites:", error);
+          // Handle error
+        }
+      }
+    } else {
+      alert("Please log in to save places");
+      window.location.href = "/login";
     }
-  }
-};
-
+  };
+  
 
 const handleRemove = async (e, id) => {
   e.stopPropagation();
