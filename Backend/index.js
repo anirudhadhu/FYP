@@ -33,6 +33,8 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
+app.use("/documents", express.static(__dirname + "/documents"));
+
 // app.use("/documents", express.static(__dirname + "/documents"));
 
 
@@ -56,9 +58,19 @@ app.get("/test", (req, res) => {
 //function
 function getUserDataFromReq(req) {
   return new Promise((resolve, reject) => {
-    jwt.verify(req.cookies.token, jwtSecret, {}, async (err, user) => {
-      if (err) throw err;
-      resolve(user);
+    // Extract token from cookies or headers, depending on your setup
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+      reject(new Error('No token provided'));
+    }
+
+    jwt.verify(token, jwtSecret, {}, (err, user) => {
+      if (err) {
+        reject(err); // Pass the error to the caller
+      } else {
+        resolve(user);
+      }
     });
   });
 }
