@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Home from "../Pages/Home";
 import Scroll from "../Pages/Scroll";
 import VideoBar from "../Pages/VideoBar";
-import Favorites from "./Favorites";
+import FavoriteIcon from "../Components/FavoriteIcon";
 import {UserContext} from "../UserContext";
 
 const IndexPage = () => {
@@ -27,7 +27,8 @@ const IndexPage = () => {
     axios
       .get("/favorites")
       .then((response) => {
-        setSavedPlaces(response.data);
+        const savedPlaceIds = response.data.map((favorite) => favorite.place._id);
+        setSavedPlaces(savedPlaceIds);
       })
       .catch((error) => {
         console.error("Error fetching saved places:", error);
@@ -42,12 +43,12 @@ const IndexPage = () => {
         handleRemove(e, id);
       } else {
         try {
-          await axios.post("/favorites", { place: id });
-          setSavedPlaces([...savedPlaces, id]);
-          // Handle success
+          const response = await axios.post("/favorites", { place: id });
+          if (response.status === 201) {
+            setSavedPlaces([...savedPlaces, id]);
+          }
         } catch (error) {
           console.error("Error adding place to favorites:", error);
-          // Handle error
         }
       }
     } else {
@@ -55,20 +56,16 @@ const IndexPage = () => {
       window.location.href = "/login";
     }
   };
-  
 
-const handleRemove = async (e, id) => {
-  e.stopPropagation();
-  try {
-    await axios.delete(`/favorites/${id}`);
-    setSavedPlaces(savedPlaces.filter((savedId) => savedId !== id));
-    // Handle success
-  } catch (error) {
-    console.error("Error removing place from favorites:", error);
-    // Handle error
-  }
-};
-
+  const handleRemove = async (e, id) => {
+    e.stopPropagation();
+    try {
+      await axios.delete(`/favorites/${id}`);
+      setSavedPlaces(savedPlaces.filter((savedId) => savedId !== id));
+    } catch (error) {
+      console.error("Error removing place from favorites:", error);
+    }
+  };
 
   const isPlaceSaved = (id) => {
     return savedPlaces.includes(id);
@@ -103,7 +100,7 @@ const handleRemove = async (e, id) => {
                   <span className="font-bold">NPR ({place.price})</span> per
                   person
                 </div>
-                <Favorites
+                <FavoriteIcon
                   place={place}
                   handleSave={handleSave}
                   handleRemove={handleRemove}

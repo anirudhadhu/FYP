@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserModel = require("./Models/User.js");
 const DocumentModel = require('./Models/Document');
+const FavoritesModel = require("./Models/Favorites.js");
 const Place = require("./Models/Place.js");
 const Booking = require("./Models/Booking.js");
 const cookieParser = require("cookie-parser");
@@ -148,9 +149,13 @@ app.get("/profile", (req, res) => {
   }
 });
 
+
+//-------------------logout 
 app.post("/logout", (req, res) => {
   res.clearCookie("token").json(true);
 });
+
+
 
 // --------------------for uploading photo from URL----------------
 app.post("/upload-by-link", async (req, res) => {
@@ -162,6 +167,8 @@ app.post("/upload-by-link", async (req, res) => {
   });
   res.json(newName);
 });
+
+
 
 // --------------------for uploading photo from device----------------
 const photosMiddleware = multer({ dest: "uploads" });
@@ -190,6 +197,8 @@ app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
   }
   res.json(uploadedFiles);
 });
+
+
 
 //======================= for destination save =======================
 
@@ -427,6 +436,82 @@ app.get('/documents', async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+//for favorites--------------------------------------
+
+// app.post('/favorites', async (req, res) => {
+//   try {
+//     const { place } = req.body;
+//     const token = req.cookies.token;
+    
+//     // Extract user ID from token
+//     const decodedToken = jwt.verify(token, jwtSecret);
+//     const userId = decodedToken.id;
+
+
+//     const favorites = new FavoritesModel({ user: userId, place });
+//     await favorites.save();
+    
+//     res.status(201).json({ message: "Place added to favorites successfully" });
+//   } catch (err) {
+//     console.error("Error adding place to favorites:", err);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+
+// Backend
+
+// Route to add a favorite place
+app.post("/favorites", async (req, res) => {
+  try {
+    const { place } = req.body;
+    const user = await getUserDataFromReq(req);
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const favorite = await FavoritesModel.create({ user: user.id, place });
+    res.status(201).json({ place: favorite.place });
+  } catch (error) {
+    console.error("Error adding place to favorites:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Route to remove a favorite place
+app.delete("/favorites/:placeId", async (req, res) => {
+  try {
+    const { placeId } = req.params;
+    const user = await getUserDataFromReq(req);
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    await FavoritesModel.deleteOne({ user: user.id, place: placeId });
+    res.status(200).json({ place: placeId });
+  } catch (error) {
+    console.error("Error removing place from favorites:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+// Route to get all favorite places for a user
+app.get("/favorites", async (req, res) => {
+  try {
+    const user = await getUserDataFromReq(req);
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const favorites = await FavoritesModel.find({ user: user.id }).populate("place");
+    res.json(favorites);
+  } catch (error) {
+    console.error("Error fetching favorite places:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+
 
 
 // Start server

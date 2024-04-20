@@ -1,30 +1,10 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  number: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  // Add a field for storing favorite places
-  favoritePlaces: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Place", // Reference to the Place model
-    },
-  ],
+const FavoritesSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
+  place: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Place" },
+
 });
 
-module.exports = mongoose.model("User", userSchema);
+const FavoritesModel = mongoose.model("Favorites", FavoritesSchema);
+module.exports = FavoritesModel;
