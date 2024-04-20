@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Home from "../Pages/Home";
 import Scroll from "../Pages/Scroll";
 import VideoBar from "../Pages/VideoBar";
+import Favorites from "./Favorites";
 
 const IndexPage = () => {
   const [places, setPlaces] = useState([]);
@@ -20,14 +21,46 @@ const IndexPage = () => {
       });
   }, []);
 
-  const handleSave = (e, id) => {
-    e.stopPropagation();
-    if (savedPlaces.includes(id)) {
-      setSavedPlaces(savedPlaces.filter((placeId) => placeId !== id));
-    } else {
+  useEffect(() => {
+    axios
+      .get("/favorites")
+      .then((response) => {
+        setSavedPlaces(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching saved places:", error);
+      });
+  }, []);
+
+const handleSave = async (e, id) => {
+  e.stopPropagation();
+  if (isPlaceSaved(id)) {
+    handleRemove(e, id);
+  } else {
+    try {
+      await axios.post("/favorites", { place: id });
       setSavedPlaces([...savedPlaces, id]);
+      // Handle success
+    } catch (error) {
+      console.error("Error adding place to favorites:", error);
+      // Handle error
     }
-  };
+  }
+};
+
+
+const handleRemove = async (e, id) => {
+  e.stopPropagation();
+  try {
+    await axios.delete(`/favorites/${id}`);
+    setSavedPlaces(savedPlaces.filter((savedId) => savedId !== id));
+    // Handle success
+  } catch (error) {
+    console.error("Error removing place from favorites:", error);
+    // Handle error
+  }
+};
+
 
   const isPlaceSaved = (id) => {
     return savedPlaces.includes(id);
@@ -36,8 +69,8 @@ const IndexPage = () => {
   return (
     <>
       <Home />
-      <Scroll/>
-      
+      <Scroll />
+
       <div className="mt-32 p-8 grid gap-x-8 gap-y-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {places.length > 0 &&
           places.map((place) => (
@@ -62,50 +95,17 @@ const IndexPage = () => {
                   <span className="font-bold">NPR ({place.price})</span> per
                   person
                 </div>
-                <div
-                  onClick={(e) => handleSave(e, place._id)}
-                  className={`rounded-full h-8 w-8 flex items-center justify-center ${
-                    isPlaceSaved(place._id)
-                      ? "bg-primary text-white"
-                      : "bg-white"
-                  }`}
-                >
-                  {isPlaceSaved(place._id) ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
-                      />
-                    </svg>
-                  )}
-                </div>
+                <Favorites
+                  place={place}
+                  handleSave={handleSave}
+                  handleRemove={handleRemove}
+                  isPlaceSaved={isPlaceSaved}
+                />
               </div>
             </div>
           ))}
       </div>
       <VideoBar />
-      
     </>
   );
 };
