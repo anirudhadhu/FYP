@@ -84,7 +84,7 @@ const PlacesFormPage = () => {
 
 
     }else{
-      await axios.post("/places", placeData); //{placeData}
+      await axios.post("/places", placeData); 
       setRedirect(true);
     }
     };
@@ -163,6 +163,7 @@ const PlacesFormPage = () => {
               type="number"
               value={maxGuests}
               onChange={(ev) => setMaxGuests(ev.target.value)}
+              min="1"
             />
           </div>
 
@@ -172,6 +173,7 @@ const PlacesFormPage = () => {
               type="number"
               value={price}
               onChange={(ev) => setPrice(ev.target.value)}
+              min="1"
             />
           </div>
 

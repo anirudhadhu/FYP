@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserModel = require("./Models/User.js");
-const DocumentModel = require('./Models/Document');
+const DocumentModel = require("./Models/Document");
 const FavoritesModel = require("./Models/Favorites.js");
 const Place = require("./Models/Place.js");
 const Booking = require("./Models/Booking.js");
@@ -14,7 +14,10 @@ const multer = require("multer");
 const fs = require("fs");
 const { differenceInCalendarDays } = require("date-fns");
 require("dotenv").config();
-const axios = require('axios');
+const axios = require("axios");
+const stripe = require("stripe")
+("sk_test_51P83FbSGDXorlL6rHs4sga4grglpLNM1FFlKscD3coKx2cTDFvmi93Cze60UwrS50uAumf8bg8u1ZnwCsPZIXaP200nQo6qQCC")
+// ("sk_test_51P7wXvRvLOPaH2P8ifKVu9jKAQsJ9vZaZPXwnhM9wLRVdnDN11QDhJs2HB44r7Qw7oE33G8tfsfdEwoBgcDQD1S90099ILN3e9");
 
 
 const app = express();
@@ -31,14 +34,13 @@ app.use(
   })
 );
 
+
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use("/documents", express.static(__dirname + "/documents"));
 
 // app.use("/documents", express.static(__dirname + "/documents"));
-
-
 
 // Database connection
 mongoose
@@ -50,7 +52,6 @@ mongoose
     console.error("MongoDB connection error:", err);
   });
 
-
 // Routes
 app.get("/test", (req, res) => {
   res.json("test ok");
@@ -60,10 +61,10 @@ app.get("/test", (req, res) => {
 function getUserDataFromReq(req) {
   return new Promise((resolve, reject) => {
     // Extract token from cookies or headers, depending on your setup
-    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
     if (!token) {
-      reject(new Error('No token provided'));
+      reject(new Error("No token provided"));
     }
 
     jwt.verify(token, jwtSecret, {}, (err, user) => {
@@ -149,13 +150,10 @@ app.get("/profile", (req, res) => {
   }
 });
 
-
-//-------------------logout 
+//-------------------logout
 app.post("/logout", (req, res) => {
   res.clearCookie("token").json(true);
 });
-
-
 
 // --------------------for uploading photo from URL----------------
 app.post("/upload-by-link", async (req, res) => {
@@ -167,8 +165,6 @@ app.post("/upload-by-link", async (req, res) => {
   });
   res.json(newName);
 });
-
-
 
 // --------------------for uploading photo from device----------------
 const photosMiddleware = multer({ dest: "uploads" });
@@ -197,8 +193,6 @@ app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
   }
   res.json(uploadedFiles);
 });
-
-
 
 //======================= for destination save =======================
 
@@ -304,18 +298,29 @@ app.get("/places", async (req, res) => {
   res.json(await Place.find({}));
 });
 
-
 // -----------------for booking----------------
 
 app.post("/bookings", async (req, res) => {
   const user = await getUserDataFromReq(req);
 
-  const { place, checkIn, checkOut, name, number, numberOfGuests, price } = req.body;
-  if (!place || !checkIn || !checkOut || !name || !number || !numberOfGuests || !price) {
+  const { place, checkIn, checkOut, name, number, numberOfGuests, price } =
+    req.body;
+  if (
+    !place ||
+    !checkIn ||
+    !checkOut ||
+    !name ||
+    !number ||
+    !numberOfGuests ||
+    !price
+  ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  const numberOfDays = differenceInCalendarDays(new Date(checkOut), new Date(checkIn));
+  const numberOfDays = differenceInCalendarDays(
+    new Date(checkOut),
+    new Date(checkIn)
+  );
   const totalPrice = numberOfDays * price * numberOfGuests;
 
   Booking.create({
@@ -339,21 +344,17 @@ app.post("/bookings", async (req, res) => {
     });
 });
 
-
-
 // -----------------for getting bookings----------------
 
-app.get('/bookings', async (req, res) => {
+app.get("/bookings", async (req, res) => {
   const user = await getUserDataFromReq(req);
   const bookings = await Booking.find({ user: user.id }).populate("place");
   res.json(bookings);
 });
 
-
-
 //to display weather
 
-app.get('/weather', async (req, res) => {
+app.get("/weather", async (req, res) => {
   const { location } = req.query;
   const API_KEY = "da58343d1e62ee8244d7503a04206d7c";
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${API_KEY}`;
@@ -362,64 +363,67 @@ app.get('/weather', async (req, res) => {
     const response = await axios.get(url);
     res.json(response.data);
   } catch (error) {
-    console.error('Error fetching weather data:', error);
-    res.status(500).json({ error: 'Failed to fetch weather data' });
+    console.error("Error fetching weather data:", error);
+    res.status(500).json({ error: "Failed to fetch weather data" });
   }
 });
-
 
 //-------------------to upload documents---------------------
 
 const documentMiddleware = multer({ dest: "documents" });
 
-app.post("/documents", documentMiddleware.array("photos", 100), async (req, res) => {
-  try {
-    // Get user's ID from JWT token
-    const user = await getUserDataFromReq(req);
-    if (!user) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-    
-    console.log("User:", user);
-
-    const uploadedFiles = [];
-    for (let i = 0; i < req.files.length; i++) {
-      const file = req.files[i];
-      if (!file.originalname) {
-        console.log("Original name missing for file:", file);
-        continue;
+app.post(
+  "/documents",
+  documentMiddleware.array("photos", 100),
+  async (req, res) => {
+    try {
+      // Get user's ID from JWT token
+      const user = await getUserDataFromReq(req);
+      if (!user) {
+        return res.status(401).json({ error: "Unauthorized" });
       }
 
-      const parts = file.originalname.split(".");
-      if (parts.length < 2) {
-        console.log("Invalid file name format:", file.originalname);
-        continue;
+      console.log("User:", user);
+
+      const uploadedFiles = [];
+      for (let i = 0; i < req.files.length; i++) {
+        const file = req.files[i];
+        if (!file.originalname) {
+          console.log("Original name missing for file:", file);
+          continue;
+        }
+
+        const parts = file.originalname.split(".");
+        if (parts.length < 2) {
+          console.log("Invalid file name format:", file.originalname);
+          continue;
+        }
+
+        const ext = parts.pop();
+        const newPath = file.path + "." + ext;
+        fs.renameSync(file.path, newPath);
+        uploadedFiles.push(newPath.replace("documents", ""));
       }
 
-      const ext = parts.pop();
-      const newPath = file.path + "." + ext;
-      fs.renameSync(file.path, newPath);
-      uploadedFiles.push(newPath.replace("documents", ""));
+      console.log("Uploaded files:", uploadedFiles);
+
+      // Save document paths and associate with the user
+      const documents = await DocumentModel.create({
+        user: user.id,
+        documents: uploadedFiles,
+      });
+
+      console.log("Documents saved:", documents);
+      res.json(documents);
+    } catch (error) {
+      console.error("Error uploading documents:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-    
-    console.log("Uploaded files:", uploadedFiles);
-
-    // Save document paths and associate with the user
-    const documents = await DocumentModel.create({
-      user: user.id,
-      documents: uploadedFiles
-    });
-
-    console.log("Documents saved:", documents);
-    res.json(documents);
-  } catch (error) {
-    console.error("Error uploading documents:", error);
-    res.status(500).json({ error: "Internal Server Error" });
   }
-});
+);
 
 //to get documents-----------------------------
-app.get('/documents', async (req, res) => {
+app.get("/documents", async (req, res) => {
   try {
     // Get user's ID from JWT token
     const user = await getUserDataFromReq(req);
@@ -437,32 +441,8 @@ app.get('/documents', async (req, res) => {
   }
 });
 
-
 //for favorites--------------------------------------
 
-// app.post('/favorites', async (req, res) => {
-//   try {
-//     const { place } = req.body;
-//     const token = req.cookies.token;
-    
-//     // Extract user ID from token
-//     const decodedToken = jwt.verify(token, jwtSecret);
-//     const userId = decodedToken.id;
-
-
-//     const favorites = new FavoritesModel({ user: userId, place });
-//     await favorites.save();
-    
-//     res.status(201).json({ message: "Place added to favorites successfully" });
-//   } catch (err) {
-//     console.error("Error adding place to favorites:", err);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
-
-// Backend
-
-// Route to add a favorite place
 app.post("/favorites", async (req, res) => {
   try {
     const { place } = req.body;
@@ -494,7 +474,6 @@ app.delete("/favorites/:placeId", async (req, res) => {
   }
 });
 
-
 // Route to get all favorite places for a user
 app.get("/favorites", async (req, res) => {
   try {
@@ -502,7 +481,9 @@ app.get("/favorites", async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    const favorites = await FavoritesModel.find({ user: user.id }).populate("place");
+    const favorites = await FavoritesModel.find({ user: user.id }).populate(
+      "place"
+    );
     res.json(favorites);
   } catch (error) {
     console.error("Error fetching favorite places:", error);
@@ -510,8 +491,76 @@ app.get("/favorites", async (req, res) => {
   }
 });
 
+//--------------search functionality ------------
+
+// Route to fetch all places
+app.get("/places", async (req, res) => {
+  try {
+    // Extracting search parameters from query string
+    const { location, days, price } = req.query;
+    // Constructing query object based on provided parameters
+    const query = {};
+    if (location) {
+      query.address = { $regex: new RegExp(location, "i") }; 
+    }
+    if (days) {
+      query.maxGuests = { $gte: parseInt(days) }; 
+    }
+    if (price) {
+      query.price = { $lte: parseInt(price) }; 
+    }
+    const places = await PlaceModel.find(query);
+    res.json(places);
+  } catch (error) {
+    console.error("Error fetching places:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 
+
+// --------------- for payment--------------------
+
+app.post("/bookings-session", async (req, res) => {
+  try {
+    const { place, checkIn, checkOut, numberOfGuests, name, number, price, numberOfDays, totalPrice } = req.body;
+
+    // Create a new PaymentIntent with Stripe
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [{
+        price_data: {
+          currency: "inr",
+          product_data: {
+            name: "Booking for " + place.name,
+          },
+          unit_amount: totalPrice * 100, // Stripe expects amount in cents
+        },
+        quantity: 1,
+      }],
+      payment_intent_data: {
+        metadata: {
+          placeId: place._id,
+          checkIn,
+          checkOut,
+          numberOfGuests,
+          name,
+          number,
+          price,
+          numberOfDays,
+          totalPrice,
+        },
+      },
+      success_url: "https://yourwebsite.com/success", // Redirect URL after successful payment
+      cancel_url: "https://yourwebsite.com/cancel", // Redirect URL if payment is canceled
+    });
+
+    res.status(200).json({ id: session.id }); // Return the session ID to the frontend
+  } catch (error) {
+    console.error("Error creating payment session:", error);
+    res.status(500).send("Error creating payment session");
+  }
+});
 
 
 // Start server

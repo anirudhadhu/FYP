@@ -90,6 +90,10 @@ const Header = () => {
               {" "}
               <Link to={"/favorites"}>Favorites</Link>
             </li>
+
+            <li>
+              <Link to={"/weather"}>Weather</Link>
+            </li>
             <li>
               <Link to={"/Contact"}>Contact</Link>
             </li>
@@ -123,10 +127,18 @@ const Header = () => {
                   Favorites
                 </Link>
               </div>
+
+              <div className="py-1">
+                <Link
+                  to={"/weather"}
+                  className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-primary hover:text-white rounded-2xl"
+                >
+                  Weather
+                </Link>
+              </div>
               <div className="py-1">
                 <Link
                   to={"/contact"}
-                  onClick={handleFavoriteClick}
                   className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-primary hover:text-white rounded-2xl"
                 >
                   Contact

@@ -19,6 +19,8 @@ import TermsAndCondition from './Components/TermsAndCondition';
 import CurrencyConvert from './Pages/CurrencyConvert';
 import AboutUs from './Pages/AboutUs';
 import Weather from './Pages/Weather';
+import Success from './Components/Success';
+import Cancle from './Components/Cancle';
 
 // Setting base URL for Axios
 axios.defaults.baseURL = 'http://localhost:4000';
@@ -45,6 +47,9 @@ function App() {
                     <Route path="/CurrencyConvert" element={<CurrencyConvert />} /> 
                     <Route path="/AboutUs" element={<AboutUs />} /> 
                     <Route path="/weather" element={<Weather />} /> 
+                    <Route path="/success" element={<Success />} /> 
+                    <Route path="/cancle" element={<Cancle />} /> 
+
                            
                 </Route>
             </Routes>
