@@ -1,10 +1,21 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const DocumentSchema = new mongoose.Schema({ 
-    user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
-    documents:[String],
-
+const documentSchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    userName: {
+        type: String,
+        required: true
+    },
+    documents: {
+        type: [String], // Assuming the documents are stored as file paths
+        required: true
+    }
 });
 
-const DocumentModel = mongoose.model('Document', DocumentSchema);
+const DocumentModel = mongoose.model('Document', documentSchema);
 module.exports = DocumentModel;

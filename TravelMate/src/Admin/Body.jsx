@@ -6,6 +6,7 @@ const Body = () => {
   const [totalUsers, setTotalUsers] = useState(null);
   const [totalDestinations, setTotalDestinations] = useState(null);
   const [totalBookings, setTotalBookings] = useState(null);
+  const [totalDocuments, setTotalDocuments] = useState(null);
   const [allBookings, setAllBookings] = useState([]);
   const [error, setError] = useState(null);
 
@@ -43,6 +44,17 @@ const Body = () => {
         console.error("Error fetching total number of bookings:", error);
         setError("Error fetching total number of bookings");
       });
+
+    axios
+      .get("/alldocuments")
+      .then((response) => {
+        const data = response.data;
+        setTotalDocuments(data.length);
+      })
+      .catch((error) => {
+        console.error("Error fetching total number of documents:", error);
+        setError("Error fetching total number of documents");
+      });
   }, []);
 
   return (
@@ -52,7 +64,7 @@ const Body = () => {
       </p>
 
       <div className="grid gap-x-8 gap-y-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {/* for user */}
+        {/* for users */}
         <div className="p-4 sm:p-10 sm:pb-6 border-r border-primary rounded-3xl">
           <div>
             <h2 className="text-2xl font-semibold underline">Users</h2>
@@ -139,7 +151,14 @@ const Body = () => {
             <h2 className="text-2xl font-semibold underline">Documents</h2>
             <p className="mt-2 text-sm text-gray-500">Documents of users.</p>
           </div>
-          <div className="p-3 mt-16">
+          <div className="mt-3">
+            <span className="text-2xl font-light text-black">
+              Total Documents: {totalDocuments === null ? "Loading..." : totalDocuments}
+            </span>
+            {error && <p className="text-red-500">{error}</p>}
+          </div>
+          
+          <div className="p-3 mt-4">
             <Link
               to={"/UserDocument"}
               className="flex items-center justify-center w-full px-6 py-2.5 text-center text-white duration-200 bg-primary rounded-full hover:bg-transparent hover:text-black border border-primary text-sm"

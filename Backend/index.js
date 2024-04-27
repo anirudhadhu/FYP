@@ -333,7 +333,7 @@ app.post("/bookings", async (req, res) => {
 
   Booking.create({
     place,
-    title, // Store the title in the database
+    title, 
     checkIn,
     checkOut,
     name,
@@ -417,9 +417,16 @@ app.post(
 
       console.log("Uploaded files:", uploadedFiles);
 
+      // Fetch user's name
+      const userRecord = await UserModel.findById(user.id);
+      if (!userRecord) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
       // Save document paths and associate with the user
       const documents = await DocumentModel.create({
         user: user.id,
+        userName: userRecord.name,
         documents: uploadedFiles,
       });
 
@@ -431,6 +438,7 @@ app.post(
     }
   }
 );
+
 
 //to get documents-----------------------------
 app.get("/documents", async (req, res) => {
@@ -631,3 +639,38 @@ app.delete('/bookings/:id', async (req, res) => {
 });
 
 
+
+
+// Route to get all documents
+app.get('/alldocuments', async (req, res) => {
+  try {
+    const allDocuments = await DocumentModel.find();
+    res.json(allDocuments);
+  } catch (error) {
+    console.error('Error fetching documents:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//to delete
+
+app.delete("/documents/:documentId", async (req, res) => {
+  try {
+    const { documentId } = req.params;
+    
+    // Use Mongoose to find and delete the document by ID
+    const deletedDocument = await DocumentModel.findByIdAndDelete(documentId);
+    
+    if (!deletedDocument) {
+      // If no document was found with the provided ID, send a 404 response
+      return res.status(404).json({ error: "Document not found" });
+    }
+    
+    // If the document was successfully deleted, send a success response
+    res.json({ message: "Document deleted successfully", deletedDocument });
+  } catch (error) {
+    // If an error occurs during the deletion process, send a 500 response
+    console.error("Error deleting document:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
