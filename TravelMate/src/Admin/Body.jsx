@@ -4,6 +4,7 @@ import axios from "axios";
 
 const Body = () => {
   const [totalUsers, setTotalUsers] = useState(null);
+  const [totalDestinations, setTotalDestinations] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -17,12 +18,23 @@ const Body = () => {
         console.error("Error fetching total number of users:", error);
         setError("Error fetching total number of users");
       });
+
+    axios
+      .get("/places")
+      .then((response) => {
+        const data = response.data;
+        setTotalDestinations(data.length);
+      })
+      .catch((error) => {
+        console.error("Error fetching total number of destinations:", error);
+        setError("Error fetching total number of destinations");
+      });
   }, []);
 
   return (
     <div className="mt-6 p-6">
       <p className="font-semibold text-2xl underline mb-16 text-center">
-        Welcome Back Admin !
+        Welcome Back Admin!
       </p>
 
       <div className="grid gap-x-8 gap-y-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -35,7 +47,7 @@ const Body = () => {
             </p>
           </div>
           <div className="mt-3">
-            <span className="text-2xl font-light  text-black">
+            <span className="text-2xl font-light text-black">
               Total Users: {totalUsers === null ? "Loading..." : totalUsers}
             </span>
             {error && <p className="text-red-500">{error}</p>}
@@ -59,9 +71,11 @@ const Body = () => {
             </p>
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-light tracking-tight text-black">
-              Total: 8
+            <span className="text-2xl font-light  text-black">
+              Total Destinations:{" "}
+              {totalDestinations === null ? "Loading..." : totalDestinations}
             </span>
+            {error && <p className="text-red-500">{error}</p>}
           </div>
           <div className="p-3 mt-4">
             <Link

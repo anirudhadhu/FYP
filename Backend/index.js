@@ -503,7 +503,7 @@ app.get("/favorites", async (req, res) => {
 //------------------------------------------------------for admin pannel------------------------------------------------------
 
 
-//to get and display users
+//------------------------to get and display users!!!!!!!!!!!!!!!!!!!!!!!!
 
 app.get("/totalusers", async (req, res) => {
   try {
@@ -568,7 +568,26 @@ app.put("/users/:id", async (req, res) => {
   }
 });
 
+//for destination delete -------------------------------@@@@@@@@@@@@@@
 
+app.delete('/places/:id', async (req, res) => {
+  const { id } = req.params;
 
+  try {
+    // Find the place by ID and delete it
+    const deletedPlace = await Place.findByIdAndDelete(id);
 
+    // If the place is not found, return a 404 error
+    if (!deletedPlace) {
+      return res.status(404).json({ message: "Place not found" });
+    }
+
+    // If successfully deleted, return a success message
+    res.json({ message: "Place deleted successfully" });
+  } catch (error) {
+    // If an error occurs, return a 500 error with the error message
+    console.error("Error deleting place:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
