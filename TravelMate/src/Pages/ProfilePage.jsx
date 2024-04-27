@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../UserContext";
-import { Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import axios from "axios";
 import PlacesPage from "./PlacesPage";
 import AccountNav from "../Components/AccountNav";
@@ -64,7 +64,14 @@ const ProfilePage = () => {
                 >
                   Log out
                 </button>
+              
               </div>
+              <div className="mt-3 flex text-m">
+              Delete your Account ?
+              <Link to="/contact" className="text-primary ml-2">Click here</Link> 
+              </div>
+              <span className="flex text-red-500 text-sm"> To delete your account please fill out the form.  </span>
+              
             </div>
           </>
         )}
