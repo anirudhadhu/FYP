@@ -310,10 +310,11 @@ app.get("/places", async (req, res) => {
 app.post("/bookings", async (req, res) => {
   const user = await getUserDataFromReq(req);
 
-  const { place, checkIn, checkOut, name, number, numberOfGuests, price } =
+  const { place, title, checkIn, checkOut, name, number, numberOfGuests, price } =
     req.body;
   if (
     !place ||
+    !title || // Ensure title is provided
     !checkIn ||
     !checkOut ||
     !name ||
@@ -332,6 +333,7 @@ app.post("/bookings", async (req, res) => {
 
   Booking.create({
     place,
+    title, // Store the title in the database
     checkIn,
     checkOut,
     name,
@@ -350,6 +352,7 @@ app.post("/bookings", async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     });
 });
+
 
 // -----------------for getting bookings----------------
 
@@ -590,4 +593,41 @@ app.delete('/places/:id', async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+// -----for bookings-------------------------------
+// Route to get total number of bookings and all bookings
+app.get("/totalBookings", async (req, res) => {
+  try {
+    // Fetch total number of bookings
+    const totalBookings = await Booking.countDocuments();
+
+    // Fetch all bookings
+    const allBookings = await Booking.find().populate("place");
+
+    // Send the total number of bookings and all bookings in the response
+    res.json({ totalBookings, allBookings });
+  } catch (error) {
+    console.error("Error retrieving bookings:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+//to delete
+
+app.delete('/bookings/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Find the booking by ID and delete it
+    const deletedBooking = await Booking.findByIdAndDelete(id);
+    if (!deletedBooking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+    res.status(200).json({ message: 'Booking deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting booking:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 

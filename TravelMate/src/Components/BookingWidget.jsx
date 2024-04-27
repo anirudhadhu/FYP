@@ -28,6 +28,7 @@ const BookingWidget = ({ place }) => {
   async function bookedThisPlace() {
     const data = {
       place: place._id,
+      title: place.title, 
       checkIn,
       checkOut,
       numberOfGuests,
@@ -52,6 +53,7 @@ const BookingWidget = ({ place }) => {
       console.error("Error booking:", error);
     }
   }
+  
 
   if (redirect) {
     return <Navigate to={redirect} />;
