@@ -9,7 +9,7 @@ import UploadDocument from "../Components/UploadDocument";
 const ProfilePage = () => {
   const { ready, user, setUser } = useContext(UserContext);
   const [redirect, setRedirect] = useState(null);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  // const [uploadedFiles, setUploadedFiles] = useState([]);
 
   let { subpage } = useParams();
   if (subpage === undefined) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import "../Styles/Home.css";
+import {Link} from "react-router-dom";
 
 const Home = () => {
   useEffect(() => {
@@ -12,13 +13,12 @@ const Home = () => {
   const [location, setLocation] = useState("");
   const [days, setDays] = useState("");
   const [price, setPrice] = useState("");
+  const [filteredResults, setFilteredResults] = useState([]);
 
   // Function to handle form submission
   const handleSearch = (e) => {
     e.preventDefault();
-    // Here you can send the search parameters to your backend API
-    // For simplicity, let's just log the search parameters for now
-    console.log("Location:", location);
+    console.log("Title:", location);
     console.log("Days:", days);
     console.log("Price:", price);
   };
@@ -87,14 +87,15 @@ const Home = () => {
                 onChange={(e) => setPrice(e.target.value)}
               />
             </div>
-            <button
+            <Link
+              to="/SearchReasult"
               data-aos="fade-left"
               data-aos-duration="2000"
-              className="btn"
+              className="p-9 border border-primary rounded-3xl text-center font-semibold hover:bg-primary hover:text-white"
               type="submit"
             >
               Search
-            </button>
+            </Link>
           </form>
         </div>
       </section>

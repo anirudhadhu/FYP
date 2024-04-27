@@ -22,7 +22,14 @@ const LoginPage = () => {
         // If login successful, update user context and redirect
         setUser(data);
         alert("Login successful");
-        setRedirect(true);
+        // Check if response contains a role property equal to 'admin'
+        if (data.role === "admin") {
+          // Redirect to the Admin Home Page
+          setRedirect("/AdminHomePage");
+        } else {
+          // Redirect to the normal home page
+          setRedirect("/");
+        }
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -31,7 +38,7 @@ const LoginPage = () => {
   }
 
   if (redirect) {
-    return <Navigate to="/" />;
+    return <Navigate to={redirect} />;
   }
 
   const handleTogglePasswordVisibility = () => {

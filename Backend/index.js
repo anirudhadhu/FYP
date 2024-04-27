@@ -15,9 +15,9 @@ const fs = require("fs");
 const { differenceInCalendarDays } = require("date-fns");
 require("dotenv").config();
 const axios = require("axios");
-const stripe = require("stripe")
-("sk_test_51P83FbSGDXorlL6rHs4sga4grglpLNM1FFlKscD3coKx2cTDFvmi93Cze60UwrS50uAumf8bg8u1ZnwCsPZIXaP200nQo6qQCC")
-// ("sk_test_51P7wXvRvLOPaH2P8ifKVu9jKAQsJ9vZaZPXwnhM9wLRVdnDN11QDhJs2HB44r7Qw7oE33G8tfsfdEwoBgcDQD1S90099ILN3e9");
+const stripe = require("stripe")(
+  "sk_test_51P83FbSGDXorlL6rHs4sga4grglpLNM1FFlKscD3coKx2cTDFvmi93Cze60UwrS50uAumf8bg8u1ZnwCsPZIXaP200nQo6qQCC"
+);
 
 
 const app = express();
@@ -33,7 +33,6 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
-
 
 app.use(express.json());
 app.use(cookieParser());
@@ -56,6 +55,13 @@ mongoose
 app.get("/test", (req, res) => {
   res.json("test ok");
 });
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+
 
 //function
 function getUserDataFromReq(req) {
@@ -103,6 +109,7 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const userDoc = await UserModel.findOne({ email });
+
   if (userDoc) {
     const passOk = bcrypt.compareSync(password, userDoc.password);
     if (passOk) {
@@ -491,79 +498,77 @@ app.get("/favorites", async (req, res) => {
   }
 });
 
-//--------------search functionality ------------
 
-// Route to fetch all places
-app.get("/places", async (req, res) => {
+
+//------------------------------------------------------for admin pannel------------------------------------------------------
+
+
+//to get and display users
+
+app.get("/totalusers", async (req, res) => {
   try {
-    // Extracting search parameters from query string
-    const { location, days, price } = req.query;
-    // Constructing query object based on provided parameters
-    const query = {};
-    if (location) {
-      query.address = { $regex: new RegExp(location, "i") }; 
-    }
-    if (days) {
-      query.maxGuests = { $gte: parseInt(days) }; 
-    }
-    if (price) {
-      query.price = { $lte: parseInt(price) }; 
-    }
-    const places = await PlaceModel.find(query);
-    res.json(places);
+    const totalUsers = await UserModel.countDocuments();
+    const allUsers = await UserModel.find();
+    res.json({ totalUsers, allUsers });
   } catch (error) {
-    console.error("Error fetching places:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Error retrieving total number of users:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+//  to delete a user by ID
+app.delete("/users/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Use Mongoose to find and delete the user document by ID
+    const deletedUser = await UserModel.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      // If no user was found with the provided ID, send a 404 response
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // If the user was successfully deleted, send a success response
+    res.json({ message: "User deleted successfully", deletedUser });
+  } catch (error) {
+    // If an error occurs during the deletion process, send a 500 response
+    console.error("Error deleting user:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//to edit the details
+app.put("/users/:id", async (req, res) => {
+  const userId = req.params.id;
+  const { name, email, number, role } = req.body;
+
+  try {
+    // Check if the user exists
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update user details
+    user.name = name;
+    user.email = email;
+    user.number = number;
+    user.role = role;
+
+    // Save the updated user
+    await user.save();
+
+    // Respond with the updated user
+    res.json(user);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 
 
-// --------------- for payment--------------------
-
-app.post("/bookings-session", async (req, res) => {
-  try {
-    const { place, checkIn, checkOut, numberOfGuests, name, number, price, numberOfDays, totalPrice } = req.body;
-
-    // Create a new PaymentIntent with Stripe
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [{
-        price_data: {
-          currency: "inr",
-          product_data: {
-            name: "Booking for " + place.name,
-          },
-          unit_amount: totalPrice * 100, // Stripe expects amount in cents
-        },
-        quantity: 1,
-      }],
-      payment_intent_data: {
-        metadata: {
-          placeId: place._id,
-          checkIn,
-          checkOut,
-          numberOfGuests,
-          name,
-          number,
-          price,
-          numberOfDays,
-          totalPrice,
-        },
-      },
-      success_url: "https://yourwebsite.com/success", // Redirect URL after successful payment
-      cancel_url: "https://yourwebsite.com/cancel", // Redirect URL if payment is canceled
-    });
-
-    res.status(200).json({ id: session.id }); // Return the session ID to the frontend
-  } catch (error) {
-    console.error("Error creating payment session:", error);
-    res.status(500).send("Error creating payment session");
-  }
-});
 
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});

@@ -1,0 +1,12 @@
+import React from 'react'
+import Navbar from './Navbar'
+
+const ViewBookings = () => {
+  return (
+    <div className='p-9'>
+      <Navbar/>
+    </div>
+  )
+}
+
+export default ViewBookings
