@@ -5,6 +5,7 @@ const ViewBookings = () => {
   return (
     <div className='p-9'>
       <Navbar/>
+      here
     </div>
   )
 }
