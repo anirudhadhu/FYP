@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { differenceInCalendarDays } from "date-fns";
+import { differenceInCalendarDays, addDays } from "date-fns"; // Import addDays from date-fns
 import { UserContext } from "../UserContext";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
@@ -12,6 +12,9 @@ const BookingWidget = ({ place }) => {
   const [numberOfGuests, setNumberOfGuests] = useState(2);
   const { user } = useContext(UserContext);
   const [redirect, setRedirect] = useState("");
+  const [error, setError] = useState("");
+
+  let numberOfDays = 0;
 
   useEffect(() => {
     if (user) {
@@ -20,29 +23,27 @@ const BookingWidget = ({ place }) => {
     }
   }, [user]);
 
-  let numberOfDays = 0;
   if (checkIn && checkOut) {
     numberOfDays = differenceInCalendarDays(new Date(checkOut), new Date(checkIn));
   }
 
   async function bookedThisPlace() {
+    if (numberOfDays <= 0) {
+      setError("Check-out date must be after check-in date.");
+      return;
+    }
+
     const data = {
       place: place._id,
-      title: place.title, 
+      title: place.title,
       checkIn,
       checkOut,
       numberOfGuests,
       name,
       number,
       price: place.price,
-      numberOfDays: differenceInCalendarDays(
-        new Date(checkOut),
-        new Date(checkIn)
-      ),
-      totalPrice:
-        differenceInCalendarDays(new Date(checkOut), new Date(checkIn)) *
-        place.price *
-        numberOfGuests,
+      numberOfDays,
+      totalPrice: numberOfDays * place.price * numberOfGuests,
     };
     try {
       const response = await axios.post("/bookings", data);
@@ -53,16 +54,17 @@ const BookingWidget = ({ place }) => {
       console.error("Error booking:", error);
     }
   }
-  
 
   if (redirect) {
     return <Navigate to={redirect} />;
   }
 
+  // Calculate the minimum date as the day after tomorrow
+  const minDate = addDays(new Date(), 2).toISOString().split('T')[0];
+
   return (
     <div className="bg-white shadow p-4 rounded-2xl">
       <b className="text-xl text-center">Price: </b>NPR {place.price} /per day
-      {/* ---------------------//for date---------------- */}
       {user ? (
         <div className="border border-primary rounded-2xl mt-4">
           <div className="flex">
@@ -71,6 +73,7 @@ const BookingWidget = ({ place }) => {
               <input
                 type="date"
                 value={checkIn}
+                min={minDate} // Set min to the day after tomorrow
                 onChange={(ev) => setCheckIn(ev.target.value)}
               />
             </div>
@@ -79,6 +82,7 @@ const BookingWidget = ({ place }) => {
               <input
                 type="date"
                 value={checkOut}
+                min={minDate} // Set min to the day after tomorrow
                 onChange={(ev) => setCheckOut(ev.target.value)}
               />
             </div>
@@ -108,23 +112,7 @@ const BookingWidget = ({ place }) => {
               />
             </div>
           )}
-
-          {/* <div className="py-2 px-4 border-primary border-t">
-            <label>Full Name:</label>
-            <input
-              className="font-semibold"
-              type="text"
-              value={user.name}
-              readOnly
-            />
-            <label>Contact Number:</label>
-            <input
-              className="font-semibold"
-              type="number"
-              value={user.number}
-              readOnly
-            />
-          </div> */}
+          {error && <p className="text-red-500">{error}</p>}
         </div>
       ) : (
         <div className="py-2 px-4 mt-3 border-primary border-t">
@@ -137,29 +125,26 @@ const BookingWidget = ({ place }) => {
           </p>
         </div>
       )}
-      {user && checkIn && checkOut && numberOfGuests > 0 && (
+      {user && checkIn && checkOut && numberOfGuests > 0 && numberOfDays > 0 && (
         <div className="mt-4 border border-primary p-2">
           <p className="text-center font-bold p-3">Calculation:</p>
           Number of days:{" "}
           <span className="font-bold">
-            {differenceInCalendarDays(new Date(checkOut), new Date(checkIn))}{" "}
-            Days
+            {differenceInCalendarDays(new Date(checkOut), new Date(checkIn))} Days
           </span>
           <p>
             Price:{" "}
             <span className="font-bold">
-              NRP{" "}
+              NPR{" "}
               {differenceInCalendarDays(new Date(checkOut), new Date(checkIn)) *
                 place.price *
                 numberOfGuests}{" "}
             </span>{" "}
           </p>
+          <button onClick={bookedThisPlace} className="primary mt-4">
+            Book now!
+          </button>
         </div>
-      )}
-      {user && checkIn && checkOut && numberOfGuests > 0 && (
-        <button onClick={bookedThisPlace} className="primary mt-4">
-          Book now!
-        </button>
       )}
     </div>
   );

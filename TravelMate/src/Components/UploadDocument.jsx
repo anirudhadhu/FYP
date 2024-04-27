@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import sampleImage from "../assets/sampleImage.jpg"
 
 const UploadDocument = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -128,6 +129,12 @@ const uploadPhoto = async (ev) => {
           </svg>
           Upload from device
         </label>
+        <div className="p-2">
+        Sample Image:
+        <img src={sampleImage} alt="" />
+
+        </div>
+      
         </div>
       )}
     </div>

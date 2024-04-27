@@ -37,7 +37,7 @@ const UserDocument = () => {
   return (
     <div className="p-9">
       <Navbar />
-      <h1 className="text-xl text-center underline p-6 font-semi mb-4">
+      <h1 className="text-2xl text-center underline p-6 font-semi mb-4">
         All Documents
       </h1>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
