@@ -158,7 +158,7 @@ const PlacesFormPage = () => {
             />
           </div>
           <div>
-            <h3 className="mt-2 -mb-1">Max number of guests</h3>
+            <h3 className="mt-2 -mb-1">Min number of Days</h3>
             <input
               type="number"
               value={maxGuests}
