@@ -14,11 +14,14 @@ const multer = require("multer");
 const fs = require("fs");
 const { differenceInCalendarDays } = require("date-fns");
 require("dotenv").config();
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const axios = require("axios");
+const nodemailer = require('nodemailer');
+const {v4: uuidv4} = require("uuid");
 const stripe = require("stripe")(
   "sk_test_51P83FbSGDXorlL6rHs4sga4grglpLNM1FFlKscD3coKx2cTDFvmi93Cze60UwrS50uAumf8bg8u1ZnwCsPZIXaP200nQo6qQCC"
 );
-
 
 const app = express();
 const PORT = 4000;
@@ -33,6 +36,9 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
+
+// Initialize Passport.js middleware
+app.use(passport.initialize());
 
 app.use(express.json());
 app.use(cookieParser());
@@ -83,6 +89,22 @@ function getUserDataFromReq(req) {
   });
 }
 
+
+//nodemailer 
+
+// Create Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465, // Port for SSL/TLS
+  secure: true, // Use SSL/TLS
+  auth: {
+    user: 'anirudhadhungana@gmail.com', 
+    pass: 'aubv luaw utdp wstv' 
+  },
+  debug: true, // Enable debugging
+});
+
 // ---------------------------for signup------------------
 
 app.post("/register", async (req, res) => {
@@ -90,19 +112,68 @@ app.post("/register", async (req, res) => {
     const { name, number, email, password } = req.body;
     const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
 
-    // Create a new user document
+    // Generate a unique verification token
+    const verificationToken = uuidv4();
+
+    // Create a new user document with verificationToken
     const userDoc = await UserModel.create({
       name,
       number,
       email,
       password: hashedPassword,
+      uniqueString: verificationToken, // Add verification token to user document
     });
 
-    res.json(userDoc);
+    // Send verification email
+    const verificationLink = `http://localhost:5173/verify/${verificationToken}`;
+    const mailOptions = {
+      from: "your-email@gmail.com", // Sender email address
+      to: email, // Receiver email address
+      subject: "Email Verification", // Email subject
+      html: `Click <a href="${verificationLink}">here</a> to verify your email.`, // Email body with verification link
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending verification email:", error);
+        res.status(500).json({ message: "Error sending verification email" });
+      } else {
+        console.log("Verification email sent:", info.response);
+        res.json({ message: "User registered successfully. Check your email for verification." });
+      }
+    });
   } catch (error) {
     res.status(422).json(error);
   }
 });
+
+// Verification endpoint
+app.get("/verify/:token", async (req, res) => {
+  try {
+    const token = req.params.token;
+
+    // Find the user by the verification token
+    const user = await UserModel.findOne({ uniqueString: token });
+
+    if (!user) {
+      // If no user found with the token, return an error
+      return res.status(404).json({ message: "User not found or already verified." });
+    }
+
+    // Update the user's verified field to true
+    user.verified = true;
+    await user.save();
+
+    // Redirect the user to a verified page or send a success response
+    res.redirect("/verified"); // Redirect to a verified page
+    // res.json({ message: "User verified successfully." }); // Send success response
+  } catch (error) {
+    console.error("Verification error:", error);
+    res.status(500).json({ message: "Error verifying user." });
+  }
+});
+
+
 
 // -------------------for login--------------------
 
@@ -111,6 +182,10 @@ app.post("/login", async (req, res) => {
   const userDoc = await UserModel.findOne({ email });
 
   if (userDoc) {
+    if (!userDoc.verified) {
+      return res.status(403).json({ message: "Email not verified. Please verify your email address." });
+    }
+
     const passOk = bcrypt.compareSync(password, userDoc.password);
     if (passOk) {
       jwt.sign(
@@ -123,12 +198,14 @@ app.post("/login", async (req, res) => {
         }
       );
     } else {
-      res.status(422).json("wrong pass");
+      res.status(422).json("Wrong password");
     }
   } else {
-    res.json("user not found");
+    res.status(404).json("User not found");
   }
 });
+
+
 
 // --------------------for profile----------------
 

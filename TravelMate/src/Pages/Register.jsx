@@ -21,18 +21,24 @@ const Register = () => {
       return;
     }
     try {
-      await axios.post("/register", { 
+      const response = await axios.post("/register", { 
         name, 
         number, 
         email, 
         password });
-
-      alert("Registration successful. Now you can login !");
-      setRedirect(true);
+  
+      // Check if registration was successful
+      if (response.status === 200) {
+        alert("Registration successful. Verification email sent !");
+        setRedirect(true); // Redirect user after successful registration
+      } else {
+        alert("Failed to register user.");
+      }
     } catch (e) {
-      alert("The Email address is already used.");
+      alert("Failed to register user.");
     }
   }
+  
 
   if (redirect) {
     return <Navigate to="/login" />;
@@ -82,7 +88,7 @@ const Register = () => {
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               type={showPassword ? "text" : "password"}
-              placeholder="Hard password"
+              placeholder="Strong password"
               value={password}
               onChange={(ev) => setPassword(ev.target.value)}
             />

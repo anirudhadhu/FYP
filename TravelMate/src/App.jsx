@@ -27,6 +27,7 @@ import Destination from "./Admin/Destination";
 import UserDocument from "./Admin/UserDocument";
 import Users from "./Admin/Users";
 import ViewBookings from "./Admin/ViewBookings";
+import EmailVerification from "./Components/EmailVerification";
 
 // Setting base URL for Axios
 axios.defaults.baseURL = "http://localhost:4000";
@@ -56,6 +57,7 @@ function App() {
           <Route path="/success" element={<Success />} />
           <Route path="/cancle" element={<Cancle />} />
           <Route path="/SearchReasult" element={<SearchReasult />} />
+          <Route path="/verify/:verificationToken" element={<EmailVerification />} />
         </Route>
         <Route path="/AdminHomePage" element={<AdminHomePage />} />
         <Route path="/Destination" element={<Destination />} />
