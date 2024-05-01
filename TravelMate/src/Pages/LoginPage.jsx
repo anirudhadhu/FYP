@@ -90,7 +90,7 @@ const LoginPage = () => {
               onChange={(ev) => setPassword(ev.target.value)}
             />
             <button
-              className="absolute right-0 top-0 mt-3 mr-4 focus:outline-none"
+              className="absolute right-0 top-0 mt-10 mr-4 focus:outline-none"
               type="button"
               onClick={handleTogglePasswordVisibility}
             >

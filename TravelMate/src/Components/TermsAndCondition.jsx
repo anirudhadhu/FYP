@@ -38,7 +38,7 @@ const TermsAndCondition = () => {
             their account credentials. <br />
             11. Users must not engage in any unlawful or unauthorized activities
             on TravelMate. <br />
-            12. Any misuse of the platform may result in account suspension or
+            12. Any misuse of the platform may result in account 
             termination. <br />
             13. TravelMate strives to provide accurate information, but we do
             not guarantee the completeness or reliability of the content. <br />

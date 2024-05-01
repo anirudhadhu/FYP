@@ -70,7 +70,7 @@ const Footer = () => {
           </li>
           <li>
             <Link to={"/weather"} href="/terms">
-              Weather{" "}
+              Weather Forecast{" "}
             </Link>
           </li>
          
