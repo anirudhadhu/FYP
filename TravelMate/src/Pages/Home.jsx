@@ -58,7 +58,7 @@ const Home = () => {
         </div>
 
         <form className="homeCard grid" onSubmit={handleSearch}>
-          <div>
+          <div >
             <label className="text-m font-semibold">Destination:</label>
             <input
               type="text"
