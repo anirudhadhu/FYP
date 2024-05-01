@@ -26,10 +26,6 @@ const userSchema = new Schema({
         type: String,
         default: 'user' 
     },
-    isAdmin: {
-        type: Boolean,
-        default: false
-    },
     verified:{
         type: Boolean,
         default: false

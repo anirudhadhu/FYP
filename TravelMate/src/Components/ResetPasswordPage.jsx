@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 const ResetPasswordPage = () => {
@@ -8,8 +8,7 @@ const ResetPasswordPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-
+  const [showPassword, setShowPassword] = useState(false); 
   const handleResetPassword = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -134,7 +133,10 @@ const ResetPasswordPage = () => {
             </button>
           </div>
           {error && <div className="text-red-500 mb-4">{error}</div>}
-          {success && <div className="text-green-500 mb-4">{success}</div>}
+          {success && <div className="text-green-500 mb-4">{success}
+          <Link to="/login" className="text-blue-500 hover:text-blue-700">Login</Link>
+          
+          </div>}
           <button type="submit" className="bg-primary hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
             Reset Password
           </button>

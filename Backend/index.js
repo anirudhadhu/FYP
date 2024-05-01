@@ -158,25 +158,21 @@ app.get("/verify/:token", async (req, res) => {
 
     if (!user) {
       // If no user found with the token, return an error
-      return res.status(404).json({ message: "User not found or already verified." });
-    }
-
-    // If user is already verified, return a message indicating so
-    if (user.verified) {
-      return res.status(200).json({ message: "User already verified." });
+      return res.status(404).json({ message: "User not found." });
     }
 
     // Update the user's verified field to true
     user.verified = true;
     await user.save();
 
-    // Redirect the user to a verified page or send a success response
+    // Send a success response indicating that the user has been verified
     res.status(200).json({ message: "User verified successfully." });
   } catch (error) {
     console.error("Verification error:", error);
     res.status(500).json({ message: "Error verifying user." });
   }
 });
+
 
 
 

@@ -12,14 +12,20 @@ const EmailVerification = () => {
         const response = await axios.get(`/verify/${verificationToken}`);
         console.log("Response from backend:", response);
 
-        if (response.status === 200 && response.data.message === "User verified successfully.") {
-          setVerificationMessage("Your email has been verified. You can now login.");
+        if (response.status === 200) {
+          if (response.data.message === "User verified successfully.") {
+            setVerificationMessage("Your email has been verified. You can now login.");
+          } else if (response.data.message === "User already verified.") {
+            setVerificationMessage("Your email is verified.");
+          } else {
+            setVerificationMessage("Error: " + response.data.message);
+          }
         } else {
-          setVerificationMessage("Error verifying email. Please try again.");
+          setVerificationMessage("Error: Unable to verify email. Please try again.");
         }
       } catch (error) {
         console.error("Verification error:", error);
-        setVerificationMessage("Error verifying email. Please try again.");
+        setVerificationMessage("Error: Unable to verify email. Please try again.");
       }
     };
 
