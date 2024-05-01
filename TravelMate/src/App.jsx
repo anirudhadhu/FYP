@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import IndexPage from "./Pages/IndexPage";
 import LoginPage from "./Pages/LoginPage";
@@ -28,6 +28,7 @@ import UserDocument from "./Admin/UserDocument";
 import Users from "./Admin/Users";
 import ViewBookings from "./Admin/ViewBookings";
 import EmailVerification from "./Components/EmailVerification";
+import ResetPasswordPage from "./Components/ResetPasswordPage";
 
 // Setting base URL for Axios
 axios.defaults.baseURL = "http://localhost:4000";
@@ -58,6 +59,7 @@ function App() {
           <Route path="/cancle" element={<Cancle />} />
           <Route path="/SearchReasult" element={<SearchReasult />} />
           <Route path="/verify/:verificationToken" element={<EmailVerification />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
         </Route>
         <Route path="/AdminHomePage" element={<AdminHomePage />} />

@@ -9,6 +9,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const { setUser } = useContext(UserContext);
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
   async function handleLoginSubmit(ev) {
     ev.preventDefault();
@@ -40,6 +41,28 @@ const LoginPage = () => {
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleForgotPassword = (ev) => {
+    ev.preventDefault(); // Prevent the default behavior of the button
+    ev.stopPropagation(); // Stop the event from bubbling up
+    setShowForgotPasswordModal(true);
+  };
+
+  const handleCloseForgotPasswordModal = () => {
+    setShowForgotPasswordModal(false);
+  };
+
+  const handleSendResetLink = async () => {
+    try {
+      // Send email with reset link
+      await axios.post("/forgot-password", { email });
+      alert("Password reset link sent to your email");
+      setShowForgotPasswordModal(false);
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      alert("Failed to send password reset link");
+    }
   };
 
   return (
@@ -106,15 +129,56 @@ const LoginPage = () => {
               )}
             </button>
           </div>
-          <button className="primary">Login</button>
-          <div className="text-center py-2 text-gray-500">
-            Don't have an account?{" "}
-            <Link className="underline text-black" to="/register">
-              SignUp
-            </Link>
+          <button className="primary hover:underline">Login</button>
+          <div className="mt-4 ml-48">
+            <div>
+              <button
+                className=" primary hover:underline "
+                onClick={(ev) => handleForgotPassword(ev)}
+              >
+                Forgot password?
+              </button>
+            </div>
           </div>
+          <div className="text-center p-4">
+              <span className="text-gray-500">Don't have an account?</span>{" "}
+              <Link className="underline text-black" to="/register">
+                SignUp
+              </Link>
+            </div>
         </form>
       </div>
+      {/* Forgot password modal */}
+      {showForgotPasswordModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg w-96">
+            <h2 className="text-2xl mb-4 underline text-center">Forgot Password</h2>
+            <input
+              type="email"
+              className="w-full border p-2 mb-4"
+              placeholder="Enter your registered email"
+              value={email}
+              onChange={(ev) => setEmail(ev.target.value)}
+            />
+            <div className="flex p-4 justify-between">
+              <button className="primary hover:bg-green-500 hover:text-black  mr-2" onClick={handleSendResetLink}>
+                Send Reset Link
+              </button>
+              <button className="primary hover:bg-red-500" onClick={handleCloseForgotPasswordModal}>
+                Cancel
+              </button>
+            </div>
+            <p>
+              Note:
+              <span className="text-red-500 ml-2 text-sm">
+                Reset link will only be sent if you are registered in TravelMate.
+              </span>
+            </p>
+          </div>
+        </div>
+      )}
+      
+    
     </div>
   );
 };

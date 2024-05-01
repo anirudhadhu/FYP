@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const UserModel = require("./Models/User.js");
 const DocumentModel = require("./Models/Document");
 const FavoritesModel = require("./Models/Favorites.js");
+const PasswordResetModel = require("./Models/PasswordRest.js");
 const Place = require("./Models/Place.js");
 const Booking = require("./Models/Booking.js");
 const cookieParser = require("cookie-parser");
@@ -15,7 +16,6 @@ const fs = require("fs");
 const { differenceInCalendarDays } = require("date-fns");
 require("dotenv").config();
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const axios = require("axios");
 const nodemailer = require('nodemailer');
 const {v4: uuidv4} = require("uuid");
@@ -208,6 +208,100 @@ app.post("/login", async (req, res) => {
     console.error("Login error:", error);
     res.status(500).json({ error: "Login failed" });
   }
+});
+
+
+// Forgot password
+app.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Find the user by email
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Generate a unique password reset token
+    const resetToken = uuidv4();
+    const expires = Date.now() + 3600000; // Token expires in 1 hour
+
+    // Save the password reset token in the database
+    await PasswordResetModel.create({
+      userId: user._id,
+      token: resetToken,
+      expires: expires
+    });
+
+    // Send an email with the password reset link
+    const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+    const mailOptions = {
+      from: "anirudhadhungana@gmail.com",
+      to: email,
+      subject: "Password Reset Request",
+      html: `Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 1 hour.`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending password reset email:", error);
+        res.status(500).json({ error: "Error sending password reset email" });
+      } else {
+        console.log("Password reset email sent:", info.response);
+        res.json({ message: "Password reset link sent to your email" });
+      }
+    });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    res.status(500).json({ error: "Failed to process password reset request" });
+  }
+});
+
+// Reset password
+app.post("/reset-password/:token", async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    // Find the password reset token in the database
+    const passwordReset = await PasswordResetModel.findOne({ token });
+
+    if (!passwordReset) {
+      return res.status(404).json({ error: "Invalid or expired token" });
+    }
+
+    // Check if the token has expired
+    if (passwordReset.expires < Date.now()) {
+      return res.status(400).json({ error: "Token has expired" });
+    }
+
+    // Find the user associated with the password reset token
+    const user = await UserModel.findById(passwordReset.userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update user's password
+    user.password = bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10));
+    await user.save();
+
+    // Delete the password reset token from the database
+    await passwordReset.deleteOne(); // Use deleteOne() to remove the document
+
+    res.json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({ error: "Failed to reset password" });
+  }
+});
+
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Something went wrong!" });
 });
 
 
