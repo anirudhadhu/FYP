@@ -9,9 +9,16 @@ const EmailVerification = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        await axios.get(`/verify/${verificationToken}`);
-        setVerificationMessage("Your email has been verified. You can now login.");
+        const response = await axios.get(`/verify/${verificationToken}`);
+        console.log("Response from backend:", response);
+
+        if (response.status === 200 && response.data.message === "User verified successfully.") {
+          setVerificationMessage("Your email has been verified. You can now login.");
+        } else {
+          setVerificationMessage("Error verifying email. Please try again.");
+        }
       } catch (error) {
+        console.error("Verification error:", error);
         setVerificationMessage("Error verifying email. Please try again.");
       }
     };
@@ -25,15 +32,9 @@ const EmailVerification = () => {
         <h1 className="text-4xl text-center mb-8">Email Verification</h1>
         <p className="text-center">{verificationMessage}</p>
         <div className="text-center mt-4">
-          {verificationMessage.includes("verified") ? (
-            <Link to="/login" className="text-blue-500 hover:underline">
-              Click here to login
-            </Link>
-          ) : (
-            <Link to="/" className="text-blue-500 hover:underline">
-              Go back
-            </Link>
-          )}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Click here to login
+          </Link>
         </div>
       </div>
     </div>

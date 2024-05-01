@@ -127,10 +127,11 @@ app.post("/register", async (req, res) => {
     // Send verification email
     const verificationLink = `http://localhost:5173/verify/${verificationToken}`;
     const mailOptions = {
-      from: "your-email@gmail.com", // Sender email address
+      from: "anirudhadhungana@gmail.com", // Sender email address
       to: email, // Receiver email address
-      subject: "Email Verification", // Email subject
-      html: `Click <a href="${verificationLink}">here</a> to verify your email.`, // Email body with verification link
+      subject: "Email Verification for TravelMate", // Email subject
+      html: `Click <a href="${verificationLink}">here</a> to verify your email. If you did not request this email, please ignore it.`, 
+     
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -160,13 +161,17 @@ app.get("/verify/:token", async (req, res) => {
       return res.status(404).json({ message: "User not found or already verified." });
     }
 
+    // If user is already verified, return a message indicating so
+    if (user.verified) {
+      return res.status(200).json({ message: "User already verified." });
+    }
+
     // Update the user's verified field to true
     user.verified = true;
     await user.save();
 
     // Redirect the user to a verified page or send a success response
-    res.redirect("/verified"); // Redirect to a verified page
-    // res.json({ message: "User verified successfully." }); // Send success response
+    res.status(200).json({ message: "User verified successfully." });
   } catch (error) {
     console.error("Verification error:", error);
     res.status(500).json({ message: "Error verifying user." });
@@ -175,33 +180,33 @@ app.get("/verify/:token", async (req, res) => {
 
 
 
+
 // -------------------for login--------------------
 
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const userDoc = await UserModel.findOne({ email });
+  try {
+    const { email, password } = req.body;
+    const user = await UserModel.findOne({ email });
 
-  if (userDoc) {
-    if (!userDoc.verified) {
-      return res.status(403).json({ message: "Email not verified. Please verify your email address." });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    const passOk = bcrypt.compareSync(password, userDoc.password);
-    if (passOk) {
-      jwt.sign(
-        { email: userDoc.email, id: userDoc._id },
-        jwtSecret,
-        {},
-        (err, token) => {
-          if (err) throw err;
-          res.cookie("token", token).json(userDoc);
-        }
-      );
-    } else {
-      res.status(422).json("Wrong password");
+    if (!user.verified) {
+      return res.status(403).json({ error: "Email not verified" });
     }
-  } else {
-    res.status(404).json("User not found");
+
+    const passMatch = await bcrypt.compare(password, user.password);
+
+    if (!passMatch) {
+      return res.status(422).json({ error: "Wrong password" });
+    }
+
+    const token = jwt.sign({ email: user.email, id: user._id }, jwtSecret);
+    res.cookie("token", token, { httpOnly: true }).json({ user, token });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Login failed" });
   }
 });
 

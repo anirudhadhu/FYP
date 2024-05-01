@@ -58,6 +58,7 @@ function App() {
           <Route path="/cancle" element={<Cancle />} />
           <Route path="/SearchReasult" element={<SearchReasult />} />
           <Route path="/verify/:verificationToken" element={<EmailVerification />} />
+
         </Route>
         <Route path="/AdminHomePage" element={<AdminHomePage />} />
         <Route path="/Destination" element={<Destination />} />
