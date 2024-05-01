@@ -70,6 +70,7 @@ const Register = () => {
               type="number"
               placeholder="Contact Number"
               value={number}
+              min={0}
               onChange={(ev) => setNumber(ev.target.value)}
             />
           </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import Admin from "../assets/Admin.jpg"
 
 const AboutUs = () => {
   return (
@@ -34,7 +35,7 @@ const AboutUs = () => {
       </div>
       <div>
         <img className="border border-primary rounded-2xl"
-          src="https://scontent.fktm3-1.fna.fbcdn.net/v/t39.30808-6/405290875_1627668954430769_5811673191069994435_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=5f2048&_nc_ohc=EC-NNYxrDGcAb7tpNgl&_nc_ht=scontent.fktm3-1.fna&oh=00_AfAeBG165XdUTsxfiOrK4g9RQSjXGuG2cXCXvhMIjNzp3A&oe=66311ED0"
+          src={Admin}
           alt="adminImage"
         />
       </div>
