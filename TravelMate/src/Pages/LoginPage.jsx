@@ -67,23 +67,25 @@ const LoginPage = () => {
 
   return (
     <div className="mt-20 flex items-center justify-center">
-      <div className="max-w-md w-full bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h1 className="text-4xl text-center mb-8">Welcome Back!</h1>
+      <div className="max-w-md w-full px-8 pt-6 pb-8 mb-4 border border-primary rounded-2xl">
+        <h1 className="text-2xl text-center mb-8 underline font-semibold">Welcome Back!</h1>
         <form onSubmit={handleLoginSubmit}>
           <div className="mb-4">
+            Email:
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               type="email"
-              placeholder="your@email.com"
+              placeholder="RegisteredEmail@email.com"
               value={email}
               onChange={(ev) => setEmail(ev.target.value)}
             />
           </div>
           <div className="mb-4 relative">
+            Password:
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               type={showPassword ? "text" : "password"}
-              placeholder="Password"
+              placeholder="******"
               value={password}
               onChange={(ev) => setPassword(ev.target.value)}
             />
