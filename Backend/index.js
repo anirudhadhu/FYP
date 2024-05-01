@@ -846,3 +846,21 @@ app.delete("/documents/:documentId", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+
+//-----------------------------searching and sorting --------------------------------------------------
+
+// Add this route to your Express server
+app.get("/search", async (req, res) => {
+  const { title } = req.query;
+  try {
+    // Search for places with titles that match the provided query
+    const places = await Place.find({ title: { $regex: title, $options: "i" } });
+
+    res.json(places);
+  } catch (error) {
+    console.error("Error searching for places:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});

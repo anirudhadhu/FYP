@@ -1,105 +1,67 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import "../Styles/Home.css";
-import {Link} from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     Aos.init({ duration: 2000 });
   }, []);
 
-  // State variables to hold search input values
-  const [location, setLocation] = useState("");
-  const [days, setDays] = useState("");
-  const [price, setPrice] = useState("");
-  const [filteredResults, setFilteredResults] = useState([]);
-
-  // Function to handle form submission
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    console.log("Title:", location);
-    console.log("Days:", days);
-    console.log("Price:", price);
+    try {
+      const response = await axios.get(`/search?title=${searchQuery}`);
+      const searchResults = response.data;
+      if (searchResults.length > 0) {
+        // Navigate to the search result page only if results are found
+        navigate(`/search/${searchQuery}`);
+      } else {
+        // Redirect to a page indicating no results found
+        navigate(`/search/not-found`);
+      }
+    } catch (error) {
+      console.error("Error searching for places:", error);
+    }
   };
 
   return (
-    <>
-      <section className="home">
-        <div className="secContainer container">
-          <div className="homeText">
-            <h1 data-aos="fade-up" className="title">
-              Explore the world with ease!
-            </h1>
-            <p data-aos="fade-up" data-aos-duration="2500" className="subtitle">
-              Seamlessly Exploring Cultures, Cuisine, and Connections.
-              {/* Effortless Expedition Strategies for the Modern Explorer */}
-            </p>
-          </div>
-
-          <form className="homeCard grid" onSubmit={handleSearch}>
-            <div
-              data-aos="fade-right"
-              data-aos-duration="2000"
-              className="locationDiv"
-            >
-              <label htmlFor="location">Location</label>
-              <input
-                type="text"
-                name="location"
-                id="location"
-                placeholder="Dream Destination"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-              />
-            </div>
-
-            <div
-              data-aos="fade-right"
-              data-aos-duration="2500"
-              className="distDiv"
-            >
-              <label htmlFor="days">Number of Days:</label>
-              <input
-                type="number"
-                name="days"
-                id="days"
-                placeholder="9"
-                min="1"
-                value={days}
-                onChange={(e) => setDays(e.target.value)}
-              />
-            </div>
-
-            <div
-              data-aos="fade-right"
-              data-aos-duration="3000"
-              className="priceDiv"
-            >
-              <label htmlFor="price">Price</label>
-              <input
-                type="number"
-                name="price"
-                id="price"
-                placeholder="NRP 499"
-                min="499"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
-            </div>
-            <Link
-              to="/SearchReasult"
-              data-aos="fade-left"
-              data-aos-duration="2000"
-              className="p-9 border border-primary rounded-3xl text-center font-semibold hover:bg-primary hover:text-white"
-              type="submit"
-            >
-              Search
-            </Link>
-          </form>
+    <section className="home">
+      <div className="secContainer container">
+        <div className="homeText">
+          <h1 data-aos="fade-up" className="title">
+            Explore the world with ease!
+          </h1>
+          <p data-aos="fade-up" data-aos-duration="2500" className="subtitle">
+            Seamlessly Exploring Cultures, Cuisine, and Connections.
+          </p>
         </div>
-      </section>
-    </>
+
+        <form className="homeCard grid" onSubmit={handleSearch}>
+          <div>
+            <label className="text-m font-semibold">Destination:</label>
+            <input
+              type="text"
+              placeholder="Eg: Pokhara"
+              className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-primary focus:border-primary block w-full sm:text-sm"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              pattern="[A-Za-z]+"
+              title="Please enter alphabets only"
+              required
+            />
+          </div>
+          <button type="submit" className="primary h-12 mt-7 px-6 rounded-lg">
+            Search
+          </button>
+        </form>
+      </div>
+    </section>
   );
 };
 

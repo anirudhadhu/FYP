@@ -21,7 +21,6 @@ import AboutUs from "./Pages/AboutUs";
 import Weather from "./Pages/Weather";
 import Success from "./Components/Success";
 import Cancle from "./Components/Cancle";
-import SearchReasult from "./Pages/SearchReasult";
 import AdminHomePage from "./Admin/AdminHomePage";
 import Destination from "./Admin/Destination";
 import UserDocument from "./Admin/UserDocument";
@@ -29,6 +28,7 @@ import Users from "./Admin/Users";
 import ViewBookings from "./Admin/ViewBookings";
 import EmailVerification from "./Components/EmailVerification";
 import ResetPasswordPage from "./Components/ResetPasswordPage";
+import SearchReasult from "./Pages/SearchReasult";
 
 // Setting base URL for Axios
 axios.defaults.baseURL = "http://localhost:4000";
@@ -57,7 +57,7 @@ function App() {
           <Route path="/weather" element={<Weather />} />
           <Route path="/success" element={<Success />} />
           <Route path="/cancle" element={<Cancle />} />
-          <Route path="/SearchReasult" element={<SearchReasult />} />
+          <Route path="/search/:destination" element={<SearchReasult />} />
           <Route path="/verify/:verificationToken" element={<EmailVerification />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
