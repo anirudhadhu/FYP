@@ -864,3 +864,23 @@ app.get("/search", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+// -----------------for destination display with sorting-----------------
+
+// Route to fetch and sort places
+app.get("/sort-places", async (req, res) => {
+  try {
+    // Get the sort direction from query parameter, default to ascending order
+    const sortDirection = req.query.sort === 'desc' ? -1 : 1;
+
+    // Fetch places and sort by price
+    const places = await Place.find({}).sort({ price: sortDirection });
+
+    res.json(places);
+  } catch (error) {
+    console.error("Error fetching and sorting places:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+

@@ -29,6 +29,7 @@ import ViewBookings from "./Admin/ViewBookings";
 import EmailVerification from "./Components/EmailVerification";
 import ResetPasswordPage from "./Components/ResetPasswordPage";
 import SearchReasult from "./Pages/SearchReasult";
+import SortPlaces from "./Pages/SortPlaces";
 
 // Setting base URL for Axios
 axios.defaults.baseURL = "http://localhost:4000";
@@ -58,6 +59,7 @@ function App() {
           <Route path="/success" element={<Success />} />
           <Route path="/cancle" element={<Cancle />} />
           <Route path="/search/:destination" element={<SearchReasult />} />
+          <Route path="/sort-places" element={<SortPlaces />} />
           <Route path="/verify/:verificationToken" element={<EmailVerification />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 

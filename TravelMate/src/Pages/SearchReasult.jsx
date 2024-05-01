@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import Home from "../Pages/Home";
+import Scroll from "../Pages/Scroll";
 
 const SearchResult = () => {
   const { destination } = useParams();
   const [searchResults, setSearchResults] = useState([]);
   const [notFound, setNotFound] = useState(false);
-
   useEffect(() => {
     const fetchSearchResults = async () => {
       try {
@@ -15,6 +16,7 @@ const SearchResult = () => {
         const data = response.data;
         if (data.length > 0) {
           setSearchResults(data);
+          setNotFound(false); // Reset notFound state
         } else {
           setNotFound(true);
         }
@@ -22,14 +24,16 @@ const SearchResult = () => {
         console.error("Error fetching search results:", error);
       }
     };
-
+  
     fetchSearchResults();
   }, [destination]);
+  
 
   if (notFound) {
     return (
-      <div className="p-9">
-        <h2 className="text-2xl underline text-center font-semibold">
+      <>
+      <Home/>
+        <h2 className=" mt-8 text-2xl underline text-center font-semibold">
           Search Result
         </h2>
         <div className="flex justify-center mt-12 text-red-500 text-xl ">
@@ -39,7 +43,7 @@ const SearchResult = () => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-6 h-6 text-primary"
+              className="w-6 h-6 text-red-500"
             >
               <path
                 fillRule="evenodd"
@@ -52,39 +56,40 @@ const SearchResult = () => {
         <p className="text-gray-500 text-sm text-center mt-4">
           Try Searching different places.
         </p>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="p-9">
-      <h2 className="text-2xl underline text-center font-semibold">
-        Search Result
-      </h2>
-      <div className="p-9 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {searchResults.map((result) => (
-          <div
-            key={result._id}
-            className="border border-primary rounded-md p-4"
-          >
-            <Link to={`/place/${result._id}`}>
-              <div className="relative bg-gray-500 rounded-2xl overflow-hidden aspect-square">
-                {result.photos?.[0] && (
-                  <img
-                    className="absolute inset-0 w-full h-full object-cover"
-                    src={"http://localhost:4000/uploads/" + result.photos[0]}
-                    alt=""
-                  />
-                )}
-              </div>
-              <h3 className="text-xl font-semibold">{result.title}</h3>
-              <p>{result.address}</p>
-              <p>Price: ${result.price}</p>
-            </Link>
-          </div>
-        ))}
+    <>
+      <Home />
+      <div className="p-9">
+        <h2 className="mt-16 text-2xl underline text-center font-semibold">
+          Search Result
+        </h2>
+        <div className="p-9 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {searchResults.map((result) => (
+            <div key={result._id} className="p-4">
+              <Link to={`/place/${result._id}`}>
+                <div className="relative bg-gray-500 rounded-2xl overflow-hidden aspect-square">
+                  {result.photos?.[0] && (
+                    <img
+                      className="absolute inset-0 w-full h-full object-cover"
+                      src={"http://localhost:4000/uploads/" + result.photos[0]}
+                      alt=""
+                    />
+                  )}
+                </div>
+                <h3 className="text-xl font-semibold">{result.title}</h3>
+                <p>{result.address}</p>
+                <p>Price: ${result.price}</p>
+              </Link>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+      <Scroll/>
+    </>
   );
 };
 
