@@ -12,8 +12,13 @@ const bookingSchema = new mongoose.Schema({
     numberOfDays: { type: Number, required: true },
     price: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
-    transactionId: { type: String },
-});
+    status: {
+        type: String,
+        enum: ['pending', 'paid', 'cancelled'],
+        default: 'pending'
+    },
+    khaltiTransactionId: String
+}, { timestamps: true });
 
 const BookingModel = mongoose.model('Booking', bookingSchema);
 module.exports = BookingModel;

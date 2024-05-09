@@ -82,7 +82,7 @@ const SearchResult = () => {
                 </div>
                 <h3 className="text-xl font-semibold">{result.title}</h3>
                 <p>{result.address}</p>
-                <p>Price: ${result.price}</p>
+                <p>Price: NRP {result.price}</p>
               </Link>
             </div>
           ))}

@@ -76,10 +76,12 @@ const ViewBookings = () => {
               <p>Check-out: {new Date(booking.checkOut).toDateString()}</p>
               <p>Number of guests: {booking.numberOfGuests}</p>
               <p>Total price: NRP {booking.totalPrice}</p>
-              <hr className="my-2" />
+              <p>Payment Status:  {booking.paymentStatus}</p>
+              <p>Payment ID:  {booking.paymentIntentId}</p>
+              <hr className="my-6" />
 
               <button
-                className="absolute bottom-4 right-4 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                className="absolute  bottom-4 right-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-3 rounded"
                 onClick={() => deleteBooking(booking._id)}
               >
                 Delete

@@ -19,7 +19,7 @@ const Destination = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/places/${id}`);
+      await axios.delete(`/allplaces/${id}`);
       setPlaces(places.filter((place) => place._id !== id));
     } catch (error) {
       console.error("Error deleting place:", error);

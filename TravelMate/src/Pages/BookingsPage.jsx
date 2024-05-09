@@ -36,7 +36,7 @@ const BookingsPage = () => {
   return (
     <div>
       <AccountNav />
-      <div className="p-9">
+      <div className=" p-9 grid gap-x-8 gap-y-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
         {bookings.length > 0 ? (
           bookings.map((booking) => (
             <Link

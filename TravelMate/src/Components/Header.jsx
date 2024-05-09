@@ -30,7 +30,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="p-8 flex justify-between bg-primary text-white sticky top-0 z-50">
+    <header className="p-5 flex justify-between bg-primary text-white sticky top-0 z-50">
       <div className="flex items-center gap-1">
         <Link to={"/"} className="flex items-center gap-1">
           <svg

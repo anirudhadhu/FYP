@@ -102,13 +102,13 @@ const Users = () => {
               <p className="text-gray-600">Admin: {user.role === "admin" ? "Yes" : "No"}</p>
               <div className="absolute bottom-4 right-4">
                 <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                  className="bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
                   onClick={() => handleEditUser(user)}
                 >
                   Edit
                 </button>
                 <button
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                  className="bg-primary hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                   onClick={() => deleteUser(user._id)}
                 >
                   Delete

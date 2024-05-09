@@ -17,11 +17,11 @@ const { differenceInCalendarDays } = require("date-fns");
 require("dotenv").config();
 const passport = require("passport");
 const axios = require("axios");
-const nodemailer = require('nodemailer');
-const {v4: uuidv4} = require("uuid");
-const stripe = require("stripe")(
-  "sk_test_51P83FbSGDXorlL6rHs4sga4grglpLNM1FFlKscD3coKx2cTDFvmi93Cze60UwrS50uAumf8bg8u1ZnwCsPZIXaP200nQo6qQCC"
-);
+const nodemailer = require("nodemailer");
+const { v4: uuidv4 } = require("uuid");
+// const stripe = require("stripe")(
+//   "sk_test_51P83FbSGDXorlL6rHs4sga4grglpLNM1FFlKscD3coKx2cTDFvmi93Cze60UwrS50uAumf8bg8u1ZnwCsPZIXaP200nQo6qQCC"
+// );
 
 const app = express();
 const PORT = 4000;
@@ -67,8 +67,6 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-
-
 //function
 function getUserDataFromReq(req) {
   return new Promise((resolve, reject) => {
@@ -89,18 +87,17 @@ function getUserDataFromReq(req) {
   });
 }
 
-
-//nodemailer 
+//nodemailer
 
 // Create Nodemailer transporter
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  host: 'smtp.gmail.com',
+  service: "gmail",
+  host: "smtp.gmail.com",
   port: 465, // Port for SSL/TLS
   secure: true, // Use SSL/TLS
   auth: {
-    user: 'anirudhadhungana@gmail.com', 
-    pass: 'aubv luaw utdp wstv' 
+    user: "anirudhadhungana@gmail.com",
+    pass: "aubv luaw utdp wstv",
   },
   debug: true, // Enable debugging
 });
@@ -130,8 +127,7 @@ app.post("/register", async (req, res) => {
       from: "anirudhadhungana@gmail.com", // Sender email address
       to: email, // Receiver email address
       subject: "Email Verification for TravelMate", // Email subject
-      html: `Click <a href="${verificationLink}">here</a> to verify your email. If you did not request this email, please ignore it.`, 
-     
+      html: `Click <a href="${verificationLink}">here</a> to verify your email. If you did not request this email, please ignore it.`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -140,7 +136,10 @@ app.post("/register", async (req, res) => {
         res.status(500).json({ message: "Error sending verification email" });
       } else {
         console.log("Verification email sent:", info.response);
-        res.json({ message: "User registered successfully. Check your email for verification." });
+        res.json({
+          message:
+            "User registered successfully. Check your email for verification.",
+        });
       }
     });
   } catch (error) {
@@ -173,10 +172,6 @@ app.get("/verify/:token", async (req, res) => {
   }
 });
 
-
-
-
-
 // -------------------for login--------------------
 
 app.post("/login", async (req, res) => {
@@ -206,7 +201,6 @@ app.post("/login", async (req, res) => {
   }
 });
 
-
 // Forgot password
 app.post("/forgot-password", async (req, res) => {
   try {
@@ -227,7 +221,7 @@ app.post("/forgot-password", async (req, res) => {
     await PasswordResetModel.create({
       userId: user._id,
       token: resetToken,
-      expires: expires
+      expires: expires,
     });
 
     // Send an email with the password reset link
@@ -236,7 +230,7 @@ app.post("/forgot-password", async (req, res) => {
       from: "anirudhadhungana@gmail.com",
       to: email,
       subject: "Password Reset Request",
-      html: `Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 1 hour.`
+      html: `Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 1 hour.`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -293,14 +287,11 @@ app.post("/reset-password/:token", async (req, res) => {
   }
 });
 
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: "Something went wrong!" });
 });
-
-
 
 // --------------------for profile----------------
 
@@ -471,6 +462,31 @@ app.put("/places", async (req, res) => {
   });
 });
 
+
+app.delete("/places/:id", async (req, res) => {
+  const { id } = req.params;
+  const { token } = req.cookies;
+  jwt.verify(token, jwtSecret, {}, async (err, user) => {
+    if (err) throw err;
+    try {
+      const place = await Place.findById(id);
+      if (!place) {
+        return res.status(404).json({ error: "Place not found" });
+      }
+      if (user.id === place.owner.toString()) {
+        await Place.findByIdAndDelete(id);
+        res.json({ message: "Place deleted successfully" });
+      } else {
+        res.status(403).json({ error: "Unauthorized" });
+      }
+    } catch (error) {
+      console.error("Error deleting place:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+});
+
+
 // -----------------adding destination to homepage------------
 
 app.get("/places", async (req, res) => {
@@ -478,53 +494,6 @@ app.get("/places", async (req, res) => {
 });
 
 // -----------------for booking----------------
-
-app.post("/bookings", async (req, res) => {
-  const user = await getUserDataFromReq(req);
-
-  const { place, title, checkIn, checkOut, name, number, numberOfGuests, price } =
-    req.body;
-  if (
-    !place ||
-    !title || // Ensure title is provided
-    !checkIn ||
-    !checkOut ||
-    !name ||
-    !number ||
-    !numberOfGuests ||
-    !price
-  ) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  const numberOfDays = differenceInCalendarDays(
-    new Date(checkOut),
-    new Date(checkIn)
-  );
-  const totalPrice = numberOfDays * price * numberOfGuests;
-
-  Booking.create({
-    place,
-    title, 
-    checkIn,
-    checkOut,
-    name,
-    number,
-    numberOfGuests,
-    price,
-    totalPrice,
-    numberOfDays,
-    user: user.id,
-  })
-    .then((doc) => {
-      res.json(doc);
-    })
-    .catch((err) => {
-      console.error("Error creating booking:", err);
-      res.status(500).json({ error: "Internal Server Error" });
-    });
-});
-
 
 // -----------------for getting bookings----------------
 
@@ -611,7 +580,6 @@ app.post(
   }
 );
 
-
 //to get documents-----------------------------
 app.get("/documents", async (req, res) => {
   try {
@@ -681,10 +649,7 @@ app.get("/favorites", async (req, res) => {
   }
 });
 
-
-
 //------------------------------------------------------for admin pannel------------------------------------------------------
-
 
 //------------------------to get and display users!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -698,7 +663,6 @@ app.get("/totalusers", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 
 //  to delete a user by ID
 app.delete("/users/:userId", async (req, res) => {
@@ -753,7 +717,7 @@ app.put("/users/:id", async (req, res) => {
 
 //for destination delete -------------------------------@@@@@@@@@@@@@@
 
-app.delete('/places/:id', async (req, res) => {
+app.delete("/allplaces/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -792,35 +756,31 @@ app.get("/totalBookings", async (req, res) => {
   }
 });
 
-
 //to delete
 
-app.delete('/bookings/:id', async (req, res) => {
+app.delete("/bookings/:id", async (req, res) => {
   const { id } = req.params;
   try {
     // Find the booking by ID and delete it
     const deletedBooking = await Booking.findByIdAndDelete(id);
     if (!deletedBooking) {
-      return res.status(404).json({ error: 'Booking not found' });
+      return res.status(404).json({ error: "Booking not found" });
     }
-    res.status(200).json({ message: 'Booking deleted successfully' });
+    res.status(200).json({ message: "Booking deleted successfully" });
   } catch (error) {
-    console.error('Error deleting booking:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error deleting booking:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-
-
-
 // Route to get all documents
-app.get('/alldocuments', async (req, res) => {
+app.get("/alldocuments", async (req, res) => {
   try {
     const allDocuments = await DocumentModel.find();
     res.json(allDocuments);
   } catch (error) {
-    console.error('Error fetching documents:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching documents:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -829,15 +789,15 @@ app.get('/alldocuments', async (req, res) => {
 app.delete("/documents/:documentId", async (req, res) => {
   try {
     const { documentId } = req.params;
-    
+
     // Use Mongoose to find and delete the document by ID
     const deletedDocument = await DocumentModel.findByIdAndDelete(documentId);
-    
+
     if (!deletedDocument) {
       // If no document was found with the provided ID, send a 404 response
       return res.status(404).json({ error: "Document not found" });
     }
-    
+
     // If the document was successfully deleted, send a success response
     res.json({ message: "Document deleted successfully", deletedDocument });
   } catch (error) {
@@ -847,8 +807,6 @@ app.delete("/documents/:documentId", async (req, res) => {
   }
 });
 
-
-
 //-----------------------------searching and sorting --------------------------------------------------
 
 // Add this route to your Express server
@@ -856,7 +814,9 @@ app.get("/search", async (req, res) => {
   const { title } = req.query;
   try {
     // Search for places with titles that match the provided query
-    const places = await Place.find({ title: { $regex: title, $options: "i" } });
+    const places = await Place.find({
+      title: { $regex: title, $options: "i" },
+    });
 
     res.json(places);
   } catch (error) {
@@ -871,7 +831,7 @@ app.get("/search", async (req, res) => {
 app.get("/sort-places", async (req, res) => {
   try {
     // Get the sort direction from query parameter, default to ascending order
-    const sortDirection = req.query.sort === 'desc' ? -1 : 1;
+    const sortDirection = req.query.sort === "desc" ? -1 : 1;
 
     // Fetch places and sort by price
     const places = await Place.find({}).sort({ price: sortDirection });
@@ -882,5 +842,63 @@ app.get("/sort-places", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+app.post("/bookings", async (req, res) => {
+  const user = await getUserDataFromReq(req);
+
+  const { place, title, checkIn, checkOut, name, number, numberOfGuests, price } =
+    req.body;
+  if (
+    !place ||
+    !title || // Ensure title is provided
+    !checkIn ||
+    !checkOut ||
+    !name ||
+    !number ||
+    !numberOfGuests ||
+    !price
+  ) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  const numberOfDays = differenceInCalendarDays(
+    new Date(checkOut),
+    new Date(checkIn)
+  );
+  const totalPrice = numberOfDays * price * numberOfGuests;
+
+  Booking.create({
+    place,
+    title, 
+    checkIn,
+    checkOut,
+    name,
+    number,
+    numberOfGuests,
+    price,
+    totalPrice,
+    numberOfDays,
+    user: user.id,
+  })
+    .then((doc) => {
+      res.json(doc);
+    })
+    .catch((err) => {
+      console.error("Error creating booking:", err);
+      res.status(500).json({ error: "Internal Server Error" });
+    });
+});
+
+//-----------payment integration -------
+
+
+
+
+
+
+
+
+
+
 
 
