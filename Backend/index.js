@@ -871,7 +871,9 @@ app.post("/bookings", async (req, res) => {
     name,
     number,
     numberOfGuests,
+    perks,
     price,
+    perkPrice, 
   } = req.body;
   if (
     !place ||
@@ -881,6 +883,7 @@ app.post("/bookings", async (req, res) => {
     !name ||
     !number ||
     !numberOfGuests ||
+    !perks ||
     !price
   ) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -890,7 +893,9 @@ app.post("/bookings", async (req, res) => {
     new Date(checkOut),
     new Date(checkIn)
   );
-  const totalPrice = numberOfDays * price * numberOfGuests;
+
+  const totalPrice =
+    numberOfDays * price * numberOfGuests + perkPrice * numberOfGuests;
 
   Booking.create({
     place,
@@ -903,6 +908,8 @@ app.post("/bookings", async (req, res) => {
     price,
     totalPrice,
     numberOfDays,
+    perks,
+    perkPrice,
     user: user.id,
   })
     .then((doc) => {

@@ -39,11 +39,27 @@ const BookingPage = () => {
         <div>
           <h2 className="text-xl mb-4">Your Boooking Information:</h2>
           <BookingDates booking={booking} />
+          <div className="mt-6 text-l font-semibold">
+          Transportation: via {booking.perks}
+        </div>
+          <div className="mt-3 text-l font-semibold">
+          Number of Guest: {booking.numberOfGuests}
+        </div>
+          <div className="mt-3 ">
+            <p className="text-l font-semibold">
+            Payment Status: {booking.status}
+            </p>
+          {/* <span className="text-red-500 text-sm">
+            Note: <br />Your Booking is confirmed only payment  is pending.
+          </span> */}
+        </div>
         </div>
         <div className="bg-primary text-white p-4 rounded-2xl">
           <div>Total price:</div>
           <div className="text-3xl">NRP {booking.totalPrice}</div>
+          
         </div>
+        
       </div>
       <PlaceGallery photos={booking.place.photos} />
     </div>

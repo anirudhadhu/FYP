@@ -68,16 +68,17 @@ const ViewBookings = () => {
               key={booking._id}
               className="border-r border-primary rounded-3xl p-6 relative"
             >
-              <p className="mb-2 font-semibold">Name: {booking.name}</p>
-              <p>Place: {booking.title}</p>
-              <p>Number: {booking.number}</p>
-              <p>Price: NRP {booking.price}</p>
-              <p>Check-in: {new Date(booking.checkIn).toDateString()}</p>
-              <p>Check-out: {new Date(booking.checkOut).toDateString()}</p>
-              <p>Number of guests: {booking.numberOfGuests}</p>
-              <p>Total price: NRP {booking.totalPrice}</p>
-              <p>Payment Status:  {booking.paymentStatus}</p>
-              <p>Payment ID:  {booking.paymentIntentId}</p>
+              <p className="mb-2  font-semibold">Name: {booking.name}</p>
+              <p >Place: {booking.title}</p>
+              <p className="mt-1">Number: {booking.number}</p>
+              <p className="mt-1">Price: NRP {booking.price}</p>
+              <p className="mt-1">Check-in: {new Date(booking.checkIn).toDateString()}</p>
+              <p className="mt-1">Check-out: {new Date(booking.checkOut).toDateString()}</p>
+              <p className="mt-1">Number of guests: {booking.numberOfGuests}</p>
+              <p className="mt-1">Transportation: {booking.perks}</p>
+              <p className="mt-1">Total price: NRP {booking.totalPrice}</p>
+              <p className="mt-1">Payment Status:  {booking.paymentStatus}</p>
+              <p className="mt-1">Payment ID:  {booking.paymentIntentId}</p>
               <hr className="my-6" />
 
               <button

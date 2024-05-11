@@ -10,6 +10,7 @@ const bookingSchema = new mongoose.Schema({
     number: { type: String, required: true },
     numberOfGuests: { type: Number, required: true },
     numberOfDays: { type: Number, required: true },
+    perks: { type: String, required: true },
     price: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
     status: {

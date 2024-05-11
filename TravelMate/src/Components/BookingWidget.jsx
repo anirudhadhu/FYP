@@ -3,6 +3,7 @@ import { differenceInCalendarDays, addDays } from "date-fns";
 import { UserContext } from "../UserContext";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
+import { FaPlaneDeparture, FaBus, FaCar } from "react-icons/fa";
 
 const BookingWidget = ({ place }) => {
   const [checkIn, setCheckIn] = useState("");
@@ -11,6 +12,7 @@ const BookingWidget = ({ place }) => {
   const [number, setNumber] = useState("");
   const [numberOfGuests, setNumberOfGuests] = useState(2);
   const { user } = useContext(UserContext);
+  const [selectedPerk, setSelectedPerk] = useState("");
   const [redirect, setRedirect] = useState("");
   const [error, setError] = useState("");
 
@@ -36,6 +38,18 @@ const BookingWidget = ({ place }) => {
       return;
     }
 
+    let perkPrice = 0;
+    switch (selectedPerk) {
+      case "Aeroplane":
+        perkPrice = 8000;
+        break;
+      case "Bus":
+        perkPrice = 3000;
+        break;
+      default:
+        break;
+    }
+
     const data = {
       place: place._id,
       title: place.title,
@@ -46,7 +60,11 @@ const BookingWidget = ({ place }) => {
       number,
       price: place.price,
       numberOfDays,
-      totalPrice: numberOfDays * place.price * numberOfGuests,
+      perks: selectedPerk,
+      perkPrice,
+      totalPrice:
+        numberOfDays * place.price * numberOfGuests +
+        perkPrice * numberOfGuests,
     };
     try {
       const response = await axios.post("/bookings", data);
@@ -57,8 +75,6 @@ const BookingWidget = ({ place }) => {
       console.error("Error booking:", error);
     }
   }
-
-
 
   if (redirect) {
     return <Navigate to={redirect} />;
@@ -134,37 +150,86 @@ const BookingWidget = ({ place }) => {
         checkOut &&
         numberOfGuests > 0 &&
         numberOfDays > 0 && (
-          <div className="mt-4 border border-primary p-2">
-            <p className="text-center font-bold p-3">Calculation:</p>
-            Number of days:{" "}
-            <span className="font-bold">
-              {differenceInCalendarDays(new Date(checkOut), new Date(checkIn))}{" "}
-              Days
-            </span>
-            <p>
-              Price:{" "}
+          <>
+            {/* ---------------------for booking perks----------------------------- */}
+            <div className="mt-4 border border-primary p-2">
+              Select your Transportation way:
+              <label className="mt-2 border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="perk"
+                  checked={selectedPerk === "Aeroplane"}
+                  onChange={() => setSelectedPerk("Aeroplane")}
+                />
+                <FaPlaneDeparture className="text-primary" />
+                <span>Aeroplane</span>
+              </label>
+              <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="perk"
+                  checked={selectedPerk === "Bus"}
+                  onChange={() => setSelectedPerk("Bus")}
+                />
+                <FaBus className="text-primary" />
+                <span>Bus</span>
+              </label>
+            </div>
+            {/* ---------------------end of  booking perks----------------------------- */}
+            {/* ---------------------Calculation part----------------------------- */}
+            <div className="mt-4 border border-primary p-2">
+              <p className="text-center font-bold p-3">Calculation:</p>
+             
+              Number of days:{" "}
               <span className="font-bold">
-                NPR{" "}
                 {differenceInCalendarDays(
                   new Date(checkOut),
                   new Date(checkIn)
-                ) *
-                  place.price *
-                  numberOfGuests}{" "}
-              </span>{" "}
-            </p>
-            <div className="p-2">
-              <p className="mt-3 font-semibold underline">Cash Payment:</p>
-              <button onClick={bookedThisPlace} className="primary mt-4">
-                Book now!
-              </button>
+                )}{" "}
+                Days
+              </span>
+              <div>
+                Transportation Cost:{" "}
+                <span className="font-bold">
+                  {selectedPerk === "Aeroplane"
+                    ? `NPR ${8000 * numberOfGuests}`
+                    : selectedPerk === "Bus"
+                    ? `NPR ${3000 * numberOfGuests}`
+                    : selectedPerk === "Car"
+                    ? `Customize based on Car`
+                    : "N/A"}
+                </span>
+              </div>
+              <p>
+                Total Price:{" "}
+                <span className="font-bold">
+                  NPR{" "}
+                  {differenceInCalendarDays(
+                    new Date(checkOut),
+                    new Date(checkIn)
+                  ) *
+                    place.price *
+                    numberOfGuests +
+                    (selectedPerk === "Aeroplane"
+                      ? 8000 * numberOfGuests
+                      : selectedPerk === "Bus"
+                      ? 3000 * numberOfGuests
+                      : 0)}{" "}
+                </span>{" "}
+              </p>
+              <div className="p-2">
+                <p className="mt-3 font-semibold underline">Cash Payment:</p>
+                <button onClick={bookedThisPlace} className="primary mt-4">
+                  Book now!
+                </button>
 
-              <p className="mt-3 font-semibold underline">Pay Now:</p>
-              <button  className="primary mt-4">Pay with Stripe!</button>
+                <p className="mt-3 font-semibold underline">Pay Now:</p>
+                <button className="primary mt-4">Pay with Stripe!</button>
 
-              <button className="primary mt-4">Pay with Khalti!</button>
+                <button className="primary mt-4">Pay with Khalti!</button>
+              </div>
             </div>
-          </div>
+          </>
         )}
     </div>
   );

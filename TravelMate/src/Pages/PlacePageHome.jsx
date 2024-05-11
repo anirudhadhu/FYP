@@ -27,7 +27,7 @@ const PlacePageHome = () => {
       <h1 className="text-2xl">{place.title}</h1>
 
       <AddressLink> {place.address} </AddressLink>
-      
+
       <PlaceGallery photos={place.photos} />
 
       <div className="my-4 text-justify">
@@ -45,10 +45,10 @@ const PlacePageHome = () => {
           {place.maxGuests} <br />
           <div className="bg-white -mx-8 px-8 py-8">
             <div>
-              <h2 className="font-semibold underline text-2xl">
+              <h2 className="font-semibold underline text-2xl ">
                 Extra Information:
               </h2>
-              <div className="mt-2 mb-4 text-m text-gray-700 leading-4">
+              <div className="mt-2 mb-4 text-m text-gray-700 text-justify leading-4">
                 {place.extraInfo}
               </div>
             </div>
@@ -58,6 +58,11 @@ const PlacePageHome = () => {
         <div>
           <BookingWidget place={place} />
         </div>
+      </div>
+      <div className=" border border-primary rounded-xl p-3 text-sm">
+        <p className="text-red-500">Note: Total price is calculated as:</p>
+       (Total Days * Price of destination * Number Of Guests) + (
+        Transportation Cost * Number Of Guests)
       </div>
     </div>
   );
