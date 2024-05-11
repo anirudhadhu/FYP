@@ -19,9 +19,6 @@ const passport = require("passport");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
-// const stripe = require("stripe")(
-//   "sk_test_51P83FbSGDXorlL6rHs4sga4grglpLNM1FFlKscD3coKx2cTDFvmi93Cze60UwrS50uAumf8bg8u1ZnwCsPZIXaP200nQo6qQCC"
-// );
 
 const app = express();
 const PORT = 4000;
@@ -462,7 +459,6 @@ app.put("/places", async (req, res) => {
   });
 });
 
-
 app.delete("/places/:id", async (req, res) => {
   const { id } = req.params;
   const { token } = req.cookies;
@@ -485,7 +481,6 @@ app.delete("/places/:id", async (req, res) => {
     }
   });
 });
-
 
 // -----------------adding destination to homepage------------
 
@@ -825,6 +820,7 @@ app.get("/search", async (req, res) => {
   }
 });
 
+
 // -----------------for destination display with sorting-----------------
 
 // Route to fetch and sort places
@@ -843,14 +839,43 @@ app.get("/sort-places", async (req, res) => {
   }
 });
 
+//news integration ------------------
+
+
+const NEWSDATA_API_KEY = 'pub_43936529a797ca082df85f9ff4418000c84db'; // Your Newsdata.io API key
+
+app.get('/news', async (req, res) => {
+  try {
+    // Make a request to the Newsdata.io API with specific query parameters
+    const response = await axios.get(`https://newsdata.io/api/1/news?country=np&category=top&apikey=${NEWSDATA_API_KEY}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching news:', error);
+    res.status(500).json({ message: 'Failed to fetch news' });
+  }
+});
+
+
+
+
+// booking
+
 app.post("/bookings", async (req, res) => {
   const user = await getUserDataFromReq(req);
 
-  const { place, title, checkIn, checkOut, name, number, numberOfGuests, price } =
-    req.body;
+  const {
+    place,
+    title,
+    checkIn,
+    checkOut,
+    name,
+    number,
+    numberOfGuests,
+    price,
+  } = req.body;
   if (
     !place ||
-    !title || // Ensure title is provided
+    !title ||
     !checkIn ||
     !checkOut ||
     !name ||
@@ -869,7 +894,7 @@ app.post("/bookings", async (req, res) => {
 
   Booking.create({
     place,
-    title, 
+    title,
     checkIn,
     checkOut,
     name,
@@ -889,16 +914,9 @@ app.post("/bookings", async (req, res) => {
     });
 });
 
-//-----------payment integration -------
+//payment --------
 
-
-
-
-
-
-
-
-
+const stripe = require("stripe")("sk_test_51P83FbSGDXorlL6rHs4sga4grglpLNM1FFlKscD3coKx2cTDFvmi93Cze60UwrS50uAumf8bg8u1ZnwCsPZIXaP200nQo6qQCC");
 
 
 

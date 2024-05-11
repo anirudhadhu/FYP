@@ -64,13 +64,18 @@ const Footer = () => {
         <div className="footerLinks">
           <span className="linkTitle">Utilities</span>
           <li>
-            <Link to={"/CurrencyConvert"} href="/terms">
+            <Link to={"/CurrencyConvert"} >
               Currency Conversion{" "}
             </Link>
           </li>
           <li>
-            <Link to={"/weather"} href="/terms">
+            <Link to={"/weather"} >
               Weather Forecast{" "}
+            </Link>
+          </li>
+          <li>
+            <Link to={"/news"} href="/news">
+              News{" "}
             </Link>
           </li>
          

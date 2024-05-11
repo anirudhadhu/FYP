@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { differenceInCalendarDays, addDays } from "date-fns"; // Import addDays from date-fns
+import { differenceInCalendarDays, addDays } from "date-fns";
 import { UserContext } from "../UserContext";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
@@ -24,7 +24,10 @@ const BookingWidget = ({ place }) => {
   }, [user]);
 
   if (checkIn && checkOut) {
-    numberOfDays = differenceInCalendarDays(new Date(checkOut), new Date(checkIn));
+    numberOfDays = differenceInCalendarDays(
+      new Date(checkOut),
+      new Date(checkIn)
+    );
   }
 
   async function bookedThisPlace() {
@@ -55,12 +58,13 @@ const BookingWidget = ({ place }) => {
     }
   }
 
+
+
   if (redirect) {
     return <Navigate to={redirect} />;
   }
 
-  // Calculate the minimum date as the day after tomorrow
-  const minDate = addDays(new Date(), 2).toISOString().split('T')[0];
+  const minDate = addDays(new Date(), 2).toISOString().split("T")[0];
 
   return (
     <div className="bg-white shadow p-4 rounded-2xl">
@@ -73,7 +77,7 @@ const BookingWidget = ({ place }) => {
               <input
                 type="date"
                 value={checkIn}
-                min={minDate} // Set min to the day after tomorrow
+                min={minDate}
                 onChange={(ev) => setCheckIn(ev.target.value)}
               />
             </div>
@@ -82,7 +86,7 @@ const BookingWidget = ({ place }) => {
               <input
                 type="date"
                 value={checkOut}
-                min={minDate} // Set min to the day after tomorrow
+                min={minDate}
                 onChange={(ev) => setCheckOut(ev.target.value)}
               />
             </div>
@@ -125,27 +129,43 @@ const BookingWidget = ({ place }) => {
           </p>
         </div>
       )}
-      {user && checkIn && checkOut && numberOfGuests > 0 && numberOfDays > 0 && (
-        <div className="mt-4 border border-primary p-2">
-          <p className="text-center font-bold p-3">Calculation:</p>
-          Number of days:{" "}
-          <span className="font-bold">
-            {differenceInCalendarDays(new Date(checkOut), new Date(checkIn))} Days
-          </span>
-          <p>
-            Price:{" "}
+      {user &&
+        checkIn &&
+        checkOut &&
+        numberOfGuests > 0 &&
+        numberOfDays > 0 && (
+          <div className="mt-4 border border-primary p-2">
+            <p className="text-center font-bold p-3">Calculation:</p>
+            Number of days:{" "}
             <span className="font-bold">
-              NPR{" "}
-              {differenceInCalendarDays(new Date(checkOut), new Date(checkIn)) *
-                place.price *
-                numberOfGuests}{" "}
-            </span>{" "}
-          </p>
-          <button onClick={bookedThisPlace} className="primary mt-4">
-            Book now!
-          </button>
-        </div>
-      )}
+              {differenceInCalendarDays(new Date(checkOut), new Date(checkIn))}{" "}
+              Days
+            </span>
+            <p>
+              Price:{" "}
+              <span className="font-bold">
+                NPR{" "}
+                {differenceInCalendarDays(
+                  new Date(checkOut),
+                  new Date(checkIn)
+                ) *
+                  place.price *
+                  numberOfGuests}{" "}
+              </span>{" "}
+            </p>
+            <div className="p-2">
+              <p className="mt-3 font-semibold underline">Cash Payment:</p>
+              <button onClick={bookedThisPlace} className="primary mt-4">
+                Book now!
+              </button>
+
+              <p className="mt-3 font-semibold underline">Pay Now:</p>
+              <button  className="primary mt-4">Pay with Stripe!</button>
+
+              <button className="primary mt-4">Pay with Khalti!</button>
+            </div>
+          </div>
+        )}
     </div>
   );
 };
