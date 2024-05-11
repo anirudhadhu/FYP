@@ -42,7 +42,6 @@ app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use("/documents", express.static(__dirname + "/documents"));
 
-// app.use("/documents", express.static(__dirname + "/documents"));
 
 // Database connection
 mongoose
@@ -920,6 +919,8 @@ app.post("/bookings", async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     });
 });
+
+
 
 //payment --------
 

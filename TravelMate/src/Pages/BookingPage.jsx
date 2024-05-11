@@ -4,6 +4,7 @@ import axios from "axios";
 import AddressLink from "../Components/AddressLink";
 import PlaceGallery from "../Components/PlaceGallery";
 import BookingDates from "../Components/BookingDates";
+import DownloadPdf from "../Components/DownloadPdf";
 
 const BookingPage = () => {
   const { id } = useParams();
@@ -25,42 +26,34 @@ const BookingPage = () => {
   }
 
   return (
-    // <div>
-    //   booking id: {id}
-
-    // </div>
-    <div className="p-16 ">
-      <h1 className="text-2xl "> {booking.place.title} </h1>
-      <AddressLink className="my-2 block">
-        {" "}
-        {booking.place.address}{" "}
-      </AddressLink>
-      <div className="bg-gray-200 p-6 my-6 rounded-2xl flex items-center justify-between">
-        <div>
-          <h2 className="text-xl mb-4">Your Boooking Information:</h2>
-          <BookingDates booking={booking} />
-          <div className="mt-6 text-l font-semibold">
-          Transportation: via {booking.perks}
+    <div className="p-16">
+      <div id="booking-info">
+        <h1 className="text-2xl"> {booking.place.title} </h1>
+        <AddressLink className="my-2 block">
+          {" "}
+          {booking.place.address}{" "}
+        </AddressLink>
+        <div className="bg-gray-200 p-6 my-6 rounded-2xl flex items-center justify-between">
+          <div>
+            <h2 className="text-xl mb-4 underline">
+              Your Booking Information in TravelMate:
+            </h2>
+            <BookingDates booking={booking} />
+            <div className="mt-6 text-m">
+              Transportation: via {booking.perks}
+            </div>
+            <div className="mt-3 text-m">
+              Number of Guest: {booking.numberOfGuests}
+            </div>
+            <div className="mt-3 text-m ">Payment Status: {booking.status}</div>
+          </div>
+          <div className="bg-primary text-white p-4 rounded-2xl">
+            <div>Total price:</div>
+            <div className="text-3xl">NRP {booking.totalPrice}</div>
+          </div>
         </div>
-          <div className="mt-3 text-l font-semibold">
-          Number of Guest: {booking.numberOfGuests}
-        </div>
-          <div className="mt-3 ">
-            <p className="text-l font-semibold">
-            Payment Status: {booking.status}
-            </p>
-          {/* <span className="text-red-500 text-sm">
-            Note: <br />Your Booking is confirmed only payment  is pending.
-          </span> */}
-        </div>
-        </div>
-        <div className="bg-primary text-white p-4 rounded-2xl">
-          <div>Total price:</div>
-          <div className="text-3xl">NRP {booking.totalPrice}</div>
-          
-        </div>
-        
       </div>
+      <DownloadPdf booking={booking} />
       <PlaceGallery photos={booking.place.photos} />
     </div>
   );
