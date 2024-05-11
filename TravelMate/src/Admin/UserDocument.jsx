@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../Admin/Navbar";
 
@@ -32,7 +33,6 @@ const UserDocument = () => {
       console.error("Error deleting document:", error);
     }
   };
-  
 
   return (
     <div className="p-9">
@@ -49,11 +49,13 @@ const UserDocument = () => {
             <div className="p-4 border border-gray-200 rounded-md relative">
               {document.documents.map((documentPath, docIndex) => (
                 <div key={docIndex} className="relative">
-                  <img
-                    src={`http://localhost:4000/documents/${documentPath}`}
-                    alt={`Document ${docIndex + 1}`}
-                    className="mt-3 object-cover w-full h-64 rounded-md"
-                  />
+                  <a href={`http://localhost:4000/documents/${documentPath}`} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={`http://localhost:4000/documents/${documentPath}`}
+                      alt={`Document ${docIndex + 1}`}
+                      className="mt-3 object-cover w-full h-64 rounded-md cursor-pointer"
+                    />
+                  </a>
                   {/* Delete icon */}
                   <button
                     onClick={() =>

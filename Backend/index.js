@@ -847,7 +847,7 @@ const NEWSDATA_API_KEY = 'pub_43936529a797ca082df85f9ff4418000c84db'; // Your Ne
 app.get('/news', async (req, res) => {
   try {
     // Make a request to the Newsdata.io API with specific query parameters
-    const response = await axios.get(`https://newsdata.io/api/1/news?country=np&category=top&apikey=${NEWSDATA_API_KEY}`);
+    const response = await axios.get(`https://newsdata.io/api/1/news?country=np&category=environment&apikey=${NEWSDATA_API_KEY}`);
     res.json(response.data);
   } catch (error) {
     console.error('Error fetching news:', error);
