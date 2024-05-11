@@ -95,8 +95,11 @@ const Header = () => {
               <Link to={"/weather"}>Weather</Link>
             </li>
             <li>
-              <Link to={"/Contact"}>Contact</Link>
+              <Link to={"/news"}>News</Link>
             </li>
+            {/* <li>
+              <Link to={"/Contact"}>Contact</Link>
+            </li> */}
           </ul>
         </div>
         <div className="relative inline-block text-left" ref={dropdownRef}>
@@ -138,10 +141,10 @@ const Header = () => {
               </div>
               <div className="py-1">
                 <Link
-                  to={"/contact"}
+                  to={"/news"}
                   className="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-primary hover:text-white rounded-2xl"
                 >
-                  Contact
+                  News
                 </Link>
               </div>
             </div>
