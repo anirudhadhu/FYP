@@ -3,7 +3,8 @@ import { differenceInCalendarDays, addDays } from "date-fns";
 import { UserContext } from "../UserContext";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
-import { FaPlaneDeparture, FaBus, FaCar } from "react-icons/fa";
+import { FaPlaneDeparture, FaBus } from "react-icons/fa";
+import StripeCheckout from "react-stripe-checkout";
 
 const BookingWidget = ({ place }) => {
   const [checkIn, setCheckIn] = useState("");
@@ -15,6 +16,8 @@ const BookingWidget = ({ place }) => {
   const [selectedPerk, setSelectedPerk] = useState("");
   const [redirect, setRedirect] = useState("");
   const [error, setError] = useState("");
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [sessionId, setSessionId] = useState("");
 
   let numberOfDays = 0;
 
@@ -50,6 +53,9 @@ const BookingWidget = ({ place }) => {
         break;
     }
 
+    const totalPrice =
+      numberOfDays * place.price * numberOfGuests + perkPrice * numberOfGuests;
+
     const data = {
       place: place._id,
       title: place.title,
@@ -62,9 +68,7 @@ const BookingWidget = ({ place }) => {
       numberOfDays,
       perks: selectedPerk,
       perkPrice,
-      totalPrice:
-        numberOfDays * place.price * numberOfGuests +
-        perkPrice * numberOfGuests,
+      totalPrice,
     };
     try {
       const response = await axios.post("/bookings", data);
@@ -75,6 +79,25 @@ const BookingWidget = ({ place }) => {
       console.error("Error booking:", error);
     }
   }
+
+ const handlePaymentSuccess = async (token) => {
+  try {
+    const response = await axios.post("/create-checkout-session", {
+      amount: numberOfDays * place.price * numberOfGuests * 100,
+      currency: "NPR",
+      description: `Booking for ${place.title} (${numberOfDays} days)`,
+    });
+
+    const { sessionId } = response.data;
+    setSessionId(sessionId);
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    // Handle the error gracefully, display a message to the user, etc.
+    setError("Failed to create checkout session. Please try again later.");
+  }
+};
+
+  
 
   if (redirect) {
     return <Navigate to={redirect} />;
@@ -151,7 +174,6 @@ const BookingWidget = ({ place }) => {
         numberOfGuests > 0 &&
         numberOfDays > 0 && (
           <>
-            {/* ---------------------for booking perks----------------------------- */}
             <div className="mt-4 border border-primary p-2">
               Select your Transportation way:
               <label className="mt-2 border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
@@ -175,11 +197,8 @@ const BookingWidget = ({ place }) => {
                 <span>Bus</span>
               </label>
             </div>
-            {/* ---------------------end of  booking perks----------------------------- */}
-            {/* ---------------------Calculation part----------------------------- */}
             <div className="mt-4 border border-primary p-2">
               <p className="text-center font-bold p-3">Calculation:</p>
-             
               Number of days:{" "}
               <span className="font-bold">
                 {differenceInCalendarDays(
@@ -195,21 +214,14 @@ const BookingWidget = ({ place }) => {
                     ? `NPR ${8000 * numberOfGuests}`
                     : selectedPerk === "Bus"
                     ? `NPR ${3000 * numberOfGuests}`
-                    : selectedPerk === "Car"
-                    ? `Customize based on Car`
                     : "N/A"}
                 </span>
               </div>
               <p>
-                Total Price:{" "}
+                Total Price:
                 <span className="font-bold">
                   NPR{" "}
-                  {differenceInCalendarDays(
-                    new Date(checkOut),
-                    new Date(checkIn)
-                  ) *
-                    place.price *
-                    numberOfGuests +
+                  {numberOfDays * place.price * numberOfGuests +
                     (selectedPerk === "Aeroplane"
                       ? 8000 * numberOfGuests
                       : selectedPerk === "Bus"
@@ -219,15 +231,30 @@ const BookingWidget = ({ place }) => {
               </p>
               <div className="p-2">
                 <p className="mt-3 font-semibold underline">Cash Payment:</p>
-                <button onClick={bookedThisPlace} className="primary mt-4">
+                <button
+                  onClick={bookedThisPlace}
+                  className="primary mt-4 hover:bg-green-500 hover:text-black "
+                >
                   Book now!
                 </button>
-
-                <p className="mt-3 font-semibold underline">Pay Now:</p>
-                <button className="primary mt-4">Pay with Stripe!</button>
-
-                <button className="primary mt-4">Pay with Khalti!</button>
+                {error && <p className="text-red-500">{error}</p>}
               </div>
+              <StripeCheckout
+                token={handlePaymentSuccess}
+                stripeKey="pk_test_51P83FbSGDXorlL6rI0q89ZRZvcqkdvM9dnsr4TYRK8XlwxxEHJXQDoZzfbF0Qo4RjILGy8TWEvshkmQ2ZOd8egJZ003zmvmc75"
+                sessionId={sessionId}
+                amount={numberOfDays * place.price * numberOfGuests * 100} // Amount in cents
+                name={place.title}
+                description={`Booking for ${numberOfDays} days`}
+                currency="NPR"
+                billingAddress={false}
+                shippingAddress={false}
+                zipCode={false}
+              >
+                <button className="primary mt-4 hover:bg-green-500 hover:text-black">
+                  Pay with Stripe!
+                </button>
+              </StripeCheckout>
             </div>
           </>
         )}

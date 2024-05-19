@@ -926,5 +926,26 @@ app.post("/bookings", async (req, res) => {
 
 const stripe = require("stripe")("sk_test_51P83FbSGDXorlL6rHs4sga4grglpLNM1FFlKscD3coKx2cTDFvmi93Cze60UwrS50uAumf8bg8u1ZnwCsPZIXaP200nQo6qQCC");
 
+app.post('/api/create-payment-intent', async (req, res) => {
+  try {
+    const { amount, currency, description } = req.body;
+
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: currency,
+      description: description,
+    });
+
+    // Send client secret as response
+    res.json({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.error('Error creating PaymentIntent:', error);
+    res.status(500).json({ error: 'Failed to create PaymentIntent' });
+  }
+});
+
 
 
