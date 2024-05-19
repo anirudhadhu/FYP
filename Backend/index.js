@@ -19,7 +19,7 @@ const passport = require("passport");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
-
+const Stripe = require('stripe');
 const app = express();
 const PORT = 4000;
 
@@ -924,28 +924,85 @@ app.post("/bookings", async (req, res) => {
 
 //payment --------
 
-const stripe = require("stripe")("sk_test_51P83FbSGDXorlL6rHs4sga4grglpLNM1FFlKscD3coKx2cTDFvmi93Cze60UwrS50uAumf8bg8u1ZnwCsPZIXaP200nQo6qQCC");
+const stripe = require("stripe")("sk_test_51PICsO030mp3Dwv9n0VmmRCmR6vsLlCgzVUWFuqgDf5Z6dxhWsyMphLEIc4vnzxq205cSh97MR7o1Uud92Md9qB200WNbwq9gl");
 
-app.post('/api/create-payment-intent', async (req, res) => {
+
+app.post('/create-checkout-session', async (req, res) => {
+  const { amount, currency, description, tokenId } = req.body;
+
+  if (!amount || !currency || !description || !tokenId) {
+    return res.status(400).json({ success: false, error: 'Missing required fields' });
+  }
+
   try {
-    const { amount, currency, description } = req.body;
-
-    // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
       currency: currency,
       description: description,
+      payment_method_data: {
+        type: 'card',
+        card: {
+          token: tokenId,
+        },
+      },
+      confirm: true,
     });
 
-    // Send client secret as response
-    res.json({
+    res.json({ success: true, client_secret: paymentIntent.client_secret });
+  } catch (error) {
+    console.error('Error creating payment intent:', error);
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+app.post('/create-payment-intent', async (req, res) => {
+  const { amount, currency } = req.body;
+
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency,
+    });
+
+    res.send({
       clientSecret: paymentIntent.client_secret,
     });
   } catch (error) {
-    console.error('Error creating PaymentIntent:', error);
-    res.status(500).json({ error: 'Failed to create PaymentIntent' });
+    res.status(500).send({ error: error.message });
   }
 });
+
+app.post("/confirm-payment", async (req, res) => {
+  const { paymentIntentId, placeId, checkIn, checkOut } = req.body;
+
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    if (paymentIntent.status === "succeeded") {
+      const user = await getUserDataFromReq(req);
+      if (!user) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const booking = await Booking.create({
+        user: user.id,
+        place: placeId,
+        checkIn: new Date(checkIn),
+        checkOut: new Date(checkOut),
+        price: paymentIntent.amount / 100, // Assuming the amount is in cents
+      });
+
+      res.status(200).json({ message: "Booking confirmed", booking });
+    } else {
+      res.status(400).json({ error: "Payment not successful" });
+    }
+  } catch (error) {
+    console.error("Error confirming payment:", error);
+    res.status(500).json({ error: "Failed to confirm payment" });
+  }
+});
+
+
 
 
 

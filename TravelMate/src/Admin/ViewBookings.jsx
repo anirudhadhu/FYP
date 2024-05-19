@@ -77,8 +77,8 @@ const ViewBookings = () => {
               <p className="mt-1">Number of guests: {booking.numberOfGuests}</p>
               <p className="mt-1">Transportation: {booking.perks}</p>
               <p className="mt-1">Total price: NRP {booking.totalPrice}</p>
-              <p className="mt-1">Payment Status:  {booking.paymentStatus}</p>
-              <p className="mt-1">Payment ID:  {booking.paymentIntentId}</p>
+              <p className="mt-1">Payment Status:  {booking.status}</p>
+              <p className="mt-1">Payment ID:  {booking.TransactionId}</p>
               <hr className="my-6" />
 
               <button
