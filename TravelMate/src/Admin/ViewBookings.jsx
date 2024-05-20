@@ -59,7 +59,7 @@ const ViewBookings = () => {
       <Navbar />
       <div>
         <h2 className="text-2xl underline font-semibold p-9 mb-4 text-center">
-          Bookings of TravelMate{" "}
+          Bookings in TravelMate{" "}
         </h2>
         {error && <p className="text-red-500">{error}</p>}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -77,8 +77,7 @@ const ViewBookings = () => {
               <p className="mt-1">Number of guests: {booking.numberOfGuests}</p>
               <p className="mt-1">Transportation: {booking.perks}</p>
               <p className="mt-1">Total price: NRP {booking.totalPrice}</p>
-              <p className="mt-1">Payment Status:  {booking.status}</p>
-              <p className="mt-1">Payment ID:  {booking.TransactionId}</p>
+              <p className="mt-1">Payment ID:   {booking.paymentIntentId}</p>
               <hr className="my-6" />
 
               <button

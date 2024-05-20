@@ -873,6 +873,7 @@ app.post("/bookings", async (req, res) => {
     perks,
     price,
     perkPrice, 
+    paymentIntentId,
   } = req.body;
   if (
     !place ||
@@ -883,7 +884,8 @@ app.post("/bookings", async (req, res) => {
     !number ||
     !numberOfGuests ||
     !perks ||
-    !price
+    !price ||
+    !paymentIntentId
   ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
@@ -910,6 +912,7 @@ app.post("/bookings", async (req, res) => {
     perks,
     perkPrice,
     user: user.id,
+    paymentIntentId,
   })
     .then((doc) => {
       res.json(doc);
@@ -989,7 +992,7 @@ app.post("/confirm-payment", async (req, res) => {
         place: placeId,
         checkIn: new Date(checkIn),
         checkOut: new Date(checkOut),
-        price: paymentIntent.amount / 100, // Assuming the amount is in cents
+        price: paymentIntent.amount / 100, 
       });
 
       res.status(200).json({ message: "Booking confirmed", booking });
@@ -1001,8 +1004,4 @@ app.post("/confirm-payment", async (req, res) => {
     res.status(500).json({ error: "Failed to confirm payment" });
   }
 });
-
-
-
-
 

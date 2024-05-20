@@ -5,9 +5,16 @@ import { FaPlaneDeparture, FaBus } from "react-icons/fa";
 import axios from "axios";
 import { UserContext } from "../UserContext";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import {
+  Elements,
+  CardElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
 
-const stripePromise = loadStripe('pk_test_51PICsO030mp3Dwv9DfoUMQQc07qb9LAT8CIwVabmUEOdSXAUGIxBYZgKGHj3z180YB2EwgBhuqsSlqF83da4KO1E00WMnBd4rx'); // Replace with your Stripe publishable key
+const stripePromise = loadStripe(
+  "pk_test_51PICsO030mp3Dwv9DfoUMQQc07qb9LAT8CIwVabmUEOdSXAUGIxBYZgKGHj3z180YB2EwgBhuqsSlqF83da4KO1E00WMnBd4rx"
+); // Replace with your Stripe publishable key
 
 const BookingWidget = ({ place }) => {
   const { user } = useContext(UserContext);
@@ -30,7 +37,10 @@ const BookingWidget = ({ place }) => {
   }, [user]);
 
   if (checkIn && checkOut) {
-    numberOfDays = differenceInCalendarDays(new Date(checkOut), new Date(checkIn));
+    numberOfDays = differenceInCalendarDays(
+      new Date(checkOut),
+      new Date(checkIn)
+    );
   }
 
   const handleBooking = async (paymentIntent) => {
@@ -51,7 +61,8 @@ const BookingWidget = ({ place }) => {
         break;
     }
 
-    const totalPrice = numberOfDays * place.price * numberOfGuests + perkPrice * numberOfGuests;
+    const totalPrice =
+      numberOfDays * place.price * numberOfGuests + perkPrice * numberOfGuests;
 
     const bookingData = {
       place: place._id,
@@ -66,7 +77,9 @@ const BookingWidget = ({ place }) => {
       perks: selectedPerk,
       perkPrice,
       totalPrice,
-      paymentIntentId: paymentIntent.id, // Add paymentIntent.id to the booking data
+      paymentIntentId: paymentIntent.id, 
+      description: `${place.title} - ${numberOfDays} days `,
+      Customer: name,
     };
 
     try {
@@ -148,106 +161,132 @@ const BookingWidget = ({ place }) => {
             </p>
           </div>
         )}
-        {user && checkIn && checkOut && numberOfGuests > 0 && numberOfDays > 0 && (
-          <>
-            <div className="mt-4 border border-primary p-2">
-              Select your Transportation way:
-              <label className="mt-2 border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="perk"
-                  checked={selectedPerk === "Aeroplane"}
-                  onChange={() => setSelectedPerk("Aeroplane")}
-                />
-                <FaPlaneDeparture className="text-primary" />
-                <span>Aeroplane</span>
-              </label>
-              <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="perk"
-                  checked={selectedPerk === "Bus"}
-                  onChange={() => setSelectedPerk("Bus")}
-                />
-                <FaBus className="text-primary" />
-                <span>Bus</span>
-              </label>
-            </div>
-            <div className="mt-4 border border-primary p-2">
-              <p className="text-center font-bold p-3">Calculation:</p>
-              Number of days:{" "}
-              <span className="font-bold">
-                {differenceInCalendarDays(new Date(checkOut), new Date(checkIn))} Days
-              </span>
-              <div>
-                Transportation Cost:{" "}
-                <span className="font-bold">
-                  {selectedPerk === "Aeroplane"
-                    ? `NPR ${8000 * numberOfGuests}`
-                    : selectedPerk === "Bus"
-                    ? `NPR ${3000 * numberOfGuests}`
-                    : "N/A"}
-                </span>
-              </div>
-              <p>
-                Total Price:
-                <span className="font-bold">
-                  NPR{" "}
-                  {numberOfDays * place.price * numberOfGuests +
-                    (selectedPerk === "Aeroplane" ? 8000 * numberOfGuests : selectedPerk === "Bus" ? 3000 * numberOfGuests : 0)}{" "}
-                </span>
-              </p>
-              <div className="p-2">
-                <p className="mt-3 font-semibold underline">Cash Payment:</p>
-                <button
-                  onClick={handleBooking}
-                  className="primary mt-4 hover:bg-green-500 hover:text-black "
-                >
-                  Book now!
-                </button>
-                {error && <p className="text-red-500">{error}</p>}
-              </div>
-              <StripeCheckoutForm
-                checkIn={checkIn}
-                checkOut={checkOut}
-                numberOfDays={numberOfDays}
-                numberOfGuests={numberOfGuests}
-                place={place}
-                handleBooking={handleBooking}
-              />
-            </div>
-          </>
-        )}
+     {user &&
+  checkIn &&
+  checkOut &&
+  numberOfGuests > 0 &&
+  numberOfDays > 0 && (
+    <>
+      <div className="mt-4 border border-primary p-2">
+        Select your Transportation way:
+        <label className="mt-2 border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
+          <input
+            type="checkbox"
+            name="perk"
+            checked={selectedPerk === "Aeroplane"}
+            onChange={() => setSelectedPerk("Aeroplane")}
+          />
+          <FaPlaneDeparture className="text-primary" />
+          <span>Aeroplane</span>
+        </label>
+        <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
+          <input
+            type="checkbox"
+            name="perk"
+            checked={selectedPerk === "Bus"}
+            onChange={() => setSelectedPerk("Bus")}
+          />
+          <FaBus className="text-primary" />
+          <span>Bus</span>
+        </label>
+      </div>
+      <div className="mt-4 border border-primary p-2">
+        <p className="text-center font-bold p-3">Calculation:</p>
+        Number of days:{" "}
+        <span className="font-bold">
+          {differenceInCalendarDays(
+            new Date(checkOut),
+            new Date(checkIn)
+          )}{" "}
+          Days
+        </span>
+        <div>
+          Transportation Cost:{" "}
+          <span className="font-bold">
+            {selectedPerk === "Aeroplane"
+              ? `NPR ${8000 * numberOfGuests}`
+              : selectedPerk === "Bus"
+              ? `NPR ${3000 * numberOfGuests}`
+              : "N/A"}
+          </span>
+        </div>
+        <p>
+          Total Price:
+          <span className="font-bold">
+            NPR{" "}
+            {numberOfDays * place.price * numberOfGuests +
+              (selectedPerk === "Aeroplane"
+                ? 8000 * numberOfGuests
+                : selectedPerk === "Bus"
+                ? 3000 * numberOfGuests
+                : 0)}{" "}
+          </span>
+        </p>
+        <div className=" mt-4 p-4 bg-gray-200 rounded-xl">
+          <p className="mb-4 text-sm font-semibold underline">
+            Enter your Card details:
+          </p>
+          {selectedPerk && ( // Conditionally render StripeCheckoutForm
+            <StripeCheckoutForm
+              checkIn={checkIn}
+              checkOut={checkOut}
+              numberOfDays={numberOfDays}
+              numberOfGuests={numberOfGuests}
+              place={place}
+              handleBooking={handleBooking}
+              perkPrice={ // Pass the correct perkPrice here
+                selectedPerk === "Aeroplane"
+                  ? 8000
+                  : selectedPerk === "Bus"
+                  ? 3000
+                  : 0
+              }
+            />
+          )}
+        </div>
+      </div>
+    </>
+  )}
+
       </div>
     </Elements>
   );
 };
 
-const StripeCheckoutForm = ({ numberOfDays, numberOfGuests, place, handleBooking }) => {
+const StripeCheckoutForm = ({
+  numberOfDays,
+  numberOfGuests,
+  place,
+  handleBooking,
+  perkPrice,
+  name,
+
+}) => {
   const stripe = useStripe();
   const elements = useElements();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!stripe || !elements) {
       return;
     }
-  
+
     try {
       const { data } = await axios.post("/create-payment-intent", {
-        amount: numberOfDays * place.price * numberOfGuests * 100, // Convert to cents
+        amount: (numberOfDays * place.price * numberOfGuests + perkPrice * numberOfGuests) * 100, // Convert to cents
         currency: "NPR",
       });
-  
+
       const clientSecret = data.clientSecret; // Access the clientSecret property
-  
+
       const paymentResult = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
         },
       });
-  
+
+      
       if (paymentResult.error) {
         console.error("Payment failed:", paymentResult.error.message);
       } else if (paymentResult.paymentIntent.status === "succeeded") {
@@ -257,12 +296,15 @@ const StripeCheckoutForm = ({ numberOfDays, numberOfGuests, place, handleBooking
       console.error("Error processing payment:", error);
     }
   };
-  
 
   return (
     <form onSubmit={handleSubmit}>
       <CardElement />
-      <button type="submit" disabled={!stripe} className="primary mt-4 hover:bg-green-500 hover:text-black">
+      <button
+        type="submit"
+        disabled={!stripe}
+        className="primary mt-4 hover:bg-green-500 hover:text-black"
+      >
         Pay with Stripe!
       </button>
     </form>

@@ -45,7 +45,7 @@ const BookingPage = () => {
             <div className="mt-3 text-m">
               Number of Guest: {booking.numberOfGuests}
             </div>
-            <div className="mt-3 text-m ">Payment Status: {booking.status}</div>
+            
           </div>
           <div className="bg-primary text-white p-4 rounded-2xl">
             <div>Total price:</div>

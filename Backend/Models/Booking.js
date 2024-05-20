@@ -13,12 +13,7 @@ const bookingSchema = new mongoose.Schema({
     perks: { type: String, required: true },
     price: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
-    status: {
-        type: String,
-        enum: ['pending', 'paid', 'cancelled'],
-        default: 'pending' 
-    },
-    TransactionId: { type: String } 
+    paymentIntentId: { type: String, required: true },
 }, { timestamps: true });
 
 const BookingModel = mongoose.model('Booking', bookingSchema);
