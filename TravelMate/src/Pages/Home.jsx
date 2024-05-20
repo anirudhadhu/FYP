@@ -9,7 +9,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("");
-  const [places, setPlaces] = useState([]);
+  // const [places, setPlaces] = useState([]);
 
   useEffect(() => {
     Aos.init({ duration: 2000 });

@@ -19,8 +19,6 @@ import TermsAndCondition from "./Components/TermsAndCondition";
 import CurrencyConvert from "./Pages/CurrencyConvert";
 import AboutUs from "./Pages/AboutUs";
 import Weather from "./Pages/Weather";
-import Success from "./Components/Success";
-import Cancle from "./Components/Cancle";
 import AdminHomePage from "./Admin/AdminHomePage";
 import Destination from "./Admin/Destination";
 import UserDocument from "./Admin/UserDocument";
@@ -28,6 +26,7 @@ import Users from "./Admin/Users";
 import ViewBookings from "./Admin/ViewBookings";
 import EmailVerification from "./Components/EmailVerification";
 import ResetPasswordPage from "./Components/ResetPasswordPage";
+import Teach from "./Components/Teach";
 import SearchReasult from "./Pages/SearchReasult";
 import SortPlaces from "./Pages/SortPlaces";
 import News from "./Pages/News"
@@ -57,9 +56,8 @@ function App() {
           <Route path="/CurrencyConvert" element={<CurrencyConvert />} />
           <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/weather" element={<Weather />} />
-          <Route path="/success" element={<Success />} />
-          <Route path="/cancle" element={<Cancle />} />
           <Route path="/news" element={<News />} />
+          <Route path="/UserGuide" element={<Teach />} />
           <Route path="/search/:destination" element={<SearchReasult />} />
           <Route path="/sort-places" element={<SortPlaces />} />
           <Route path="/verify/:verificationToken" element={<EmailVerification />} />

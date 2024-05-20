@@ -13,17 +13,14 @@ const placeSchema = new mongoose.Schema({
   photos: [String],
   description: {
     type: String,
-    required: true,
   },
   perks: [String],
   extraInfo: String,
   checkIn: {
     type: String,
-    required: true,
   },
   checkOut: {
     type: String,
-    required: true,
   },
   maxGuests: Number,
   price: Number,

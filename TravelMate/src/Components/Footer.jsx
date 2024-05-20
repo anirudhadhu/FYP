@@ -49,6 +49,11 @@ const Footer = () => {
           </li>
 
           <li>
+            <Link to={"/UserGuide"} href="/terms">
+            User Guide{" "}
+            </Link>
+          </li>
+          <li>
             <Link to={"/AboutUs"} href="/terms">
               About Us{" "}
             </Link>

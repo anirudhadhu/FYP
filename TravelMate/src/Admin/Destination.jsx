@@ -1,21 +1,23 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./Navbar";
 
 const Destination = () => {
   const [places, setPlaces] = useState([]);
-  const [savedPlaces, setSavedPlaces] = useState([]);
+  const [sortOrder, setSortOrder] = useState("desc"); 
 
   useEffect(() => {
-    axios
-      .get("/places")
-      .then((response) => {
-        setPlaces(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching places:", error);
-      });
-  }, []);
+    fetchPlaces();
+  }, [sortOrder]); 
+
+  const fetchPlaces = async () => {
+    try {
+      const response = await axios.get(`/sort-places?sort=${sortOrder}`);
+      setPlaces(response.data);
+    } catch (error) {
+      console.error("Error fetching places:", error);
+    }
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -32,11 +34,27 @@ const Destination = () => {
       <h2 className="text-2xl underline font-semibold p-9 mb-4 text-center">
         Destinations listed in TravelMate{" "}
       </h2>
-      <div className="px-32 mt-1 grid gap-x-8 gap-y-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+
+      
+      <div className="flex justify-start mb-6 px-9">
+        <label className="mr-2 font-semibold text-lg">Sort By:</label>
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+          className="p-2 border rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-primary"
+        >
+          
+          <option value="desc">High to Low</option>
+          <option value="asc">Low to High</option>
+          
+        </select>
+      </div>
+
+      <div className="px-8 mt-4 grid gap-x-6 gap-y-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {places.length > 0 &&
           places.map((place) => (
-            <div key={place._id} className="place-card">
-              <div className="relative bg-gray-500 rounded-2xl overflow-hidden aspect-square">
+            <div key={place._id} className="place-card p-4 bg-white rounded-lg shadow-md">
+              <div className="relative bg-gray-300 rounded-xl overflow-hidden aspect-square mb-4">
                 {place.photos?.[0] && (
                   <img
                     className="absolute inset-0 w-full h-full object-cover"
@@ -45,23 +63,17 @@ const Destination = () => {
                   />
                 )}
               </div>
-              <h2 className="text-m leading-5 font-bold">{place.title}</h2>
-              <h3 className="text-sm text-gray-500 truncate">
-                {place.address}
-              </h3>
+              <h2 className="text-xl font-bold mb-2">{place.title}</h2>
+              <h3 className="text-md text-gray-600 mb-4 truncate">{place.address}</h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-[2fr_0fr]">
-                <div className="mt-2">
-                  <span className="font-bold">NPR ({place.price})</span> per
-                  person
-                </div>
-                <div className="mt-2">
+              <div className="flex justify-between items-center">
+                <div className="text-lg font-bold">NPR {place.price} per person</div>
+                <div className="text-red-500 cursor-pointer" onClick={() => handleDelete(place._id)}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    className="w-6 h-6 cursor-pointer text-red-500"
-                    onClick={() => handleDelete(place._id)}
+                    className="w-6 h-6"
                   >
                     <path
                       fillRule="evenodd"
