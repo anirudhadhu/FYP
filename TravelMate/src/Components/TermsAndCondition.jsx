@@ -38,8 +38,8 @@ const TermsAndCondition = () => {
             their account credentials. <br />
             11. Users must not engage in any unlawful or unauthorized activities
             on TravelMate. <br />
-            12. Any misuse of the platform may result in account 
-            termination. <br />
+            12. Any misuse of the platform may result in account termination.{" "}
+            <br />
             13. TravelMate strives to provide accurate information, but we do
             not guarantee the completeness or reliability of the content. <br />
             14. TravelMate reserves the right to cancel or modify any booking
@@ -57,9 +57,9 @@ const TermsAndCondition = () => {
               Contact Us.
             </Link>
             <p className="mt-2 font-semibold">
-            Thank you for choosing TravelMate for your travel needs, <br /> Explore the world with ease !!
+              Thank you for choosing TravelMate for your travel needs, <br />{" "}
+              Explore the world with ease !!
             </p>
-            
           </div>
         </div>
       </div>

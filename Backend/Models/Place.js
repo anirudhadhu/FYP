@@ -1,14 +1,13 @@
 const mongoose = require("mongoose");
 
+// Defining the schema for places
 const placeSchema = new mongoose.Schema({
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Reference to the owner user
   title: {
     type: String,
-    required: true,
   },
   address: {
     type: String,
-    required: true,
   },
   photos: [String],
   description: {
@@ -26,5 +25,6 @@ const placeSchema = new mongoose.Schema({
   price: Number,
 });
 
+// Creating the Place model using the defined schema
 const PlaceModel = mongoose.model("Place", placeSchema);
 module.exports = PlaceModel;

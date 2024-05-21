@@ -3,26 +3,30 @@ import axios from "axios";
 import Navbar from "./Navbar";
 
 const Destination = () => {
-  const [places, setPlaces] = useState([]);
-  const [sortOrder, setSortOrder] = useState("desc"); 
+  const [places, setPlaces] = useState([]);  // State for storing places
+  const [sortOrder, setSortOrder] = useState("desc"); // State for sorting order
 
+
+  // useEffect hook to fetch places when sortOrder changes
   useEffect(() => {
-    fetchPlaces();
-  }, [sortOrder]); 
+    fetchPlaces(); // Call fetchPlaces function
+  }, [sortOrder]);   // Dependency array with sortOrder
 
+    // Function to fetch places from the server
   const fetchPlaces = async () => {
     try {
-      const response = await axios.get(`/sort-places?sort=${sortOrder}`);
-      setPlaces(response.data);
+      const response = await axios.get(`/sort-places?sort=${sortOrder}`); // Fetch places from the server with the specified sort order
+      setPlaces(response.data);   // Update places state with the fetched data
     } catch (error) {
       console.error("Error fetching places:", error);
     }
   };
 
+   // Function to handle deletion of a place
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/allplaces/${id}`);
-      setPlaces(places.filter((place) => place._id !== id));
+      await axios.delete(`/allplaces/${id}`);   // Send a delete request to the server to delete the place with the specified id
+      setPlaces(places.filter((place) => place._id !== id));   // Update places state to remove the deleted place
     } catch (error) {
       console.error("Error deleting place:", error);
     }
@@ -51,10 +55,12 @@ const Destination = () => {
       </div>
 
       <div className="px-8 mt-4 grid gap-x-6 gap-y-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {/* Map through places and render destination cards */}
         {places.length > 0 &&
           places.map((place) => (
             <div key={place._id} className="place-card p-4 bg-white rounded-lg shadow-md">
               <div className="relative bg-gray-300 rounded-xl overflow-hidden aspect-square mb-4">
+                 {/* Display the first photo of the place */}
                 {place.photos?.[0] && (
                   <img
                     className="absolute inset-0 w-full h-full object-cover"
@@ -68,6 +74,7 @@ const Destination = () => {
 
               <div className="flex justify-between items-center">
                 <div className="text-lg font-bold">NPR {place.price} per person</div>
+                {/* Button to delete the place */}
                 <div className="text-red-500 cursor-pointer" onClick={() => handleDelete(place._id)}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

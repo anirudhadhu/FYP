@@ -1,13 +1,13 @@
 import React from "react";
 import "../Styles/VideoBar.css";
-import Mountain from "../assets/clips/Mountain.mp4";
+import Mountain from "../assets/clips/Mountain.mp4"; // Import video file
 import { useEffect } from "react";
-import Aos from "aos";
+import Aos from "aos"; // Import AOS library for animations
 import "aos/dist/aos.css";
 
 const VideoBar = () => {
   useEffect(() => {
-    Aos.init({ duration: 2000 });
+    Aos.init({ duration: 2000 }); // Initialize AOS library for animations with a duration of 2000ms
   }, []);
 
   return (
@@ -20,7 +20,9 @@ const VideoBar = () => {
               data-aos-duration="2000"
               className="cardText text-white"
             >
-              <h2 className="font-bold text-xl sm:text-2xl">Wonderful mountain experience in there!</h2>
+              <h2 className="font-bold text-xl sm:text-2xl">
+                Wonderful mountain experience in there!
+              </h2>
               <p className="opacity-70 text-sm sm:text-base">
                 The adventure subranking based on an equally weighted average of
                 scores from various destinations.

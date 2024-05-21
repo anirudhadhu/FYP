@@ -3,15 +3,16 @@ import Navbar from "./Navbar";
 import axios from "axios";
 
 const ViewBookings = () => {
-  const [bookings, setBookings] = useState([]);
-  const [error, setError] = useState(null);
+  const [bookings, setBookings] = useState([]); // State for storing bookings
+  const [error, setError] = useState(null);   // State for error handling
 
   useEffect(() => {
+     // Fetch bookings when component mounts
     axios
-      .get("/totalBookings")
+      .get("/totalBookings")   // GET request to fetch bookings
       .then((response) => {
-        const data = response.data;
-        setBookings(data.allBookings);
+        const data = response.data;    // Extract booking data from response
+        setBookings(data.allBookings);    // Update bookings state with fetched data
       })
       .catch((error) => {
         console.error("Error fetching bookings:", error);
@@ -19,6 +20,7 @@ const ViewBookings = () => {
       });
   }, []);
 
+  // Function to delete a booking
   const deleteBooking = (bookingId) => {
     axios
       .delete(`/bookings/${bookingId}`)
@@ -63,6 +65,7 @@ const ViewBookings = () => {
         </h2>
         {error && <p className="text-red-500">{error}</p>}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {/* Display bookings */}
           {bookings.map((booking) => (
             <div
               key={booking._id}

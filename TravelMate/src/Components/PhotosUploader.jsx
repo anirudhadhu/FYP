@@ -4,6 +4,7 @@ import axios from "axios";
 const PhotosUploader = ({ addedPhotos, onChange }) => {
   const [photoLink, setPhotoLink] = useState("");
 
+  // Function to add photo by link
   async function addPhotoByLink(ev) {
     ev.preventDefault();
     const { data: filename } = await axios.post("/upload-by-link", {
@@ -16,6 +17,7 @@ const PhotosUploader = ({ addedPhotos, onChange }) => {
     setPhotoLink("");
   }
 
+  // Function to upload photo
   function uploadPhoto(ev) {
     const files = ev.target.files;
     const data = new FormData();
@@ -34,11 +36,13 @@ const PhotosUploader = ({ addedPhotos, onChange }) => {
       });
   }
 
+  // Function to remove photo
   function removePhoto(ev, filename) {
     ev.preventDefault();
     onChange([...addedPhotos.filter((photo) => photo !== filename)]);
   }
 
+  // Function to select photo as main photo
   function selectAsMainPhoto(ev, filename) {
     ev.preventDefault();
     onChange([filename, ...addedPhotos.filter((photo) => photo !== filename)]);
@@ -60,6 +64,7 @@ const PhotosUploader = ({ addedPhotos, onChange }) => {
           Upload
         </button>
       </div>
+      {/* Display uploaded photos */}
       <div className=" mt-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
         {addedPhotos.length > 0 &&
           addedPhotos.map((link) => (
@@ -69,6 +74,7 @@ const PhotosUploader = ({ addedPhotos, onChange }) => {
                 src={"http://localhost:4000/uploads/" + link}
                 alt=""
               />
+              {/* Button to remove photo */}
               <button
                 onClick={(ev) => removePhoto(ev, link)}
                 className="cursor-pointer absolute bottom-1 right-1 text-white bg-primary bg-opacity-40 py-2 px-3 rounded-2xl"
@@ -126,6 +132,7 @@ const PhotosUploader = ({ addedPhotos, onChange }) => {
             </div>
           ))}
 
+        {/* Button to upload photo from device */}
         <label className="h-32 cursor-pointer flex items-center justify-center gap-1 border bg-transparent rounded-2xl p-2 text-gray-600">
           <input
             type="file"
@@ -155,3 +162,11 @@ const PhotosUploader = ({ addedPhotos, onChange }) => {
 };
 
 export default PhotosUploader;
+
+
+// Adding Photo by Link: The addPhotoByLink function handles adding a photo by a provided link.
+// Uploading Photo: The uploadPhoto function uploads photos from the device.
+// Removing Photo: The removePhoto function removes a selected photo.
+// Selecting Main Photo: The selectAsMainPhoto function allows selecting a photo as the main photo.
+// Displayed Photos: Uploaded photos are displayed with options to remove them or set them as the main photo.
+// Upload Button: A button is provided to upload photos from the device

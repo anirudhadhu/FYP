@@ -7,20 +7,23 @@ import BookingDates from "../Components/BookingDates";
 import DownloadPdf from "../Components/DownloadPdf";
 
 const BookingPage = () => {
-  const { id } = useParams();
-  const [booking, setBooking] = useState(null);
+  const { id } = useParams(); // Extract booking ID from URL params
+  const [booking, setBooking] = useState(null); // State to hold booking data
 
+  // Fetch booking details from the server based on ID
   useEffect(() => {
     if (id) {
       axios.get("/bookings").then((response) => {
+        // Find the booking with the matching ID
         const foundBooking = response.data.find(({ _id }) => _id === id);
         if (foundBooking) {
-          setBooking(foundBooking);
+          setBooking(foundBooking); // Set booking state if found
         }
       });
     }
-  }, [id]);
+  }, [id]); // Trigger effect when ID changes
 
+  // Render loading indicator if booking data is not yet fetched
   if (!booking) {
     return <div> Loading ...</div>;
   }
@@ -45,7 +48,6 @@ const BookingPage = () => {
             <div className="mt-3 text-m">
               Number of Guest: {booking.numberOfGuests}
             </div>
-            
           </div>
           <div className="bg-primary text-white p-4 rounded-2xl">
             <div>Total price:</div>

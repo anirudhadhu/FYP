@@ -6,18 +6,22 @@ import PlaceGallery from "../Components/PlaceGallery";
 import AddressLink from "../Components/AddressLink";
 
 const PlacePageHome = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Retrieve the id parameter from the URL
   const [place, setPlace] = useState(null);
 
+  // Fetch place data from the server when the id changes
   useEffect(() => {
     if (!id) {
+      // Check if id exists
       return;
     }
+    // Fetch place data using the id
     axios.get(`/places/${id}`).then((response) => {
       setPlace(response.data);
     });
   }, [id]);
 
+  // Render loading message if place data is not yet fetched
   if (!place) {
     return "Loading...";
   }
@@ -48,7 +52,7 @@ const PlacePageHome = () => {
               <h2 className="font-semibold underline text-2xl ">
                 Extra Information:
               </h2>
-              <div className="mt-2 mb-4 text-m text-gray-700 text-justify leading-4">
+              <div className="mt-2 mb-4 text-m text-gray-700 text-justify leading-2 ">
                 {place.extraInfo}
               </div>
             </div>
@@ -61,7 +65,7 @@ const PlacePageHome = () => {
       </div>
       <div className=" border border-primary rounded-xl p-3 text-sm">
         <p className="text-red-500">Note: Total price is calculated as:</p>
-       (Total Days * Price of destination * Number Of Guests) + (
+        (Total Days * Price of destination * Number Of Guests) + (
         Transportation Cost * Number Of Guests)
       </div>
     </div>

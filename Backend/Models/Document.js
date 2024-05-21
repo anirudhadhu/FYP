@@ -1,21 +1,24 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+// Defining the schema for documents
 const documentSchema = new Schema({
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    userName: {
-        type: String,
-        required: true
-    },
-    documents: {
-        type: [String], // Assuming the documents are stored as file paths
-        required: true
-    }
+  user: {
+    // Reference to the User model
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  userName: {
+    type: String,
+    required: true,
+  },
+  documents: {
+    type: [String],
+    required: true,
+  },
 });
 
-const DocumentModel = mongoose.model('Document', documentSchema);
+// Creating the Document model using the defined schema
+const DocumentModel = mongoose.model("Document", documentSchema);
 module.exports = DocumentModel;

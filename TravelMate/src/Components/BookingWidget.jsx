@@ -12,12 +12,13 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 
+// Initializing Stripe with my publishable key
 const stripePromise = loadStripe(
   "pk_test_51PICsO030mp3Dwv9DfoUMQQc07qb9LAT8CIwVabmUEOdSXAUGIxBYZgKGHj3z180YB2EwgBhuqsSlqF83da4KO1E00WMnBd4rx"
-); // Replace with your Stripe publishable key
+);
 
 const BookingWidget = ({ place }) => {
-  const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext); // Access user context
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [name, setName] = useState("");
@@ -27,8 +28,7 @@ const BookingWidget = ({ place }) => {
   const [error, setError] = useState("");
   const [redirect, setRedirect] = useState("");
 
-  let numberOfDays = 0;
-
+  // Set default name and number if user is logged in
   useEffect(() => {
     if (user) {
       setName(user.name);
@@ -36,6 +36,8 @@ const BookingWidget = ({ place }) => {
     }
   }, [user]);
 
+  // Calculate number of days between check-in and check-out dates
+  let numberOfDays = 0;
   if (checkIn && checkOut) {
     numberOfDays = differenceInCalendarDays(
       new Date(checkOut),
@@ -43,12 +45,15 @@ const BookingWidget = ({ place }) => {
     );
   }
 
+  // Handle booking process
   const handleBooking = async (paymentIntent) => {
     if (numberOfDays <= 0) {
+      // Validate check-in and check-out dates
       setError("Check-out date must be after check-in date.");
       return;
     }
 
+    // Calculate total price including selected perks
     let perkPrice = 0;
     switch (selectedPerk) {
       case "Aeroplane":
@@ -64,6 +69,7 @@ const BookingWidget = ({ place }) => {
     const totalPrice =
       numberOfDays * place.price * numberOfGuests + perkPrice * numberOfGuests;
 
+    // Prepare booking data
     const bookingData = {
       place: place._id,
       title: place.title,
@@ -77,12 +83,13 @@ const BookingWidget = ({ place }) => {
       perks: selectedPerk,
       perkPrice,
       totalPrice,
-      paymentIntentId: paymentIntent.id, 
+      paymentIntentId: paymentIntent.id,
       description: `${place.title} - ${numberOfDays} days `,
       Customer: name,
     };
 
     try {
+      // Send booking request to server
       const response = await axios.post("/bookings", bookingData);
       const bookingId = response.data._id;
       setRedirect(`/account/bookings/${bookingId}`);
@@ -92,8 +99,10 @@ const BookingWidget = ({ place }) => {
     }
   };
 
+  // Calculate minimum date for check-in (2 days from today)
   const minDate = addDays(new Date(), 2).toISOString().split("T")[0];
 
+  // Redirect to booking confirmation page if booking is successful
   if (redirect) {
     return <Navigate to={redirect} />;
   }
@@ -101,8 +110,9 @@ const BookingWidget = ({ place }) => {
   return (
     <Elements stripe={stripePromise}>
       <div className="bg-white shadow p-4 rounded-2xl">
+        {/* Render price and booking details */}
         <b className="text-xl text-center">Price: </b>NPR {place.price} /per day
-        {user ? (
+        {user ? ( // Show booking form if user is logged in
           <div className="border border-primary rounded-2xl mt-4">
             <div className="flex">
               <div className="py-3 px-4">
@@ -124,14 +134,17 @@ const BookingWidget = ({ place }) => {
                 />
               </div>
             </div>
+            {/* Render input field for number of guests */}
             <div className="py-2 px-4 border-primary border-t">
               <label>Number of Guests:</label>
               <input
                 type="number"
                 value={numberOfGuests}
                 onChange={(ev) => setNumberOfGuests(ev.target.value)}
+                min={1}
               />
             </div>
+            {/* Render name and number input fields if check-in and check-out dates are set */}
             {numberOfDays > 0 && (
               <div className="py-3 px-4 border-t">
                 <label>Your full name:</label>
@@ -151,6 +164,7 @@ const BookingWidget = ({ place }) => {
             {error && <p className="text-red-500">{error}</p>}
           </div>
         ) : (
+          // Show login prompt if user is not logged in
           <div className="py-2 px-4 mt-3 border-primary border-t">
             <p className="text-center">
               Please{" "}
@@ -161,93 +175,94 @@ const BookingWidget = ({ place }) => {
             </p>
           </div>
         )}
-     {user &&
-  checkIn &&
-  checkOut &&
-  numberOfGuests > 0 &&
-  numberOfDays > 0 && (
-    <>
-      <div className="mt-4 border border-primary p-2">
-        Select your Transportation way:
-        <label className="mt-2 border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-          <input
-            type="checkbox"
-            name="perk"
-            checked={selectedPerk === "Aeroplane"}
-            onChange={() => setSelectedPerk("Aeroplane")}
-          />
-          <FaPlaneDeparture className="text-primary" />
-          <span>Aeroplane</span>
-        </label>
-        <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-          <input
-            type="checkbox"
-            name="perk"
-            checked={selectedPerk === "Bus"}
-            onChange={() => setSelectedPerk("Bus")}
-          />
-          <FaBus className="text-primary" />
-          <span>Bus</span>
-        </label>
-      </div>
-      <div className="mt-4 border border-primary p-2">
-        <p className="text-center font-bold p-3">Calculation:</p>
-        Number of days:{" "}
-        <span className="font-bold">
-          {differenceInCalendarDays(
-            new Date(checkOut),
-            new Date(checkIn)
-          )}{" "}
-          Days
-        </span>
-        <div>
-          Transportation Cost:{" "}
-          <span className="font-bold">
-            {selectedPerk === "Aeroplane"
-              ? `NPR ${8000 * numberOfGuests}`
-              : selectedPerk === "Bus"
-              ? `NPR ${3000 * numberOfGuests}`
-              : "N/A"}
-          </span>
-        </div>
-        <p>
-          Total Price:
-          <span className="font-bold">
-            NPR{" "}
-            {numberOfDays * place.price * numberOfGuests +
-              (selectedPerk === "Aeroplane"
-                ? 8000 * numberOfGuests
-                : selectedPerk === "Bus"
-                ? 3000 * numberOfGuests
-                : 0)}{" "}
-          </span>
-        </p>
-        <div className=" mt-4 p-4 bg-gray-200 rounded-xl">
-          <p className="mb-4 text-sm font-semibold underline">
-            Enter your Card details:
-          </p>
-          {selectedPerk && ( // Conditionally render StripeCheckoutForm
-            <StripeCheckoutForm
-              checkIn={checkIn}
-              checkOut={checkOut}
-              numberOfDays={numberOfDays}
-              numberOfGuests={numberOfGuests}
-              place={place}
-              handleBooking={handleBooking}
-              perkPrice={ // Pass the correct perkPrice here
-                selectedPerk === "Aeroplane"
-                  ? 8000
-                  : selectedPerk === "Bus"
-                  ? 3000
-                  : 0
-              }
-            />
+        {/* Render transportation options and calculation if all required fields are set */}
+        {user &&
+          checkIn &&
+          checkOut &&
+          numberOfGuests > 0 &&
+          numberOfDays > 0 && (
+            <>
+              <div className="mt-4 border border-primary p-2">
+                Select your Transportation way:
+                <label className="mt-2 border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="perk"
+                    checked={selectedPerk === "Aeroplane"}
+                    onChange={() => setSelectedPerk("Aeroplane")}
+                  />
+                  <FaPlaneDeparture className="text-primary" />
+                  <span>Aeroplane</span>
+                </label>
+                <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="perk"
+                    checked={selectedPerk === "Bus"}
+                    onChange={() => setSelectedPerk("Bus")}
+                  />
+                  <FaBus className="text-primary" />
+                  <span>Bus</span>
+                </label>
+              </div>
+              <div className="mt-4 border border-primary p-2">
+                <p className="text-center font-bold p-3">Calculation:</p>
+                Number of days:{" "}
+                <span className="font-bold">
+                  {differenceInCalendarDays(
+                    new Date(checkOut),
+                    new Date(checkIn)
+                  )}{" "}
+                  Days
+                </span>
+                <div>
+                  Transportation Cost:{" "}
+                  <span className="font-bold">
+                    {selectedPerk === "Aeroplane"
+                      ? `NPR ${8000 * numberOfGuests}`
+                      : selectedPerk === "Bus"
+                      ? `NPR ${3000 * numberOfGuests}`
+                      : "N/A"}
+                  </span>
+                </div>
+                <p>
+                  Total Price:
+                  <span className="font-bold">
+                    NPR{" "}
+                    {numberOfDays * place.price * numberOfGuests +
+                      (selectedPerk === "Aeroplane"
+                        ? 8000 * numberOfGuests
+                        : selectedPerk === "Bus"
+                        ? 3000 * numberOfGuests
+                        : 0)}{" "}
+                  </span>
+                </p>
+                {/* Render StripeCheckoutForm if transportation option is selected */}
+                <div className=" mt-4 p-4 bg-gray-200 rounded-xl">
+                  <p className="mb-4 text-sm font-semibold underline">
+                    Enter your Card details:
+                  </p>
+                  {selectedPerk && ( // Conditionally render StripeCheckoutForm
+                    <StripeCheckoutForm
+                      checkIn={checkIn}
+                      checkOut={checkOut}
+                      numberOfDays={numberOfDays}
+                      numberOfGuests={numberOfGuests}
+                      place={place}
+                      handleBooking={handleBooking}
+                      perkPrice={
+                        selectedPerk === "Aeroplane"
+                          ? 8000
+                          : selectedPerk === "Bus"
+                          ? 3000
+                          : 0
+                      }
+                    />
+                  )}
+                </div>
+              </div>
+            </>
           )}
-        </div>
-      </div>
-    </>
-  )}
-
       </div>
     </Elements>
   );
@@ -260,49 +275,56 @@ const StripeCheckoutForm = ({
   handleBooking,
   perkPrice,
   name,
-
 }) => {
-  const stripe = useStripe();
-  const elements = useElements();
+  const stripe = useStripe(); // Access Stripe instance
+  const elements = useElements(); // Access Elements instance
 
+  // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Check if Stripe or Elements is not loaded
     if (!stripe || !elements) {
       return;
     }
 
     try {
       const { data } = await axios.post("/create-payment-intent", {
-        amount: (numberOfDays * place.price * numberOfGuests + perkPrice * numberOfGuests) * 100, // Convert to cents
+        // Create payment intent on the server
+        amount:
+          (numberOfDays * place.price * numberOfGuests +
+            perkPrice * numberOfGuests) *
+          100, // Converting to cents
         currency: "NPR",
       });
 
-      const clientSecret = data.clientSecret; // Access the clientSecret property
+      const clientSecret = data.clientSecret; // Access the clientSecret property from response
 
+      // Confirm card payment with Stripe
       const paymentResult = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
-          card: elements.getElement(CardElement),
+          card: elements.getElement(CardElement), // Access CardElement from Elements
         },
       });
 
-      
+      // Handle payment success or failure
       if (paymentResult.error) {
         console.error("Payment failed:", paymentResult.error.message);
       } else if (paymentResult.paymentIntent.status === "succeeded") {
-        handleBooking(paymentResult.paymentIntent);
+        handleBooking(paymentResult.paymentIntent); // Call handleBooking function on successful payment
       }
     } catch (error) {
       console.error("Error processing payment:", error);
     }
   };
 
+  // Render the form with CardElement and submit button
   return (
     <form onSubmit={handleSubmit}>
       <CardElement />
       <button
         type="submit"
-        disabled={!stripe}
+        disabled={!stripe} // Disable button if Stripe is not loaded
         className="primary mt-4 hover:bg-green-500 hover:text-black"
       >
         Pay with Stripe!

@@ -4,20 +4,25 @@ import axios from "axios";
 import Navbar from "../Admin/Navbar";
 
 const UserDocument = () => {
-  const [documents, setDocuments] = useState([]);
+  const [documents, setDocuments] = useState([]);   // State for storing documents
 
+
+  // useEffect hook to fetch documents from the server
   useEffect(() => {
     // Fetch documents from the server
     axios
       .get("http://localhost:4000/alldocuments")
       .then((response) => {
-        setDocuments(response.data);
+        setDocuments(response.data);    // Update documents state with fetched data
       })
       .catch((error) => {
         console.error("Error fetching documents:", error);
       });
-  }, []);
+  }, []);     // Dependency array to run effect only once on component mount
 
+
+
+  // Function to handle deletion of a document
   const handleDeleteDocument = async (documentId, documentIndex) => {
     try {
       // Make a delete request to remove the document
@@ -41,6 +46,7 @@ const UserDocument = () => {
         All Documents
       </h1>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+         {/* Map through documents and render document cards */}
         {documents.map((document, documentIndex) => (
           <div key={document._id}>
             <h2 className="text-lg font-semibold mb-2">
@@ -49,6 +55,7 @@ const UserDocument = () => {
             <div className="p-4 border border-gray-200 rounded-md relative">
               {document.documents.map((documentPath, docIndex) => (
                 <div key={docIndex} className="relative">
+                  {/* Link to view document in new tab */}
                   <a href={`http://localhost:4000/documents/${documentPath}`} target="_blank" rel="noopener noreferrer">
                     <img
                       src={`http://localhost:4000/documents/${documentPath}`}

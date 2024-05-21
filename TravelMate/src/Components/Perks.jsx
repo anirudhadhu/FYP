@@ -1,12 +1,13 @@
 import React from "react";
 
 export default function Perks({ selected, onChange }) {
+  // Function to handle checkbox click
   function handleCbClick(ev) {
     const { checked, name } = ev.target;
-    if (checked) {
-      onChange([...selected, name]);
+    if (checked) {    // Update selected perks based on checkbox state
+      onChange([...selected, name]);    // Add perk to selected array
     } else {
-      onChange([...selected.filter((selectedName) => selectedName !== name)]);
+      onChange([...selected.filter((selectedName) => selectedName !== name)]);  // Remove perk from selected array
     }
   }
 
@@ -109,3 +110,10 @@ export default function Perks({ selected, onChange }) {
     </>
   );
 }
+
+
+// Checkbox Handling: Function handleCbClick manages the state of selected perks based on checkbox clicks.
+// Checkbox Inputs: Each checkbox input is associated with a specific perk, and its state is determined by whether that perk is included in the selected array.
+// SVG Icons: Each checkbox is accompanied by an SVG icon representing the corresponding perk.
+// Labels: Each checkbox is wrapped in a label for accessibility and styling purposes.
+// Event Handling: The onChange function is called to update the selected perks array whenever a checkbox is clicked.

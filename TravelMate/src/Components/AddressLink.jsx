@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
 
-const AddressLink = ({children}) => {
+const AddressLink = ({ children }) => {
   return (
     <div>
+      {/* Create a link that opens Google Maps with the provided address */}
       <a
         target="_blank"
-        href={"https://maps.google.com/?q=" + children}
+        href={"https://maps.google.com/?q=" + children} // Construct the Google Maps search URL with the address
         className="flex text-m font-semibold underline my-3 text-primary"
       >
         <svg
@@ -20,11 +21,10 @@ const AddressLink = ({children}) => {
             clipRule="evenodd"
           />
         </svg>
-
-        {children}
+        {children} {/* Render the address text provided as children */}
       </a>
     </div>
-  )
-}
+  );
+};
 
-export default AddressLink
+export default AddressLink;

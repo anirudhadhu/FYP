@@ -1,20 +1,20 @@
-:root{
-    --primaryColor:rgb(130, 0, 237);
-    --HoverColor:  rgb(110, 24, 180);
+:root {
+    /* Define color variables for reuse */
+    --primaryColor: rgb(130, 0, 237);
+    --hoverColor: rgb(110, 24, 180);
     --whiteColor: hsl(0, 0%, 100%);
     --blackColor: hsl(0, 0%, 18%);
     --textColor: hsl(240, 4%, 36%);
-    --whiteColorDeam: hsl (0, 0%, 93%);
-    --greyBg: hsl(0, 0%, 96);
+    --whiteColorDim: hsl(0, 0%, 93%);
+    --greyBg: hsl(0, 0%, 96%);
     --greyText: rgb(190, 190, 190);
-    --inputColor: hsl(330, 12%, 97%)
-    /* box-shadow: 0 2px 8px 2px rgba(178, 178, 178, 0.334); */
+    --inputColor: hsl(330, 12%, 97%);
+    /* Uncomment for a box-shadow if needed */
+    /* --boxShadow: 0 2px 8px 2px rgba(178, 178, 178, 0.334); */
+}
 
-  }
-
-
-.about{
-    .secContainer{
+.about {
+    .secContainer {
         color: var(--blackColor);
         line-height: 1.5rem;
         padding-bottom: 2rem;
@@ -22,132 +22,119 @@
         font-size: 1.1rem;
     }
 
-
-    .mainContent{
+    .mainContent {
         gap: 1rem;
-        .singleItem{
+
+        .singleItem {
             text-align: center;
 
-            img{
-                background: rgba(247, 144, 54, .0256);
-                 width: 35%; /*change this for small screen */
+            img {
+                background: rgba(247, 144, 54, 0.0256);
+                width: 35%;
                 height: 10rem;
                 border-radius: 80%;
                 padding: 1rem;
+                /* Change this for small screens if needed */
             }
 
-            h3{
+            h3 {
                 font-weight: 700;
                 color: var(--blackColor);
-                padding: .5rem;
+                padding: 0.5rem;
             }
 
-            p{
+            p {
                 font-size: 13px;
                 font-weight: 500;
-                padding-bottom: .5rem;
+                padding-bottom: 0.5rem;
                 color: var(--textColor);
-
-
             }
         }
     }
 
-    .videoCard{
+    .videoCard {
         margin-top: 2rem;
         background: linear-gradient(to top, rgba(0, 0, 0, 0.73), rgba(0, 0, 0, 0.609)), url(../assets/CoverPage.jpg);
         background-position: center;
         background-size: cover;
         background-repeat: no-repeat;
 
-        .cardContent{
+        .cardContent {
             gap: 2rem;
             padding: 2rem 1rem;
 
-            .cardText{
+            .cardText {
                 color: var(--whiteColor);
                 font-weight: 600;
                 padding-bottom: 1rem;
+
+                h2 {
+                    font-size: 1.2rem;
+                    /* Added for responsiveness */
+                }
+
+                p {
+                    color: var(--whiteColor);
+                    opacity: 0.7;
+                    font-size: 12px;
+                    font-weight: 400;
+                    letter-spacing: 1px;
+                }
             }
 
-            p{
-                color: var(--whiteColor);
-                opacity: .7;
-                font-size: 12px;
-                font-weight: 400;
-                letter-spacing: 1px;
-            }
-
-            .cardVideo{
+            .cardVideo {
                 border: 2px solid var(--primaryColor);
                 height: 200px;
-                width:100%;
+                width: 100%;
                 border-radius: 10px;
                 overflow: hidden;
 
-
-                video{
+                video {
                     height: 100%;
                     width: 100%;
                     object-fit: cover;
-
                 }
-
             }
         }
-
-
     }
-
-
 }
 
-@media screen  and (min-width: 720px) {
-    .about{
-        .secContainer{
+/* Responsive adjustments for medium screens (min-width: 720px) */
+@media screen and (min-width: 720px) {
+    .about {
+        .secContainer {
             padding: 2rem;
-            .videoCard{
-                .cardContent{
+
+            .videoCard {
+                .cardContent {
                     gap: 4rem;
                     padding: 6rem 1rem;
 
-                    .cardText{
-                        h2{
-                            font-size: 1.2rem;
-                            
-                        }
-
-                        p{
-                            opacity: .7;
-                            font-size: 10px ;
+                    .cardText {
+                        p {
+                            opacity: 0.7;
+                            font-size: 10px;
                             padding: 1rem;
                             /* background: var(--whiteColor);
                             color: var(--primaryColor); */
                         }
                     }
 
-                }
-
-                .cardContent{
+                    /* Adjust layout for video card */
                     grid-template-columns: repeat(2, 1fr) !important;
                 }
             }
         }
     }
-
-    
 }
 
-@media screen  and (min-width: 1024px) {
-    .about{
-        .secContainer{
-            .mainContent{
+/* Responsive adjustments for large screens (min-width: 1024px) */
+@media screen and (max-width: 1024px) {
+    .about {
+        .secContainer {
+            .mainContent {
                 padding: 2.5rem 0;
-                
-
             }
         }
     }
-
-    
 }

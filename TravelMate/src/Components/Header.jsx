@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../UserContext";
 
 const Header = () => {
-  const { user } = useContext(UserContext);
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const { user } = useContext(UserContext);   // Accessing user context
+  const [isOpen, setIsOpen] = useState(false);    // State for dropdown menu
+  const dropdownRef = useRef(null);   // Ref for dropdown menu
 
+  // Function to toggle dropdown menu
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -16,12 +17,14 @@ const Header = () => {
     setIsOpen(false);
   };
 
+  // Function to handle click outside dropdown menu
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsOpen(false);
     }
   };
 
+  // Effect to add event listener for clicking outside dropdown menu
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -56,6 +59,8 @@ const Header = () => {
         </Link>
       </div>
       <div className="flex items-center gap-2 py-2 px-4">
+
+        {/* Hamburger menu for mobile */}
         <div className="flex rounded-full py-2 px-8 lg:hidden">
           <button
             className="bg-primary text-white p-1 rounded-full focus:outline-none "
@@ -150,6 +155,7 @@ const Header = () => {
             </div>
           )}
         </div>
+        {/* Link to Account or Login page */}
         <Link
           to={user ? "/Account" : "/login"}
           className="bg-gray-500 text-white rounded-full border-primary-500 overflow-hidden"
@@ -169,6 +175,7 @@ const Header = () => {
             />
           </svg>
         </Link>
+         {/* Display user's name if logged in */}
         <div className="text-sm font-medium truncate w-18">
           {!!user && <p>{user.name}</p>}
         </div>

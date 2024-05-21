@@ -3,35 +3,46 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 const ResetPasswordPage = () => {
-  const { token } = useParams();
+  const { token } = useParams(); // Extract token from URL params
+  // State variables for password, confirmPassword, error, success, and showPassword
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Function to handle password reset submission
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
+    if (password !== confirmPassword) {    // Check if passwords match
       setError("Passwords do not match");
       return;
     }
 
     try {
+      // Send POST request to reset password with new password and token
       const response = await axios.post(`/reset-password/${token}`, {
         newPassword: password,
       });
-      setSuccess(response.data.message);
+      setSuccess(response.data.message);    // Set success message
     } catch (error) {
-      setError("Failed to reset password");
+      setError("Failed to reset password");   // Set error message if request fails
       console.error("Reset password error:", error);
     }
   };
 
+    // Render reset password form
   return (
     <div className="flex justify-center p-9">
       <div className="w-full max-w-md">
-        <form onSubmit={handleResetPassword} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <h2 className="text-center text-2xl mb-6 underline">Reset your password</h2>
+        <form
+          onSubmit={handleResetPassword}
+          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+        >
+          <h2 className="text-center text-2xl mb-6 underline">
+            Reset your password
+          </h2>
+          {/* Input for new password */}
           <div className="mb-4 relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -40,12 +51,14 @@ const ResetPasswordPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+             {/* Toggle button to show/hide password */}
             <button
               type="button"
               className="absolute right-0 top-0 mt-3 mr-4 focus:outline-none"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
+                // Icon for showing password
                 <svg
                   className="h-6 w-6 text-gray-600"
                   fill="none"
@@ -65,7 +78,7 @@ const ResetPasswordPage = () => {
                     d="M12 4.5v3m0 8.5v3m-4-8.5H5m14 0h-3"
                   />
                 </svg>
-              ) : (
+              ) : (   // Icon for hiding password
                 <svg
                   className="h-6 w-6 text-gray-600"
                   fill="none"
@@ -82,6 +95,7 @@ const ResetPasswordPage = () => {
               )}
             </button>
           </div>
+          {/* Input for confirming new password */}
           <div className="mb-6 relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -132,12 +146,22 @@ const ResetPasswordPage = () => {
               )}
             </button>
           </div>
+          {/* Display error message if there's an error */}
           {error && <div className="text-red-500 mb-4">{error}</div>}
-          {success && <div className="text-green-500 mb-4">{success}
-          <Link to="/login" className="text-blue-500 hover:text-blue-700">Login</Link>
-          
-          </div>}
-          <button type="submit" className="bg-primary hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          {/* Display success message and link to login if reset password is successful */}
+          {success && (
+            <div className="text-green-500 mb-4">
+              {success}
+              <Link to="/login" className="text-blue-500 hover:text-blue-700">
+                Login
+              </Link>
+            </div>
+          )}
+          {/* Button to submit password reset */}
+          <button
+            type="submit"
+            className="bg-primary hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
             Reset Password
           </button>
         </form>

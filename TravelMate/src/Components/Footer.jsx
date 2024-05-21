@@ -4,9 +4,8 @@ import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
-  
   return (
-    <div  className="footer">
+    <div className="footer">
       <div className="secContainer container grid">
         <div className="logoDiv">
           <div className="footerLogo">
@@ -50,7 +49,7 @@ const Footer = () => {
 
           <li>
             <Link to={"/UserGuide"} href="/terms">
-            User Guide{" "}
+              User Guide{" "}
             </Link>
           </li>
           <li>
@@ -69,21 +68,16 @@ const Footer = () => {
         <div className="footerLinks">
           <span className="linkTitle">Utilities</span>
           <li>
-            <Link to={"/CurrencyConvert"} >
-              Currency Conversion{" "}
-            </Link>
+            <Link to={"/CurrencyConvert"}>Currency Conversion </Link>
           </li>
           <li>
-            <Link to={"/weather"} >
-              Weather Forecast{" "}
-            </Link>
+            <Link to={"/weather"}>Weather Forecast </Link>
           </li>
           <li>
             <Link to={"/news"} href="/news">
               News{" "}
             </Link>
           </li>
-         
         </div>
 
         {/* <div className="footerLinks">

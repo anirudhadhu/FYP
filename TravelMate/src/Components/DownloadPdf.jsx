@@ -4,29 +4,45 @@ import html2canvas from "html2canvas";
 
 const DownloadPdf = () => {
   const handleDownload = () => {
-    const input = document.getElementById("booking-info");
-    html2canvas(input, { scale: 4 }).then((canvas) => { 
-      const imgData = canvas.toDataURL("image/jpeg", 1.0); 
+    // Select the element with id "booking-info"
+    const input = document.getElementById("booking-info"); // Use html2canvas to capture the element as a canvas
+    html2canvas(input, { scale: 4 }).then((canvas) => {
+      // Convert the canvas to an image data URL
+      const imgData = canvas.toDataURL("image/jpeg", 1.0);
       const pdf = new jsPDF({
+        // Create a new jsPDF instance with landscape orientation and A4 size
         orientation: "landscape",
         unit: "mm",
-        format: "a4"
+        format: "a4",
       });
+      // Get PDF dimensions
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = pdfWidth - 20; 
-      const imgHeight = (canvas.height * imgWidth) / canvas.width; 
+
+      // Calculate image dimensions to maintain aspect ratio
+      const imgWidth = pdfWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      // Calculate Y position to center the image if it is smaller than the page
       let positionY = 0;
       const imgRatio = imgHeight / pdfHeight;
       if (imgRatio > 1) {
         positionY = (pdfHeight - imgHeight) / 2;
       }
-      pdf.addImage(imgData, "JPEG", 10, positionY, imgWidth, imgHeight);
-  
-      // Add the provided text to the PDF
+      pdf.addImage(imgData, "JPEG", 10, positionY, imgWidth, imgHeight); // Add the captured image to the PDF
+
+      // Add the text to the PDF
       pdf.setFontSize(12);
-      pdf.text("Thank you for booking with TravelMate,", 10, imgHeight + positionY + 10);
-      pdf.text("By accessing or using TravelMate in any manner, you agree to be bound by these Terms and Conditions.", 10, imgHeight + positionY + 15);
+      pdf.text(
+        "Thank you for booking with TravelMate,",
+        10,
+        imgHeight + positionY + 10
+      );
+      pdf.text(
+        "By accessing or using TravelMate in any manner, you agree to be bound by these Terms and Conditions.",
+        10,
+        imgHeight + positionY + 15
+      );
 
       const termsAndConditions = [
         "1. All bookings made through TravelMate are subject to availability.",
@@ -43,16 +59,19 @@ const DownloadPdf = () => {
         "12. Any misuse of the platform may result in account termination.",
         "13. TravelMate strives to provide accurate information, but we do not guarantee the completeness or reliability of the content.",
         "14. TravelMate reserves the right to cancel or modify any booking without prior notice.",
-        "15. TravelMate is not responsible for any lost or stolen items."
+        "15. TravelMate is not responsible for any lost or stolen items.",
       ];
 
-    
-  
+      // Set font properties for the terms and conditions text
       pdf.setFont("helvetica");
       pdf.setFontSize(10);
       let yOffset = imgHeight + positionY + 25; // Initial Y offset for terms and conditions text
+
+      // Add each term to the PDF, handling page breaks if necessary
       termsAndConditions.forEach((term, index) => {
-        const lineHeight = pdf.getTextDimensions(term).h * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
+        const lineHeight =
+          (pdf.getTextDimensions(term).h * pdf.internal.getFontSize()) /
+          pdf.internal.scaleFactor;
         if (yOffset + lineHeight > pdfHeight - 5) {
           pdf.addPage();
           yOffset = 10;
@@ -60,15 +79,15 @@ const DownloadPdf = () => {
         pdf.text(term, 10, yOffset);
         yOffset += lineHeight; // Increment Y offset for the next line
       });
-  
-      pdf.save("TravelMate_BookingInformation.pdf");
+
+      pdf.save("TravelMate_BookingInformation.pdf"); // Save the PDF with the specified filename
     });
   };
-  
 
   return (
     <div className="py-9 font-semibold grid">
       Download your booking information:
+      {/* Button to trigger the PDF download */}
       <button
         className="mt-6 w-64 h-16 bg-primary text-white hover:bg-green-500 rounded-3xl"
         onClick={handleDownload}
@@ -80,3 +99,11 @@ const DownloadPdf = () => {
 };
 
 export default DownloadPdf;
+
+
+// html2canvas: Captures the HTML element and converts it to a canvas.
+// canvas.toDataURL: Converts the canvas to an image data URL.
+// jsPDF: Generates a PDF document.
+// Image Dimensions: Calculated to maintain the aspect ratio and fit within the PDF.
+// Terms and Conditions: Added to the PDF with page break handling.
+// Download Button: Triggers the PDF generation and download process.

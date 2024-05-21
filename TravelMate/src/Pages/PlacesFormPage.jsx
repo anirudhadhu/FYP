@@ -7,7 +7,7 @@ import Perks from "../Components/Perks";
 
 const PlacesFormPage = () => {
   const { id } = useParams();
-
+  // State variables to manage form inputs and submission
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
   const [addedPhotos, setAddedPhotos] = useState([]);
@@ -20,11 +20,13 @@ const PlacesFormPage = () => {
   const [price, setPrice] = useState(1000);
   const [redirect, setRedirect] = useState(false);
 
+  // Effect to fetch place data if editing an existing place
   useEffect(() => {
     if (!id) {
       return;
     }
-    axios.get("/places/" + id)
+    axios
+      .get("/places/" + id)
       .then((response) => {
         const { data } = response;
         setTitle(data.title);
@@ -42,17 +44,18 @@ const PlacesFormPage = () => {
         console.error("Error fetching place data:", error);
       });
   }, [id]);
-  
-  
 
+  // Function to render input header
   function inputHeader(text) {
     return <h2 className="text-2xl mt-4">{text}</h2>;
   }
 
+  // Function to render input description
   function inputDescription(text) {
     return <p className="text-gray-500 text-sm">{text}</p>;
   }
 
+  // Function to render pre-input section
   function preInput(header, description) {
     return (
       <>
@@ -62,9 +65,11 @@ const PlacesFormPage = () => {
     );
   }
 
+  // Function to handle form submission
   const savePlace = async (ev) => {
     ev.preventDefault();
-    const placeData= { title,
+    const placeData = {
+      title,
       address,
       addedPhotos,
       description,
@@ -73,23 +78,21 @@ const PlacesFormPage = () => {
       checkIn,
       checkOut,
       maxGuests,
-      price}
-    if (id){
-
+      price,
+    };
+    if (id) {
       await axios.put("/places", {
-        id, 
-        ...placeData
+        id,
+        ...placeData,
       });
       setRedirect(true);
-
-
-    }else{
-      await axios.post("/places", placeData); 
+    } else {
+      await axios.post("/places", placeData);
       setRedirect(true);
     }
-    };
-  
+  };
 
+  // Redirect if submission is successful
   if (redirect) {
     return <Navigate to={"/account/places"} />;
   }
@@ -104,6 +107,7 @@ const PlacesFormPage = () => {
           value={title}
           onChange={(ev) => setTitle(ev.target.value)}
           placeholder="Title"
+          required
         />
 
         {preInput("Address", "Address to this place")}
@@ -112,6 +116,7 @@ const PlacesFormPage = () => {
           value={address}
           onChange={(ev) => setAddress(ev.target.value)}
           placeholder="Adress"
+          required
         />
 
         {preInput("Photos", "More = Better")}
@@ -121,6 +126,7 @@ const PlacesFormPage = () => {
         <textarea
           value={description}
           onChange={(ev) => setDescription(ev.target.value)}
+          required
         />
 
         {preInput("Perks", "Select all the perks")}
@@ -146,6 +152,7 @@ const PlacesFormPage = () => {
               value={checkIn}
               onChange={(ev) => setCheckIn(ev.target.value)}
               placeholder="05:15 AM"
+              required
             />
           </div>
           <div>
@@ -155,6 +162,7 @@ const PlacesFormPage = () => {
               value={checkOut}
               onChange={(ev) => setCheckOut(ev.target.value)}
               placeholder="11:11 AM"
+              required
             />
           </div>
           <div>
@@ -164,6 +172,7 @@ const PlacesFormPage = () => {
               value={maxGuests}
               onChange={(ev) => setMaxGuests(ev.target.value)}
               min="1"
+              required
             />
           </div>
 
@@ -174,9 +183,9 @@ const PlacesFormPage = () => {
               value={price}
               onChange={(ev) => setPrice(ev.target.value)}
               min="1"
+              required
             />
           </div>
-
         </div>
 
         <button className="primary my-4">Submit</button>
@@ -186,4 +195,3 @@ const PlacesFormPage = () => {
 };
 
 export default PlacesFormPage;
-

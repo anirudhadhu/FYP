@@ -1,18 +1,21 @@
 import React from "react";
 
 const FavoutireIcon = ({ place, handleSave, isPlaceSaved }) => {
+  // If no place is provided, return null (component will not render)
   if (!place) {
     return null;
   }
 
   return (
     <div className="mt-2">
+      {/* Button to save or unsave the place */}
       <button
         onClick={(e) => handleSave(e, place._id)}
         className={`rounded-full h-8 w-8 flex items-center justify-center ${
-          isPlaceSaved(place._id) ? "bg-primary text-white" : "bg-white"
+          isPlaceSaved(place._id) ? "bg-primary text-white" : "bg-white" // Conditional class based on whether the place is saved or not
         }`}
       >
+        {/* Conditional rendering of icon based on whether the place is saved or not */}
         {isPlaceSaved(place._id) ? (
           // Icon for saved place
           <svg
@@ -50,3 +53,12 @@ const FavoutireIcon = ({ place, handleSave, isPlaceSaved }) => {
 };
 
 export default FavoutireIcon;
+
+
+// Conditional Rendering: Renders different icons based on whether the place is saved or not.
+// Button onClick: Calls the handleSave function with the place ID when clicked.
+// Dynamic Styling: Applies different styles based on whether the place is saved or not.
+// Props:
+// place: The place object for which the icon is displayed.
+// handleSave: Function to handle saving/un-saving the place.
+// isPlaceSaved: Function to check if the place is saved.

@@ -11,27 +11,28 @@ const LoginPage = () => {
   const { setUser } = useContext(UserContext);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
+  // Function to handle login submission
   async function handleLoginSubmit(ev) {
-    ev.preventDefault();
+    ev.preventDefault(); // Preventing default form submission behavior
     try {
-      const response = await axios.post("/login", { email, password });
-      const { data } = response;
+      const response = await axios.post("/login", { email, password }); // Sending a POST request to login
+      const { data } = response; // Destructuring response data
       if (data.error) {
-        alert("Login failed: " + data.error);
+        alert("Login failed: " + data.error); // Alerting user if login fails
       } else {
-        setUser(data.user);
-        alert("Login successful");
+        setUser(data.user); // Setting user context with logged-in user data
+        alert("Login successful"); // Alerting user about successful login
 
         // Redirect to appropriate page based on user's role
         if (data.user.role === "admin") {
-          setRedirect("/AdminHomePage");
+          setRedirect("/AdminHomePage"); // Redirecting to admin home page if user is an admin
         } else {
-          setRedirect("/");
+          setRedirect("/"); // Redirecting to default home page if user is not an admin
         }
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("Login failed: Something went wrong");
+      alert("Login failed: Please Check your credientials");
     }
   }
 
@@ -39,26 +40,30 @@ const LoginPage = () => {
     return <Navigate to={redirect} />;
   }
 
+  // Function to toggle password visibility
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  // Function to handle forgot passwor
   const handleForgotPassword = (ev) => {
     ev.preventDefault(); // Prevent the default behavior of the button
     ev.stopPropagation(); // Stop the event from bubbling up
     setShowForgotPasswordModal(true);
   };
 
+  // Function to close forgot password modal
   const handleCloseForgotPasswordModal = () => {
     setShowForgotPasswordModal(false);
   };
 
+  // Function to send password reset link
   const handleSendResetLink = async () => {
     try {
       // Send email with reset link
       await axios.post("/forgot-password", { email });
-      alert("Password reset link sent to your email");
-      setShowForgotPasswordModal(false);
+      alert("Password reset link sent to your email"); // Alerting user about successful sending of reset link
+      setShowForgotPasswordModal(false); // Hiding forgot password modal
     } catch (error) {
       console.error("Forgot password error:", error);
       alert("Failed to send password reset link");
@@ -68,7 +73,9 @@ const LoginPage = () => {
   return (
     <div className="mt-20 flex items-center justify-center">
       <div className="max-w-md w-full px-8 pt-6 pb-8 mb-4 border border-primary rounded-2xl">
-        <h1 className="text-2xl text-center mb-8 underline font-semibold">Welcome Back!</h1>
+        <h1 className="text-2xl text-center mb-8 underline font-semibold">
+          Welcome Back!
+        </h1>
         <form onSubmit={handleLoginSubmit}>
           <div className="mb-4">
             Email:
@@ -78,6 +85,7 @@ const LoginPage = () => {
               placeholder="RegisteredEmail@email.com"
               value={email}
               onChange={(ev) => setEmail(ev.target.value)}
+              required
             />
           </div>
           <div className="mb-4 relative">
@@ -88,6 +96,7 @@ const LoginPage = () => {
               placeholder="******"
               value={password}
               onChange={(ev) => setPassword(ev.target.value)}
+              required
             />
             <button
               className="absolute right-0 top-0 mt-10 mr-4 focus:outline-none"
@@ -143,18 +152,20 @@ const LoginPage = () => {
             </div>
           </div>
           <div className="text-center p-4">
-              <span className="text-gray-500">Don't have an account?</span>{" "}
-              <Link className="underline text-black" to="/register">
-                SignUp
-              </Link>
-            </div>
+            <span className="text-gray-500">Don't have an account?</span>{" "}
+            <Link className="underline text-black" to="/register">
+              SignUp
+            </Link>
+          </div>
         </form>
       </div>
       {/* Forgot password modal */}
       {showForgotPasswordModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ">
           <div className="bg-white p-6 rounded-lg w-96 border border-primary">
-            <h2 className="text-2xl mb-4 underline text-center">Forgot Password</h2>
+            <h2 className="text-2xl mb-4 underline text-center">
+              Forgot Password
+            </h2>
             <input
               type="email"
               className="w-full border p-2 mb-4"
@@ -163,24 +174,29 @@ const LoginPage = () => {
               onChange={(ev) => setEmail(ev.target.value)}
             />
             <div className="flex p-4 justify-between">
-              <button className="primary hover:bg-green-500 hover:text-black  mr-2" onClick={handleSendResetLink}>
+              <button
+                className="primary hover:bg-green-500 hover:text-black  mr-2"
+                onClick={handleSendResetLink}
+              >
                 Send Reset Link
               </button>
-              <button className="primary hover:bg-red-500" onClick={handleCloseForgotPasswordModal}>
+              <button
+                className="primary hover:bg-red-500"
+                onClick={handleCloseForgotPasswordModal}
+              >
                 Cancel
               </button>
             </div>
             <p>
               Note:
               <span className="text-red-500 ml-2 text-sm">
-                Reset link will only be sent if you are registered in TravelMate.
+                Reset link will only be sent if you are registered in
+                TravelMate.
               </span>
             </p>
           </div>
         </div>
       )}
-      
-    
     </div>
   );
 };

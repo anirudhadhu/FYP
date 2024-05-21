@@ -3,6 +3,7 @@ import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 
 const Register = () => {
+  // State variables to manage form inputs and component state
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ const Register = () => {
   // Regular expression pattern for number validation (10 digits)
   const numberRegex = /^\d{10}$/;
 
+  // Function to handle user registratio
   async function registerUser(ev) {
     ev.preventDefault();
     // Validate number against regex pattern
@@ -21,12 +23,14 @@ const Register = () => {
       return;
     }
     try {
-      const response = await axios.post("/register", { 
-        name, 
-        number, 
-        email, 
-        password });
-  
+      // Sending registration request to the server
+      const response = await axios.post("/register", {
+        name,
+        number,
+        email,
+        password,
+      });
+
       // Check if registration was successful
       if (response.status === 200) {
         alert("Registration successful. Verification email sent !");
@@ -38,12 +42,13 @@ const Register = () => {
       alert("Failed to register user.");
     }
   }
-  
 
+  // Redirecting user after successful registration
   if (redirect) {
     return <Navigate to="/login" />;
   }
 
+  // Function to toggle password visibility
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -51,7 +56,9 @@ const Register = () => {
   return (
     <div className="mt-20 flex items-center justify-center ">
       <div className="max-w-md w-full bg-white shadow-md px-8 pt-6 pb-8 mb-4 border border-primary rounded-2xl ">
-        <h1 className="text-2xl text-center mb-8 underline font-semibold">Register </h1>
+        <h1 className="text-2xl text-center mb-8 underline font-semibold">
+          Register{" "}
+        </h1>
         <form onSubmit={registerUser}>
           <div className="mb-4">
             Full Name:
@@ -61,6 +68,7 @@ const Register = () => {
               placeholder="Your Full Name"
               value={name}
               onChange={(ev) => setName(ev.target.value)}
+              required
             />
           </div>
           <div className="mb-4">
@@ -72,6 +80,7 @@ const Register = () => {
               value={number}
               min={0}
               onChange={(ev) => setNumber(ev.target.value)}
+              required
             />
           </div>
           <div className="mb-4">
@@ -82,6 +91,7 @@ const Register = () => {
               placeholder="yourValid@email.com"
               value={email}
               onChange={(ev) => setEmail(ev.target.value)}
+              required
             />
           </div>
           <div className="mb-5 relative">
@@ -92,6 +102,7 @@ const Register = () => {
               placeholder="Strong password"
               value={password}
               onChange={(ev) => setPassword(ev.target.value)}
+              required
             />
             <button
               className="absolute right-0 top-0 mt-10 mr-4 focus:outline-none"
@@ -135,7 +146,9 @@ const Register = () => {
               )}
             </button>
           </div>
+          {/* Button to submit registration */}
           <button className="primary">Register</button>
+          {/* Link to login page */}
           <div className="text-center py-2 text-gray-500">
             Already Have an account?{" "}
             <Link className="underline text-black" to="/login">

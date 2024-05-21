@@ -5,18 +5,21 @@ import axios from "axios";
 import PlaceImg from "../Components/PlaceImg";
 
 const PlacesPage = () => {
-  const [places, setPlaces] = useState([]);
+  const [places, setPlaces] = useState([]); // State variable to store user's places
 
+  // Effect to fetch user's places
   useEffect(() => {
     axios.get("/user-places").then(({ data }) => {
       setPlaces(data);
     });
   }, []);
 
+  // Function to handle deletion of a place
   const handleDeletePlace = async (id) => {
     try {
       const response = await axios.delete(`/allplaces/${id}`);
       if (response.status === 200) {
+        // Update state after successful deletion
         setPlaces(places.filter((place) => place._id !== id));
       }
     } catch (error) {
@@ -99,3 +102,8 @@ const PlacesPage = () => {
 };
 
 export default PlacesPage;
+
+// State Management: Uses state to store the user's places retrieved from the server.
+// Effect for Fetching Data: Utilizes useEffect to fetch user's places from the server when the component mounts.
+// Delete Place Function: Implements a function handleDeletePlace to delete a place when the corresponding button is clicked.
+// Rendering Places: Renders the user's places with their titles and addresses, along with a delete button for each place.

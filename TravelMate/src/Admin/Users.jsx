@@ -3,26 +3,28 @@ import Navbar from "../Admin/Navbar";
 import axios from "axios";
 
 const Users = () => {
-  const [users, setUsers] = useState([]);
-  const [error, setError] = useState(null);
-  const [editingUser, setEditingUser] = useState(null);
+  const [users, setUsers] = useState([]); // State for storing users
+  const [error, setError] = useState(null); // State for error handling
+  const [editingUser, setEditingUser] = useState(null); // State for currently editing user
   const [editedUserData, setEditedUserData] = useState({
+    // State for edited user data
     name: "",
     email: "",
     number: "",
-    role: "user" // Default role is user
+    role: "user", // Default role is user
   });
 
   useEffect(() => {
-    fetchUsers();
+    fetchUsers(); // Fetch users when component mounts
   }, []);
 
+  // Function to fetch users from the server
   const fetchUsers = () => {
     axios
       .get("/totalusers")
       .then((response) => {
-        const userData = response.data;
-        setUsers(userData.allUsers);
+        const userData = response.data; // Extract user data from response
+        setUsers(userData.allUsers); // Update users state with fetched data
       })
       .catch((error) => {
         console.error("Error fetching users:", error);
@@ -30,9 +32,10 @@ const Users = () => {
       });
   };
 
+  // Function to delete a user
   const deleteUser = (userId) => {
     axios
-      .delete(`/users/${userId}`)
+      .delete(`/users/${userId}`) // DELETE request to delete user
       .then(() => {
         // If deletion is successful, fetch users again to update the user list
         fetchUsers();
@@ -43,37 +46,42 @@ const Users = () => {
       });
   };
 
+  // Function to handle editing of a user
   const handleEditUser = (user) => {
-    setEditingUser(user);
+    setEditingUser(user); // Set currently editing user
     setEditedUserData({
+      // Set edited user data
       name: user.name,
       email: user.email,
       number: user.number,
-      role: user.role // Set role value from user data
+      role: user.role, // Set role value from user data
     });
   };
 
+  // Function to handle input change in the edit form
   const handleInputChange = (e) => {
     const { name, value, checked, type } = e.target;
     const newValue = type === "checkbox" ? (checked ? "admin" : "user") : value;
     setEditedUserData({
       ...editedUserData,
-      [name]: newValue
+      [name]: newValue,
     });
   };
 
+  // Function to save edited user data
   const saveEditedUser = () => {
     axios
-      .put(`/users/${editingUser._id}`, editedUserData)
+      .put(`/users/${editingUser._id}`, editedUserData) // PUT request to update user data
       .then(() => {
         // If update is successful, fetch users again to update the user list
         fetchUsers();
-        setEditingUser(null);
+        setEditingUser(null); // Reset editing user state
+        // Reset edited user data state
         setEditedUserData({
           name: "",
           email: "",
           number: "",
-          role: "user" // Reset role to user after editing
+          role: "user", // Reset role to user after editing
         });
       })
       .catch((error) => {
@@ -91,6 +99,7 @@ const Users = () => {
         </h2>
         {error && <p className="text-red-500">{error}</p>}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {/* Display users */}
           {users.map((user) => (
             <div
               key={user._id}
@@ -99,7 +108,9 @@ const Users = () => {
               <p className="text-xl font-semibold mb-2">Name: {user.name}</p>
               <p className="text-gray-600 mb-2">Email: {user.email}</p>
               <p className="text-gray-600 mb-2">Number: {user.number}</p>
-              <p className="text-gray-600">Admin: {user.role === "admin" ? "Yes" : "No"}</p>
+              <p className="text-gray-600">
+                Admin: {user.role === "admin" ? "Yes" : "No"}
+              </p>
               <div className="absolute bottom-4 right-4">
                 <button
                   className="bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"

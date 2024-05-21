@@ -6,33 +6,38 @@ import Home from "../Pages/Home";
 import Scroll from "../Pages/Scroll";
 
 const SearchResult = () => {
-  const { destination } = useParams();
+  const { destination } = useParams(); // Get the destination parameter from the URL
+  // State to store search results and manage not found state
   const [searchResults, setSearchResults] = useState([]);
   const [notFound, setNotFound] = useState(false);
+
+  // Effect to fetch search results when destination changes
   useEffect(() => {
     const fetchSearchResults = async () => {
       try {
+        // Fetch search results from the server based on the destination
         const response = await axios.get(`/search?title=${destination}`);
         const data = response.data;
+        // Check if search results are found
         if (data.length > 0) {
           setSearchResults(data);
           setNotFound(false); // Reset notFound state
         } else {
-          setNotFound(true);
+          setNotFound(true); // Set notFound state if no results found
         }
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
     };
-  
-    fetchSearchResults();
-  }, [destination]);
-  
 
+    fetchSearchResults();
+  }, [destination]); // Trigger effect when destination changes
+
+  // Render not found message if no search results found
   if (notFound) {
     return (
       <>
-      <Home/>
+        <Home />
         <h2 className=" mt-8 text-2xl underline text-center font-semibold">
           Search Result
         </h2>
@@ -60,6 +65,7 @@ const SearchResult = () => {
     );
   }
 
+  // Render search results if found
   return (
     <>
       <Home />
@@ -68,10 +74,12 @@ const SearchResult = () => {
           Search Result
         </h2>
         <div className="p-9 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {/* Map through search results and render each result */}
           {searchResults.map((result) => (
             <div key={result._id} className="p-4">
               <Link to={`/place/${result._id}`}>
                 <div className="relative bg-gray-500 rounded-2xl overflow-hidden aspect-square">
+                  {/* Display first photo of the place */}
                   {result.photos?.[0] && (
                     <img
                       className="absolute inset-0 w-full h-full object-cover"
@@ -88,7 +96,7 @@ const SearchResult = () => {
           ))}
         </div>
       </div>
-      <Scroll/>
+      <Scroll />
     </>
   );
 };

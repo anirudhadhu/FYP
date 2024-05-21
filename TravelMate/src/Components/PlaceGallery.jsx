@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
 const PlaceGallery = (place) => {
-  const [showAllPhotos, setShowAllPhotos] = useState(false);
+  const [showAllPhotos, setShowAllPhotos] = useState(false); // Initialize state variable showAllPhotos using useState hook, default value is false
 
+  // If showAllPhotos is true, display all photos
   if (showAllPhotos) {
     return (
       <div className="absolute mt-16 p-6 inset-0  text-white min-h-screen">
@@ -17,6 +18,8 @@ const PlaceGallery = (place) => {
                   {/* <h2 className=" text-3xl font-semibold underline mb-4 text-center text-black">
                 
                   </h2> */}
+
+                  {/* Button to close the fullscreen overlay */}
                   <button
                     onClick={() => setShowAllPhotos(false)}
                     className=" fixed right-8 top-48 flex items-center gap-1 py-2 px-4 rounded-lg bg-primary text-white focus:outline-none hover:bg-primary-dark"
@@ -50,16 +53,19 @@ const PlaceGallery = (place) => {
     );
   }
 
+  // If showAllPhotos is false, display a grid layout with the first three photos visible
   return (
     <div className="relative">
       <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 rounded-2xl overflow-hidden">
         <div>
           {place.photos?.[0] && (
             <div>
+              {/* Clicking on the photo triggers setShowAllPhotos to true */}
               <img
                 onClick={() => setShowAllPhotos(true)}
                 className="aspect-square object-cover cursor-pointer"
                 src={"http://localhost:4000/uploads/" + place.photos[0]}
+                style={{ width: "100%", height: "100%" }}
                 alt=""
               />
             </div>
@@ -72,6 +78,7 @@ const PlaceGallery = (place) => {
               onClick={() => setShowAllPhotos(true)}
               className="aspect-square object-cover cursor-pointer"
               src={"http://localhost:4000/uploads/" + place.photos[1]}
+              style={{ width: "100%", height: "100%" }}
               alt=""
             />
           )}
@@ -83,6 +90,7 @@ const PlaceGallery = (place) => {
               onClick={() => setShowAllPhotos(true)}
               className="aspect-square object-cover cursor-pointer"
               src={"http://localhost:4000/uploads/" + place.photos[2]}
+              style={{ width: "100%", height: "100%" }}
               alt=""
             />
           )}

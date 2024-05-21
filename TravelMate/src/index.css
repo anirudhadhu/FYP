@@ -1,30 +1,39 @@
+/* Including Tailwind CSS base styles */
 @tailwind base;
+
+/* Including Tailwind CSS component styles */
 @tailwind components;
+
+/* Including Tailwind CSS utility styles */
 @tailwind utilities;
 
+/* Styling input and textarea elements */
 input[type="text"],
 input[type="password"],
 input[type="email"],
 input[type="number"],
 textarea {
-    
+    /* Applying common styles to input and textarea elements */
     @apply w-full my-2 py-2 px-3 rounded-2xl ;
-    
 }
 
-textarea{
+/* Additional styles for textarea elements */
+textarea {
+    /* Setting height and border for textarea elements */
     height: 150px;
-    border:1px solid rgb(130, 0, 237);
+    border: 1px solid rgb(130, 0, 237);
 }
 
-
-button{
+/* Styling button elements */
+button {
+    /* Applying base style for buttons */
     @apply bg-gray-300 ;
 }
 
-button.primary{
+/* Modifier class for primary buttons */
+button.primary {
+    /* Setting background color for primary buttons */
     background-color: '#8200ed';
+    /* Applying additional styles to primary buttons */
     @apply bg-primary p-2 w-full text-white rounded-2xl ;
 }
-
-

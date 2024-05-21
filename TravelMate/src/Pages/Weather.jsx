@@ -2,19 +2,20 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const Weather = () => {
-  const [data, setData] = useState({});
-  const [location, setLocation] = useState("");
+  const [data, setData] = useState({}); // State to hold the weather data fetched from the API
+  const [location, setLocation] = useState(""); // State to hold the user input for the location
 
+  // Function to handle the API call to fetch weather data
   const searchLocation = () => {
     const url = `/weather?location=${location}`;
     axios
       .get(url)
       .then((response) => {
-        setData(response.data);
+        setData(response.data); // Set the fetched data into the state
         console.log(response.data);
       })
       .catch((error) => {
-        console.log("Error fetching data:", error);
+        console.log("Error fetching data:", error); // Log any errors encountered during the API call
       });
   };
 
@@ -37,6 +38,7 @@ const Weather = () => {
             placeholder="Eg: Kathmandu"
             value={location}
             onChange={(event) => setLocation(event.target.value)}
+            // Trigger search on pressing Enter key
             onKeyDown={(event) => {
               if (event.key === "Enter") {
                 searchLocation();
@@ -45,6 +47,7 @@ const Weather = () => {
           />
         </div>
 
+        {/* Display section for the weather data */}
         <div className=" flex justify-between items-center w-[600px] h-[350px]  border border-primary rounded-xl m-auto relative p-5">
           {data.weather ? (
             <div className="w-[500px] ">

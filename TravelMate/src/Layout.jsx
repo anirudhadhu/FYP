@@ -8,9 +8,9 @@ const Layout = () => {
     // className="py-4 px-8 flex flex-col min-h-screen"
     <div>
       <Header />
-        <Outlet />
-        <Footer />
-      </div>
+      <Outlet />
+      <Footer />
+    </div>
   );
 };
 

@@ -1,22 +1,23 @@
-import React, { useEffect, useState , useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Home from "../Pages/Home";
 import Scroll from "../Pages/Scroll";
 import VideoBar from "../Pages/VideoBar";
 import FavoriteIcon from "../Components/FavoriteIcon";
-import {UserContext} from "../UserContext";
+import { UserContext } from "../UserContext";
 
 const IndexPage = () => {
-  const [places, setPlaces] = useState([]);
-  const [savedPlaces, setSavedPlaces] = useState([]);
-  const { user } = useContext(UserContext);
+  const [places, setPlaces] = useState([]); // State variable for places
+  const [savedPlaces, setSavedPlaces] = useState([]); // State variable for saved places
+  const { user } = useContext(UserContext); // Getting user context from UserContext
 
+  // Effect hook to fetch places on component mount
   useEffect(() => {
     axios
       .get("/places")
       .then((response) => {
-        setPlaces(response.data);
+        setPlaces(response.data); // Setting fetched places to state
       })
       .catch((error) => {
         console.error("Error fetching places:", error);
@@ -25,48 +26,55 @@ const IndexPage = () => {
 
   useEffect(() => {
     axios
-      .get("/favorites")
+      .get("/favorites") // Sending a GET request to fetch saved places
       .then((response) => {
-        const savedPlaceIds = response.data.map((favorite) => favorite.place._id);
-        setSavedPlaces(savedPlaceIds);
+        const savedPlaceIds = response.data.map(
+          (favorite) => favorite.place._id
+        );
+        setSavedPlaces(savedPlaceIds); // Setting fetched saved places to state
       })
       .catch((error) => {
         console.error("Error fetching saved places:", error);
       });
   }, []);
 
+  // Function to handle saving a place to favorites
   const handleSave = async (e, id) => {
-    e.stopPropagation();
-    
+    e.stopPropagation(); // Preventing event propagation
+
     if (user) {
       if (isPlaceSaved(id)) {
-        handleRemove(e, id);
+        // Checking if place is already saved
+        handleRemove(e, id); // If place is already saved, remove it from favorites
       } else {
         try {
-          const response = await axios.post("/favorites", { place: id });
+          const response = await axios.post("/favorites", { place: id }); // Sending a POST request to save place to favorites
           if (response.status === 201) {
-            setSavedPlaces([...savedPlaces, id]);
+            // Checking if place is successfully saved
+            setSavedPlaces([...savedPlaces, id]); // Updating saved places state with the newly saved place
           }
         } catch (error) {
           console.error("Error adding place to favorites:", error);
         }
       }
     } else {
-      alert("Please log in to save places");
-      window.location.href = "/login";
+      alert("Please log in to save places"); // Alerting user to log in if not already logged in
+      window.location.href = "/login"; // Redirecting user to login page
     }
   };
 
+  // Function to handle removing a place from favorites
   const handleRemove = async (e, id) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Preventing event propagation
     try {
-      await axios.delete(`/favorites/${id}`);
-      setSavedPlaces(savedPlaces.filter((savedId) => savedId !== id));
+      await axios.delete(`/favorites/${id}`); // Sending a DELETE request to remove place from favorites
+      setSavedPlaces(savedPlaces.filter((savedId) => savedId !== id)); // Updating saved places state by filtering out the removed place
     } catch (error) {
       console.error("Error removing place from favorites:", error);
     }
   };
 
+  // Function to check if a place is saved
   const isPlaceSaved = (id) => {
     return savedPlaces.includes(id);
   };

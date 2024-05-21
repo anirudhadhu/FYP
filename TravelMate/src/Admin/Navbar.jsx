@@ -4,22 +4,26 @@ import { UserContext } from "../UserContext";
 import {Link, Navigate } from "react-router-dom";
 
 const Navbar = () => {
-    const { ready, user, setUser } = useContext(UserContext);
-  const [redirect, setRedirect] = useState(null);
+    const { ready, user, setUser } = useContext(UserContext);  // Destructure ready, user, and setUser from UserContext
+  const [redirect, setRedirect] = useState(null);     // State for redirecting after logout
+
+  // Function to handle logout
   async function logout() {
     try {
-      await axios.post("/logout");
-      setRedirect("/");
-      setUser(null);
+      await axios.post("/logout");     // Send a POST request to logout endpoint
+      setRedirect("/");   // Redirect to home page after logout
+      setUser(null);    // Set user state to null
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error("Logout error:", error);     // Log error if logout fails
     }
   }
 
+// Redirect to login page if user is not logged in and redirection is not set
   if (ready && !user && !redirect) {
     return <Navigate to="/login" />;
   }
 
+   // Redirect to specified route if redirection is set
   if (redirect) {
     return <Navigate to={redirect} />;
   }
@@ -54,8 +58,9 @@ const Navbar = () => {
       </div>
       <div className="hidden lg:flex rounded-full py-2 px-8">
         </div>
+         {/* Logout button */}
       <button
-        onClick={logout}
+        onClick={logout}  // Call logout function when clicked
         className=" primary mt-4 rounded-lg text-white hover:bg-primary focus:outline-none focus:bg-blue-700"
       >
         Log out

@@ -22,20 +22,21 @@ const AboutUs = () => {
           integrating planning, security, sustainability, and detailed
           information.
           <p className="text-justify mt-3">
-          The project introduces features like document uploads to eliminate the
-          need for carrying physical documents, user-friendly interfaces,
-          integrated booking services, and budget-friendly tour packages. Scopes
-          include user registration, destination information, friendly
-          interfaces accessible across devices, booking services integration, Weather Forecast
-          and currency conversion. However, there are limitations, such as
-          dependence on external data, device compatibility, sustainable data
-          accuracy, resource constraints for continuous improvements, and
-          limitations with third-party APIs. TravelMate targets users above 18,
-          primarily between ages 20 to 60, providing a seamless platform for
-          booking travel packages and exploring the world. It utilizes React JS
-          for frontend, Express and Node JS for backend, and MongoDB for data
-          storage, aiming for a complete MERN stack implementation.
-        </p>
+            The project introduces features like document uploads to eliminate
+            the need for carrying physical documents, user-friendly interfaces,
+            integrated booking services, and budget-friendly tour packages.
+            Scopes include user registration, destination information, friendly
+            interfaces accessible across devices, booking services integration,
+            Weather Forecast and currency conversion. However, there are
+            limitations, such as dependence on external data, device
+            compatibility, sustainable data accuracy, resource constraints for
+            continuous improvements, and limitations with third-party APIs.
+            TravelMate targets users above 18, primarily between ages 20 to 60,
+            providing a seamless platform for booking travel packages and
+            exploring the world. It utilizes React JS for frontend, Express and
+            Node JS for backend, and MongoDB for data storage, aiming for a
+            complete MERN stack implementation.
+          </p>
         </p>
         <div>
           <img
@@ -44,7 +45,6 @@ const AboutUs = () => {
             alt="adminImage"
           />
         </div>
-        
       </div>
       <p className="ml-10 mt-6 text-2xl font-semibold underline ">
         Founder of TravelMate:

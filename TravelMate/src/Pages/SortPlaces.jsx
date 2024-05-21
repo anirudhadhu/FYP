@@ -4,8 +4,8 @@ import Home from "../Pages/Home";
 import Scroll from "../Pages/Scroll";
 
 const SortPlaces = () => {
-  const { state } = useLocation();
-  const sortedPlaces = state?.sortedPlaces || [];
+  const { state } = useLocation(); // Get state from the current location
+  const sortedPlaces = state?.sortedPlaces || []; // Extract sorted places from state, or initialize as an empty array
 
   return (
     <>
@@ -15,8 +15,10 @@ const SortPlaces = () => {
           Sort Results
         </h2>
         <div className="p-16 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {/* Map through sorted places and render each place */}
           {sortedPlaces.map((place) => (
             <Link key={place._id} to={`/place/${place._id}`}>
+              {/* Link to individual place page */}
               <div className="place-card">
                 <div className="relative bg-gray-500 rounded-2xl overflow-hidden aspect-square">
                   {place.photos?.[0] && (
@@ -32,18 +34,14 @@ const SortPlaces = () => {
                   <p className="text-gray-500">{place.address}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-[2fr_0fr] mt-4">
-                  <div>
-                    <p className="font-bold">NPR ({place.price}) per person</p>
-                    {/* Render other details such as description, amenities, etc. */}
-                  </div>
-                  {/* Render favorite icon or any other actions */}
+                  <p className="font-bold">NPR ({place.price}) per person</p>
                 </div>
               </div>
             </Link>
           ))}
         </div>
       </div>
-      <Scroll/>
+      <Scroll />
     </>
   );
 };

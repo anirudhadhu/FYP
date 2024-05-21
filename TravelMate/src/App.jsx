@@ -29,7 +29,7 @@ import ResetPasswordPage from "./Components/ResetPasswordPage";
 import Teach from "./Components/Teach";
 import SearchReasult from "./Pages/SearchReasult";
 import SortPlaces from "./Pages/SortPlaces";
-import News from "./Pages/News"
+import News from "./Pages/News";
 
 // Setting base URL for Axios
 axios.defaults.baseURL = "http://localhost:4000";
@@ -37,8 +37,11 @@ axios.defaults.withCredentials = true;
 
 function App() {
   return (
+    // Wrapping the application with UserContextProvider to provide user context to all components
     <UserContextProvider>
+      {/* Defining all the routes for the application */}
       <Routes>
+        {/* Main layout route */}
         <Route path="/" element={<Layout />}>
           <Route index element={<IndexPage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -60,10 +63,16 @@ function App() {
           <Route path="/UserGuide" element={<Teach />} />
           <Route path="/search/:destination" element={<SearchReasult />} />
           <Route path="/sort-places" element={<SortPlaces />} />
-          <Route path="/verify/:verificationToken" element={<EmailVerification />} />
-          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-
+          <Route
+            path="/verify/:verificationToken"
+            element={<EmailVerification />}
+          />
+          <Route
+            path="/reset-password/:token"
+            element={<ResetPasswordPage />}
+          />
         </Route>
+        {/* Admin home page route */}
         <Route path="/AdminHomePage" element={<AdminHomePage />} />
         <Route path="/Destination" element={<Destination />} />
         <Route path="/UserDocument" element={<UserDocument />} />
@@ -75,3 +84,7 @@ function App() {
 }
 
 export default App;
+
+// Here the default configuration for Axios, a popular HTTP client used for making requests to a backend server. By specifying axios.defaults.baseURL = "http://localhost:4000", it ensures that all Axios requests will automatically prefix this base URL to any relative paths, directing the requests to the server running locally on port 4000. This eliminates the need to repeatedly specify the server URL in every request, streamlining the code and reducing the potential for errors.
+
+// Additionally, the setting axios.defaults.withCredentials = true configures Axios to include credentials, such as cookies and authentication headers, with cross-site Access-Control requests. This is crucial for maintaining user sessions and ensuring that authenticated requests can be made seamlessly, enabling functionalities like login sessions and secure data fetching in the application.

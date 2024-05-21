@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import Chart from "chart.js/auto";
+import axios from "axios";  // Import axios for HTTP requests
+import Chart from "chart.js/auto"; // Import Chart.js for charting
 
 const Body = () => {
+  // Declare state variables using useState hook
   const [totalUsers, setTotalUsers] = useState(null);
   const [totalDestinations, setTotalDestinations] = useState(null);
   const [totalBookings, setTotalBookings] = useState(null);
@@ -11,59 +12,69 @@ const Body = () => {
   const [allBookings, setAllBookings] = useState([]);
   const [error, setError] = useState(null);
 
+  // useEffect hook to fetch data when component mounts
   useEffect(() => {
     axios
       .get("/totalusers")
       .then((response) => {
         const data = response.data;
-        setTotalUsers(data.totalUsers);
+        setTotalUsers(data.totalUsers);  // Update state with total users
       })
       .catch((error) => {
         console.error("Error fetching total number of users:", error);
-        setError("Error fetching total number of users");
+        setError("Error fetching total number of users");  // Update error state
       });
 
+       // Fetch total number of destinations
     axios
       .get("/places")
       .then((response) => {
         const data = response.data;
-        setTotalDestinations(data.length);
+        setTotalDestinations(data.length);    // Update state with total destinations
       })
       .catch((error) => {
         console.error("Error fetching total number of destinations:", error);
         setError("Error fetching total number of destinations");
       });
 
+      // Fetch total number of bookings
     axios
       .get("/totalBookings")
       .then((response) => {
         const data = response.data;
-        setTotalBookings(data.totalBookings);
-        setAllBookings(data.allBookings);
+        setTotalBookings(data.totalBookings);   // Update state with total bookings
+        setAllBookings(data.allBookings);       // Update state with all bookings
+
       })
       .catch((error) => {
         console.error("Error fetching total number of bookings:", error);
         setError("Error fetching total number of bookings");
       });
 
+       // Fetch total number of documents
     axios
       .get("/alldocuments")
       .then((response) => {
         const data = response.data;
-        setTotalDocuments(data.length);
+        setTotalDocuments(data.length);   // Update state with total documents
       })
       .catch((error) => {
         console.error("Error fetching total number of documents:", error);
         setError("Error fetching total number of documents");
       });
-  }, []);
+  }, []);  // Empty dependency array means this effect runs once after initial render
 
+
+  // Function to generate chart data for Chart.js
   const generateChartData = () => {
     return {
+       // Define labels for the chart
       labels: ["Users", "Destinations", "Bookings", "Documents"],
       datasets: [{
+        // Define the datasets for the chart
         label: 'Counts',
-        data: [totalUsers, totalDestinations, totalBookings, totalDocuments],
+        data: [totalUsers, totalDestinations, totalBookings, totalDocuments],  // Data values corresponding to the labels
+        // Background colors for each bar in the chart
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',
@@ -81,22 +92,26 @@ const Body = () => {
     };
   };
 
+
+  // useEffect hook to render the chart when data is fetched
   useEffect(() => {
-    const ctx = document.getElementById('myChart');
+    const ctx = document.getElementById('myChart');  // Get the canvas element by its id
+     // Check if the canvas element exists and all data is fetched
     if (ctx && totalUsers !== null && totalDestinations !== null && totalBookings !== null && totalDocuments !== null) {
+         // Create a new Chart instance
       new Chart(ctx, {
         type: 'bar',
-        data: generateChartData(),
+        data: generateChartData(),  // Chart data
         options: {
           scales: {
             y: {
-              beginAtZero: true
+              beginAtZero: true  // Start the y-axis at zero
             }
           }
         }
       });
     }
-  }, [totalUsers, totalDestinations, totalBookings, totalDocuments]);
+  }, [totalUsers, totalDestinations, totalBookings, totalDocuments]);  // Dependencies array
 
   return (
     <>

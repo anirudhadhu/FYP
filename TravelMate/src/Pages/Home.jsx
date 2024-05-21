@@ -1,42 +1,45 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Aos from "aos";
-import "aos/dist/aos.css";
+import Aos from "aos"; // Importing AOS for animations
+import "aos/dist/aos.css"; // Importing AOS CSS for animations
 import "../Styles/Home.css";
 
 const Home = () => {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("");
+  const navigate = useNavigate(); // Hook for navigation
+  const [searchQuery, setSearchQuery] = useState(""); // State variable for search query
+  const [sortBy, setSortBy] = useState(""); // State variable for sorting option
   // const [places, setPlaces] = useState([]);
 
+  // Initializing AOS animations on component mount
   useEffect(() => {
     Aos.init({ duration: 2000 });
   }, []);
 
+  // Function to handle search form submission
   const handleSearch = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
     try {
-      const response = await axios.get(`/search?title=${searchQuery}`);
-      const searchResults = response.data;
+      const response = await axios.get(`/search?title=${searchQuery}`); // Sending a GET request to search for places
+      const searchResults = response.data; // Extracting search results from response data
       if (searchResults.length > 0) {
-        navigate(`/search/${searchQuery}`);
+        navigate(`/search/${searchQuery}`); // Navigate to search results page if results are found
       } else {
-        navigate(`/search/not-found`);
+        navigate(`/search/not-found`); // Navigate to not found page if no results are found
       }
     } catch (error) {
       console.error("Error searching for places:", error);
     }
   };
 
+  // Function to handle sorting option change
   const handleSortChange = async (e) => {
-    const selectedSortBy = e.target.value;
-    setSortBy(selectedSortBy);
+    const selectedSortBy = e.target.value; // Get the selected sorting option
+    setSortBy(selectedSortBy); // Update the sorting state with the selected option
 
     try {
-      const response = await axios.get(`/sort-places?sort=${selectedSortBy}`);
-      const sortedPlaces = response.data;
+      const response = await axios.get(`/sort-places?sort=${selectedSortBy}`); // Sending a GET request to sort places
+      const sortedPlaces = response.data; // Extracting sorted places from response data
 
       // Navigate to SortPlaces component and pass sortedPlaces as state
       navigate("/sort-places", { state: { sortedPlaces } });
@@ -58,7 +61,7 @@ const Home = () => {
         </div>
 
         <form className="homeCard grid" onSubmit={handleSearch}>
-          <div >
+          <div>
             <label className="text-m font-semibold">Destination:</label>
             <input
               type="text"

@@ -4,10 +4,12 @@ import emailjs from "emailjs-com";
 const Contact = () => {
   const form = useRef();
 
+  // Function to handle form submission and send email
   const sendEmail = (e) => {
     e.preventDefault();
 
     if (form.current.checkValidity()) {
+      // Send email using emailjs
       emailjs
         .sendForm(
           "service_ewexzus",
@@ -29,7 +31,6 @@ const Contact = () => {
 
   return (
     <>
-      
       <section className="contact section p- bg-gray-100 py-16" id="contact">
         {/* <h2 className="section__title text-3xl font-bold mb-8 text-center"></h2> */}
 
@@ -143,9 +144,6 @@ const Contact = () => {
           </div>
         </div>
       </section>
-
-     
-      
     </>
   );
 };

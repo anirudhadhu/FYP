@@ -9,10 +9,15 @@ const Teach = () => {
       <div className="grid gap-20 p-12 grid-cols-1 md:grid-cols-[1fr_1fr]">
         <section className="mb-8 border-r border-primary rounded-xl">
           <h2 className="text-xl font-semibold mb-4">Getting Started</h2>
-          <p className="mb-4">Welcome to TravelMate! Here's a quick guide to get started:</p>
+          <p className="mb-4">
+            Welcome to TravelMate! Here's a quick guide to get started:
+          </p>
           <ol className="list-disc list-inside">
             <li>Create an account or log in if you already have one.</li>
-            <li>Email Verification link will be sent to your registered email address</li>
+            <li>
+              Email Verification link will be sent to your registered email
+              address
+            </li>
             <li>Explore destinations listed in TravelMate.</li>
             <li>Select your desired destination and view details.</li>
             <li>Book your destination by following the booking process.</li>
@@ -27,7 +32,8 @@ const Teach = () => {
             <li>Browse and search for destinations.</li>
             <li>Sort destinations by price.</li>
             <li>
-              View destination details including title, address, price and many more.
+              View destination details including title, address, price and many
+              more.
             </li>
             <li>Book destinations securely.</li>
             <li>Upload your document </li>
@@ -39,7 +45,9 @@ const Teach = () => {
       <div className="grid gap-20 p-12 grid-cols-1 md:grid-cols-[1fr_1fr]">
         <section className=" border-r border-primary rounded-xl">
           <h2 className="text-xl font-semibold mb-4">Tips</h2>
-          <p className="mb-4">Here are some tips to enhance your TravelMate experience:</p>
+          <p className="mb-4">
+            Here are some tips to enhance your TravelMate experience:
+          </p>
           <ul className="list-disc list-inside">
             <li>
               Use the sorting feature to find destinations within your budget.
@@ -49,7 +57,10 @@ const Teach = () => {
               more travelers.
             </li>
             <li>Regularly check for new destinations added to TravelMate.</li>
-            <li>Upload your documents so that you can get rid of carrying the document an loose the fear of lossing them.</li>
+            <li>
+              Upload your documents so that you can get rid of carrying the
+              document an loose the fear of lossing them.
+            </li>
           </ul>
         </section>
       </div>
