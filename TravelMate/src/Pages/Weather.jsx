@@ -38,6 +38,7 @@ const Weather = () => {
             placeholder="Eg: Kathmandu"
             value={location}
             onChange={(event) => setLocation(event.target.value)}
+            required
             // Trigger search on pressing Enter key
             onKeyDown={(event) => {
               if (event.key === "Enter") {

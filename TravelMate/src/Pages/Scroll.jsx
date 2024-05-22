@@ -8,7 +8,7 @@ const Scroll = () => {
   // Function to handle scroll events
   const handleScroll = () => {
     // Get the vertical scroll position of the page
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
     setShowButton(scrollTop > 0); // Update the state to show the scroll button if scrollTop > 0
   };
 

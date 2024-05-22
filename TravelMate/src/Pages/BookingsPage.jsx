@@ -48,8 +48,10 @@ const BookingsPage = () => {
               className="flex gap-5 mb-6 bg-gray-200 rounded-2xl overflow-hidden"
               key={booking._id}
             >
-              <div className="w-48">
-                <PlaceImg place={booking.place} />
+              <div >
+                <PlaceImg 
+                className="w-64 h-32"
+                place={booking.place} />
               </div>
               <div className="py-3 pr-3 grow">
                 <h2 className="text-xl">{booking.place.title}</h2>

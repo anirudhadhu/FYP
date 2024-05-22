@@ -152,12 +152,15 @@ const BookingWidget = ({ place }) => {
                   type="text"
                   value={name}
                   onChange={(ev) => setName(ev.target.value)}
+                  required
                 />
                 <label>Phone number:</label>
                 <input
                   type="number"
                   value={number}
                   onChange={(ev) => setNumber(ev.target.value)}
+                  min={1}
+                  required
                 />
               </div>
             )}

@@ -54,7 +54,7 @@ const ProfilePage = () => {
               <h2 className="text-xl font-semibold mb-4">
                 Profile Information
               </h2>
-              <div className=" bg-white shadow-md rounded-lg p-6 mx-auto max-w-md">
+              <div className=" bg-white text-sm shadow-md rounded-lg p-6 mx-auto max-w-md">
                 <p className="flex text-gray-700 gap-2 ">
                   Logged in as: <strong>{user.name}</strong>
                 </p>

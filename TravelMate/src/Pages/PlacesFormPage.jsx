@@ -182,7 +182,7 @@ const PlacesFormPage = () => {
               type="number"
               value={price}
               onChange={(ev) => setPrice(ev.target.value)}
-              min="1"
+              min="399"
               required
             />
           </div>

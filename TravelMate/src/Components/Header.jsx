@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../UserContext";
 
 const Header = () => {
-  const { user } = useContext(UserContext);   // Accessing user context
-  const [isOpen, setIsOpen] = useState(false);    // State for dropdown menu
-  const dropdownRef = useRef(null);   // Ref for dropdown menu
+  const { user } = useContext(UserContext); // Accessing user context
+  const [isOpen, setIsOpen] = useState(false); // State for dropdown menu
+  const dropdownRef = useRef(null); // Ref for dropdown menu
 
   // Function to toggle dropdown menu
   const toggleDropdown = () => {
@@ -34,8 +34,8 @@ const Header = () => {
 
   return (
     <header className="p-5 flex justify-between bg-primary text-white sticky top-0 z-50">
-      <div className="flex items-center gap-1">
-        <Link to={"/"} className="flex items-center gap-1">
+      <div className="flex items-center gap-1  ">
+        <Link to={"/"} className="flex items-center gap-1 ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -59,7 +59,6 @@ const Header = () => {
         </Link>
       </div>
       <div className="flex items-center gap-2 py-2 px-4">
-
         {/* Hamburger menu for mobile */}
         <div className="flex rounded-full py-2 px-8 lg:hidden">
           <button
@@ -84,22 +83,22 @@ const Header = () => {
         </div>
         <div className="hidden lg:flex rounded-full py-2 px-8">
           <ul className="flex space-x-16">
-            <li>
+            <li className="hover:underline ">
               {" "}
               <Link to={"/"}>Home</Link>{" "}
             </li>
-            <li>
+            <li className="hover:underline">
               <Link to={"/AboutUs"}>About Us</Link>
             </li>
-            <li>
+            <li className="hover:underline">
               {" "}
               <Link to={"/favorites"}>Favorites</Link>
             </li>
 
-            <li>
+            <li className="hover:underline">
               <Link to={"/weather"}>Weather</Link>
             </li>
-            <li>
+            <li className="hover:underline">
               <Link to={"/news"}>News</Link>
             </li>
             {/* <li>
@@ -175,7 +174,7 @@ const Header = () => {
             />
           </svg>
         </Link>
-         {/* Display user's name if logged in */}
+        {/* Display user's name if logged in */}
         <div className="text-sm font-medium truncate w-18">
           {!!user && <p>{user.name}</p>}
         </div>

@@ -93,8 +93,8 @@ function getUserDataFromReq(req) {
 const transporter = nodemailer.createTransport({
   service: "gmail",
   host: "smtp.gmail.com", // Gmail SMTP server configuration
-  port: 465, // Port for SSL/TLS
-  secure: true, // Use SSL/TLS
+  port: 465, // Port for SSL/TLS   (Secure Sockets Layer/Transport Layer Security) 
+  secure: true, 
   auth: {
     user: "anirudhadhungana@gmail.com",
     pass: "aubv luaw utdp wstv",
@@ -912,7 +912,7 @@ app.get("/news", async (req, res) => {
     );
     res.json(response.data);
   } catch (error) {
-    console.error("Error fetching news:", error);
+    console.error("Error fetching news:", error.response ? error.response.data : error.message);
     res.status(500).json({ message: "Failed to fetch news" });
   }
 });
@@ -927,39 +927,39 @@ const stripe = require("stripe")(
 
 // Route for creating a checkout session
 
-app.post("/create-checkout-session", async (req, res) => {
-  // Extract required fields from the request body
-  const { amount, currency, description, tokenId } = req.body;
+// app.post("/create-checkout-session", async (req, res) => {
+//   // Extract required fields from the request body
+//   const { amount, currency, description, tokenId } = req.body;
 
-  // Check if any required field is missing
-  if (!amount || !currency || !description || !tokenId) {
-    return res
-      .status(400)
-      .json({ success: false, error: "Missing required fields" });
-  }
+//   // Check if any required field is missing
+//   if (!amount || !currency || !description || !tokenId) {
+//     return res
+//       .status(400)
+//       .json({ success: false, error: "Missing required fields" });
+//   }
 
-  try {
-    // Create a payment intent with the provided amount, currency, description, and token
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
-      currency: currency,
-      description: description,
-      payment_method_data: {
-        type: "card",
-        card: {
-          token: tokenId,
-        },
-      },
-      confirm: true,
-    });
+//   try {
+//     // Create a payment intent with the provided amount, currency, description, and token
+//     const paymentIntent = await stripe.paymentIntents.create({
+//       amount: amount,
+//       currency: currency,
+//       description: description,
+//       payment_method_data: {
+//         type: "card",
+//         card: {
+//           token: tokenId,
+//         },
+//       },
+//       confirm: true,
+//     });
 
-    // Respond with the client secret of the payment intent
-    res.json({ success: true, client_secret: paymentIntent.client_secret });
-  } catch (error) {
-    console.error("Error creating payment intent:", error);
-    res.status(400).json({ success: false, error: error.message });
-  }
-});
+//     // Respond with the client secret of the payment intent
+//     res.json({ success: true, client_secret: paymentIntent.client_secret });
+//   } catch (error) {
+//     console.error("Error creating payment intent:", error);
+//     res.status(400).json({ success: false, error: error.message });
+//   }
+// });
 
 // Route for creating a payment intent
 
